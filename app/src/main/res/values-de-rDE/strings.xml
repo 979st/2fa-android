@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- The following needs updating. Use default strings.xml as a base -->
 
     <!-- Common -->
     <string name="common_use_system_default">App Standard</string>
-    <string name="common_cancel">Cancel</string>
-    <string name="common_password_hint">Password</string>
+    <string name="common_cancel">Abbrechen</string>
+    <string name="common_password_hint">Passwort</string>
     <string name="common_search_hint">Suche</string>
 
     <!-- EditScreen.kt -->
     <string name="edit_screen_basic_info_title">Übersicht</string>
     <string name="edit_field_name_hint">Name</string>
-    <string name="edit_field_issuer_hint">Herausgeber</string>
+    <string name="edit_field_issuer_hint">Herausgebende</string>
     <string name="edit_field_note_hint">Notiz</string>
     <string name="edit_button_delete">Löschen</string>
     <string name="edit_screen_advanced_title">Erweitere Einstellungen</string>
@@ -29,40 +28,40 @@
     <string name="settings_title">Einstellungen</string>
     <string name="settings_option_language">Sprache</string>
     <string name="settings_option_appearance">Aussehen</string>
-    <string name="settings_appearance_light">Light</string>
-    <string name="settings_appearance_dark">Dark</string>
-    <string name="settings_appearance_dynamic">Dynamisch</string>
-    <string name="settings_section_manage_data">Manage Vault</string>
-    <string name="settings_button_backup_codes">Backup Vault</string>
-    <string name="settings_button_restore_codes">Restore Vault</string>
+    <string name="settings_appearance_light">Hell</string>
+    <string name="settings_appearance_dark">Dunkel</string>
+    <string name="settings_appearance_dynamic">System</string>
+    <string name="settings_section_manage_data">Backup &amp; Wiederherstellung</string>
+    <string name="settings_button_backup_codes">Backup 2FA-Codes</string>
+    <string name="settings_button_restore_codes">2FA-Codes importieren</string>
     <string name="settings_button_export_google_authenticator">
-        Export to Google Authenticator
+        Exportieren in den Google Authenticator
     </string>
-    <string name="settings_section_other">Other</string>
-    <string name="settings_option_tap_to_reveal">Tap to reveal</string>
-    <string name="settings_option_focus_search">Start in Search</string>
-    <string name="settings_section_about">About</string>
+    <string name="settings_section_other">Weiteres</string>
+    <string name="settings_option_tap_to_reveal">Tippen, um Codes anzuzeigen</string>
+    <string name="settings_option_focus_search">Suche beim Start fokussieren</string>
+    <string name="settings_section_about">Über diese App</string>
     <string name="about_button_join_community">Discord</string>
-    <string name="about_button_view_source">Source Code</string>
-    <string name="about_button_debug_log">Debug Log</string>
+    <string name="about_button_view_source">Source-Code</string>
+    <string name="about_button_debug_log">Debug-Log</string>
 
     <!-- Backup/Restore -->
-    <string name="backup_title_credentials">Credentials</string>
-    <string name="backup_error_password_length">Must be at least 8 characters</string>
-    <string name="backup_error_password_uppercase">Include uppercase</string>
-    <string name="backup_error_password_digit">Include number</string>
-    <string name="backup_error_password_special">Include special character</string>
-    <string name="backup_field_confirm_password_hint">Confirm Password</string>
-    <string name="backup_status_backing_up">Backing up</string>
+    <string name="backup_title_credentials">Zugangsdaten</string>
+    <string name="backup_error_password_length">Mindestens 8 Zeichen</string>
+    <string name="backup_error_password_uppercase">Großbuchstaben einbeziehen</string>
+    <string name="backup_error_password_digit">Nummern einbeziehen</string>
+    <string name="backup_error_password_special">Sonderzeichen einbeziehen</string>
+    <string name="backup_field_confirm_password_hint">Passwort bestätigen</string>
+    <string name="backup_status_backing_up">wird gesichert</string>
     <string name="backup_button_action">Backup</string>
-    <string name="restore_prompt_credentials">Enter credentials for the vault</string>
-    <string name="restore_error_incorrect_password">Incorrect password</string>
-    <string name="restore_status_restoring">Restoring</string>
-    <string name="restore_button_action">Restore</string>
+    <string name="restore_prompt_credentials">Zugangsdaten</string>
+    <string name="restore_error_incorrect_password">Falsches Passwort</string>
+    <string name="restore_status_restoring">wird wiederhergestellt</string>
+    <string name="restore_button_action">Importieren</string>
 
     <!-- ExportToGoogleAuthScreen -->
     <string name="export_google_authenticator_notice">
-        Only TOTP and HOTP tokens that generate 6-digit or 8-digit codes with 30-second intervals can be exported to Google Authenticator
+        Nur TOTP- und HOTP-Token, die 6-stellige oder 8-stellige Codes in 30-Sekunden-Intervallen generieren, können in den Google Authenticator exportiert werden.
     </string>
 
     <!-- LogScreen.kt-->
