@@ -84,6 +84,14 @@ private fun LanguageSettingsSection() {
     WideTitle(text = localizedString(R.string.settings_option_language))
 
     WideRadioButtonWithTintedIcon(
+        icon = painterResource(id = R.drawable.lang_de),
+        tint = Color.Unspecified,
+        label = "Deutsch",
+        enabled = localeViewModel.effectiveLocale == LocaleOption.DE_DE.value,
+        onClick = { localeViewModel.updateLocale(context, LocaleOption.DE_DE) }
+    )
+
+    WideRadioButtonWithTintedIcon(
         icon = painterResource(id = R.drawable.lang_en),
         tint = Color.Unspecified,
         label = "English International",
