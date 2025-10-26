@@ -38,7 +38,7 @@
     <string name="settings_button_backup_codes">Backup 2FA Codes</string>
     <string name="settings_button_restore_codes">Restore 2FA Codes</string>
     <string name="settings_button_export_google_authenticator">
-        Exportieren zu Google Authenticator
+        Export to Google Authenticator
     </string>
     <string name="settings_section_other">Other settings</string>
     <string name="settings_option_screen_security">Screen security</string>
