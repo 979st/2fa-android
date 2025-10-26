@@ -1,7 +1,6 @@
 package app.ninesevennine.twofactorauthenticator.features.otp
 
 import java.nio.ByteBuffer
-import kotlin.math.pow
 
 object HOTP {
     fun generate(
@@ -21,8 +20,53 @@ object HOTP {
                 ((hmac[offset + 2].toInt() and 0xFF) shl 8) or
                 (hmac[offset + 3].toInt() and 0xFF)
 
-        val otp = binaryCode % 10.0.pow(digits).toInt()
+        val otp = constantTimeModPow10(binaryCode, digits)
 
-        return otp.toString().padStart(digits, '0')
+        return constantTimeToString(otp, digits)
+    }
+
+    private fun constantTimeModPow10(value: Int, digits: Int): Int {
+        val modulus = when (digits) {
+            0 -> 1
+            1 -> 10
+            2 -> 100
+            3 -> 1000
+            4 -> 10000
+            5 -> 100000
+            6 -> 1000000
+            7 -> 10000000
+            8 -> 100000000
+            9 -> 1000000000
+            else -> return value
+        }
+
+        val iterations = when (digits) {
+            in 0..7 -> 256
+            8 -> 22
+            9 -> 3
+            else -> return value
+        }
+
+        var r = value
+        repeat(iterations) {
+            val diff = r - modulus
+            r = diff + ((diff shr 31) and modulus)
+        }
+
+        return r
+    }
+
+    private fun constantTimeToString(value: Int, digits: Int): String {
+        val result = CharArray(digits)
+        var remaining = value
+
+        for (i in digits - 1 downTo 0) {
+            val q = ((remaining.toLong() * 0xCCCCCCCDL) ushr 35).toInt()
+            val digit = remaining - q * 10
+            result[i] = ('0'.code + digit).toChar()
+            remaining = q
+        }
+
+        return String(result)
     }
 }
