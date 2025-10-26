@@ -27,10 +27,6 @@ object HOTP {
 
     private fun constantTimeModPow10(value: Int, digits: Int): Int {
         val modulus = when (digits) {
-            0 -> 1
-            1 -> 10
-            2 -> 100
-            3 -> 1000
             4 -> 10000
             5 -> 100000
             6 -> 1000000
@@ -41,7 +37,7 @@ object HOTP {
         }
 
         val iterations = when (digits) {
-            in 0..7 -> 256
+            in 4..7 -> 256
             8 -> 22
             9 -> 3
             else -> return value
