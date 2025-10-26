@@ -4,10 +4,10 @@ import kotlin.random.Random
 
 enum class OtpCardColors(val value: String) {
     RED("RED"),
-    GREEN("GREEN"),
-    BLUE("BLUE"),
-    PINK("PINK"),
     ORANGE("ORANGE"),
+    PINK("PINK"),
+    BLUE("BLUE"),
+    GREEN("GREEN"),
     BROWN("BROWN");
 
     companion object {

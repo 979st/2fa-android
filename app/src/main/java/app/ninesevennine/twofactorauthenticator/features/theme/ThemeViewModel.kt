@@ -36,7 +36,7 @@ class ThemeViewModel() : ViewModel() {
     var colors by mutableStateOf(lightColorScheme())
         private set
 
-    private fun isSystemDark(context: Context): Boolean {
+    fun isSystemDark(context: Context): Boolean {
         return context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
 

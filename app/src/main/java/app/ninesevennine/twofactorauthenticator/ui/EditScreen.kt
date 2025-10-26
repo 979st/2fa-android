@@ -47,10 +47,12 @@ import app.ninesevennine.twofactorauthenticator.features.qrscanner.QRScannerView
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.features.vault.VaultItem
 import app.ninesevennine.twofactorauthenticator.themeViewModel
+import app.ninesevennine.twofactorauthenticator.ui.elements.ItemColorOption
 import app.ninesevennine.twofactorauthenticator.ui.elements.WideTitle
 import app.ninesevennine.twofactorauthenticator.ui.elements.bottomappbar.EditAppBar
 import app.ninesevennine.twofactorauthenticator.ui.elements.dropdown.DropDownSingleChoice
 import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.OtpCard
+import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.OtpCardColors
 import app.ninesevennine.twofactorauthenticator.ui.elements.textfields.NumbersOnlyTextField
 import app.ninesevennine.twofactorauthenticator.ui.elements.textfields.SingleLineTextField
 import app.ninesevennine.twofactorauthenticator.ui.elements.textfields.TextField2fa
@@ -169,6 +171,38 @@ fun EditScreen(uuidString: String) {
                 onValueChange = { item = item.copy(note = it) },
                 placeholder = localizedString(R.string.edit_field_note_hint)
             )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ItemColorOption(item.otpCardColor, OtpCardColors.RED) {
+                    item = item.copy(otpCardColor = OtpCardColors.RED)
+                }
+
+                ItemColorOption(item.otpCardColor, OtpCardColors.ORANGE) {
+                    item = item.copy(otpCardColor = OtpCardColors.ORANGE)
+                }
+
+                ItemColorOption(item.otpCardColor, OtpCardColors.PINK) {
+                    item = item.copy(otpCardColor = OtpCardColors.PINK)
+                }
+
+                ItemColorOption(item.otpCardColor, OtpCardColors.BLUE) {
+                    item = item.copy(otpCardColor = OtpCardColors.BLUE)
+                }
+
+                ItemColorOption(item.otpCardColor, OtpCardColors.GREEN) {
+                    item = item.copy(otpCardColor = OtpCardColors.GREEN)
+                }
+
+                ItemColorOption(item.otpCardColor, OtpCardColors.BROWN) {
+                    item = item.copy(otpCardColor = OtpCardColors.BROWN)
+                }
+            }
 
             WideButtonError(
                 modifier = Modifier.fillMaxWidth(),
