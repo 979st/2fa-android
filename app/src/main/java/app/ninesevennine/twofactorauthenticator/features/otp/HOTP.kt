@@ -57,10 +57,22 @@ object HOTP {
         var remaining = value
 
         for (i in digits - 1 downTo 0) {
-            val q = ((remaining.toLong() * 0xCCCCCCCDL) ushr 35).toInt()
-            val digit = remaining - q * 10
-            result[i] = ('0'.code + digit).toChar()
-            remaining = q
+            val q = (remaining shr 1) + (remaining shr 2)
+            val q2 = q + (q shr 4)
+            val q3 = q2 + (q2 shr 8)
+            val q4 = q3 + (q3 shr 16)
+            val q5 = q4 shr 3
+
+            val digit = remaining - ((q5 shl 3) + (q5 shl 1))
+
+            val diff = 10 - digit
+            val isGte10 = ((diff - 1) shr 31) and 1
+
+            val finalDigit = digit - (isGte10 shl 3) - (isGte10 shl 1)
+            val finalQuotient = q5 + isGte10
+
+            result[i] = ('0'.code + finalDigit).toChar()
+            remaining = finalQuotient
         }
 
         return String(result)
