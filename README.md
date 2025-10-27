@@ -8,6 +8,9 @@
         <img alt="Static Badge" src="https://img.shields.io/badge/latest-Beta%208-blue">
     </a>
     <img alt="GitHub release downloads" src="https://img.shields.io/github/downloads/979st/2fa-android/total">
+    <a href="https://crowdin.com/project/979-2fa">
+        <img alt="Contribute to translations" src="https://badges.crowdin.net/979-2fa/localized.svg">
+    </a>
     <a href="https://eupl.eu/1.2/en/">
         <img alt="EUPL" src="https://img.shields.io/badge/license-EUPL-blue">
     </a>
