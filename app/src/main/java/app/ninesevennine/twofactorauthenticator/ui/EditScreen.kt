@@ -281,8 +281,8 @@ fun EditScreen(uuidString: String) {
                 modifier = Modifier.fillMaxWidth(),
                 value = secretInput,
                 onValueChange = {
-                    secretInput = it
-                    val decoded = Base32.decode(it)
+                    secretInput = it.trim()
+                    val decoded = Base32.decode(it.trim())
                     if (decoded != null) {
                         secretError = false
                         item = item.copy(secret = decoded)
@@ -332,8 +332,8 @@ fun EditScreen(uuidString: String) {
                         modifier = Modifier.weight(1f),
                         value = counterInput,
                         onValueChange = {
-                            counterInput = it
-                            val counter = it.toLongOrNull()
+                            counterInput = it.trim()
+                            val counter = it.trim().toLongOrNull()
                             if (counter != null) {
                                 if (counter < 0) {
                                     counterError = true
@@ -354,8 +354,8 @@ fun EditScreen(uuidString: String) {
                         modifier = Modifier.weight(1f),
                         value = periodInput,
                         onValueChange = {
-                            periodInput = it
-                            val period = it.toIntOrNull()
+                            periodInput = it.trim()
+                            val period = it.trim().toIntOrNull()
                             if (period != null) {
                                 if (period < 10) {
                                     periodError = true
@@ -379,8 +379,8 @@ fun EditScreen(uuidString: String) {
                     modifier = Modifier.weight(1f),
                     value = digitsInput,
                     onValueChange = {
-                        digitsInput = it
-                        val digits = it.toIntOrNull()
+                        digitsInput = it.trim()
+                        val digits = it.trim().toIntOrNull()
                         if (digits != null) {
                             if (digits < 4 || digits > 10) {
                                 digitsError = true
