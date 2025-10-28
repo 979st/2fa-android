@@ -415,6 +415,10 @@ fun EditScreen(uuidString: String) {
                 return@EditAppBar
             }
 
+            item.name = item.name.trim()
+            item.issuer = item.issuer.trim()
+            item.note = item.note.trim()
+
             @OptIn(ExperimentalTime::class)
             item.lastUpdated = Clock.System.now().epochSeconds
 
