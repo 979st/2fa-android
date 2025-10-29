@@ -1,34 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Common -->
     <string name="common_use_system_default">System</string>
     <string name="common_yes">Ja</string>
     <string name="common_cancel">Abbrechen</string>
     <string name="common_password_hint">Passwort</string>
     <string name="common_search_hint">Suche</string>
-
-    <!-- EditScreen.kt -->
     <string name="edit_screen_basic_info_title">Übersicht</string>
     <string name="edit_field_name_hint">Name</string>
-    <string name="edit_field_issuer_hint">Herausgebende</string>
+    <string name="edit_field_issuer_hint">Quelle</string>
     <string name="edit_field_note_hint">Notiz</string>
     <string name="edit_button_delete">Löschen</string>
     <string name="edit_delete_alert_title">Eintrag löschen</string>
-    <string name="edit_delete_alert_text">
-        Möchten Sie diesen Eintrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden
-    </string>
+    <string name="edit_delete_alert_text">Möchten Sie diesen Eintrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden</string>
     <string name="edit_screen_advanced_title">Erweitere Einstellungen</string>
-    <string name="edit_field_secret_hint">Geheimschlüssel (Secret)</string>
+    <string name="edit_field_secret_hint">Geheimschlüssel</string>
     <string name="edit_unit_seconds">Sekunden</string>
     <string name="edit_unit_digits">Ziffern</string>
     <string name="edit_unit_counter">Zähler</string>
-
-    <!-- QRScannerView.kt -->
-    <string name="qr_scanner_permission_required">
-        Zum Scannen von QR-Codes ist eine Berechtigung für die Kamera erforderlich.
-    </string>
-
-    <!-- SettingsScreen.kt -->
+    <string name="qr_scanner_permission_required">Zum Scannen von QR-Codes ist eine Berechtigung für die Kamera erforderlich</string>
     <string name="settings_title">Einstellungen</string>
     <string name="settings_option_language">Sprache</string>
     <string name="settings_option_appearance">Aussehen</string>
@@ -36,11 +25,9 @@
     <string name="settings_appearance_dark">Dunkel</string>
     <string name="settings_appearance_dynamic">Dynamisch</string>
     <string name="settings_section_manage_data">Backup &amp; Wiederherstellung</string>
-    <string name="settings_button_backup_codes">2FA-Code-Backup</string>
-    <string name="settings_button_restore_codes">2FA-Codes wiederherstellen</string>
-    <string name="settings_button_export_google_authenticator">
-        In Google Authenticator exportieren
-    </string>
+    <string name="settings_button_backup_codes">Erstelle Backup der 2FA Codes</string>
+    <string name="settings_button_restore_codes">2FA Codes wieder herstellen</string>
+    <string name="settings_button_export_google_authenticator">In Google Authenticator exportieren</string>
     <string name="settings_section_other">Weiteres</string>
     <string name="settings_option_screen_security">Bildschirmsicherheit</string>
     <string name="settings_option_tap_to_reveal">Tippen, um Codes anzuzeigen</string>
@@ -48,26 +35,18 @@
     <string name="settings_section_about">Über diese App</string>
     <string name="about_button_view_source">Source-Code</string>
     <string name="about_button_debug_log">Debug-Log</string>
-
-    <!-- Backup/Restore -->
     <string name="backup_title_credentials">Zugangsdaten</string>
     <string name="backup_error_password_length">Mindestzeichenlänge: 8</string>
     <string name="backup_error_password_uppercase">Verwende Großbuchstaben</string>
     <string name="backup_error_password_digit">Verwende Ziffern</string>
     <string name="backup_error_password_special">Verwende Sonderzeichen</string>
     <string name="backup_field_confirm_password_hint">Passwort wiederholen</string>
-    <string name="backup_status_backing_up">wird gespeichert</string>
+    <string name="backup_status_backing_up">Wird gespeichert</string>
     <string name="backup_button_action">Backup</string>
     <string name="restore_prompt_credentials">Zugangsdaten eingeben</string>
     <string name="restore_error_incorrect_password">Falsches Passwort</string>
-    <string name="restore_status_restoring">wird wiederhergestellt</string>
-    <string name="restore_button_action">wiederherstellen</string>
-
-    <!-- ExportToGoogleAuthScreen -->
-    <string name="export_google_authenticator_notice">
-                Nur TOTP- und HOTP-Token, die 6-stellige oder 8-stellige Codes in 30-Sekunden-Intervallen generieren, können in den Google Authenticator exportiert werden.
-    </string>
-
-    <!-- LogScreen.kt-->
+    <string name="restore_status_restoring">Wird wiederhergestellt</string>
+    <string name="restore_button_action">Wiederherstellen</string>
+    <string name="export_google_authenticator_notice">Nur TOTP- und HOTP-Token, die 6-stellige oder 8-stellige Codes in 30-Sekunden-Intervallen generieren, können in den Google Authenticator exportiert werden</string>
     <string name="debug_log">Debug-Log</string>
 </resources>

@@ -1,34 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Common -->
     <string name="common_use_system_default">Usar predeterminados</string>
     <string name="common_yes">Sí</string>
     <string name="common_cancel">Cancelar</string>
     <string name="common_password_hint">Contraseña</string>
     <string name="common_search_hint">Buscar</string>
-
-    <!-- EditScreen.kt -->
     <string name="edit_screen_basic_info_title">Información básica</string>
     <string name="edit_field_name_hint">Nombre</string>
     <string name="edit_field_issuer_hint">Emisor</string>
     <string name="edit_field_note_hint">Nota</string>
     <string name="edit_button_delete">Eliminar</string>
     <string name="edit_delete_alert_title">Eliminar entrada</string>
-    <string name="edit_delete_alert_text">
-        ¿Está seguro de que desea eliminar esta entrada? Esta acción es irreversible
-    </string>
+    <string name="edit_delete_alert_text">¿Está seguro de que desea eliminar esta entrada? Esta acción es irreversible</string>
     <string name="edit_screen_advanced_title">Ajustes avanzados</string>
     <string name="edit_field_secret_hint">Secreto</string>
     <string name="edit_unit_seconds">segundos</string>
     <string name="edit_unit_digits">dígitos</string>
     <string name="edit_unit_counter">contador</string>
-
-    <!-- QRScannerView.kt -->
-    <string name="qr_scanner_permission_required">
-        Se requiere permiso de la cámara para escanear códigos QR
-    </string>
-
-    <!-- SettingsScreen.kt -->
+    <string name="qr_scanner_permission_required">Se requiere permiso de la cámara para escanear códigos QR</string>
     <string name="settings_title">Configuración</string>
     <string name="settings_option_language">Idioma</string>
     <string name="settings_option_appearance">Aspecto</string>
@@ -38,9 +27,7 @@
     <string name="settings_section_manage_data">Copia de seguridad y restauración</string>
     <string name="settings_button_backup_codes">Hacer copia de seguridad 2FA</string>
     <string name="settings_button_restore_codes">Restaurar códigos 2FA</string>
-    <string name="settings_button_export_google_authenticator">
-        Exportar a Google Authenticator
-    </string>
+    <string name="settings_button_export_google_authenticator">Exportar a Google Authenticator</string>
     <string name="settings_section_other">Otros ajustes</string>
     <string name="settings_option_screen_security">Pantalla protegida</string>
     <string name="settings_option_tap_to_reveal">Tocar para mostrar códigos</string>
@@ -48,8 +35,6 @@
     <string name="settings_section_about">Acerca de la aplicación</string>
     <string name="about_button_view_source">Ver código fuente</string>
     <string name="about_button_debug_log">Registro de diagnóstico</string>
-
-    <!-- Backup/Restore -->
     <string name="backup_title_credentials">Credenciales</string>
     <string name="backup_error_password_length">Debe tener al menos 8 caracteres</string>
     <string name="backup_error_password_uppercase">Incluya una letra mayúscula</string>
@@ -62,12 +47,6 @@
     <string name="restore_error_incorrect_password">Contraseña incorrecta</string>
     <string name="restore_status_restoring">Restaurando</string>
     <string name="restore_button_action">Restaurar</string>
-
-    <!-- ExportToGoogleAuthScreen -->
-    <string name="export_google_authenticator_notice">
-        Solo los tokens TOTP y HOTP que generan códigos de 6 u 8 dígitos con intervalos de 30 segundos pueden exportarse a Google Authenticator
-    </string>
-
-    <!-- LogScreen.kt-->
+    <string name="export_google_authenticator_notice">Solo los tokens TOTP y HOTP que generan códigos de 6 u 8 dígitos con intervalos de 30 segundos pueden exportarse a Google Authenticator</string>
     <string name="debug_log">Registro de diagnóstico</string>
 </resources>

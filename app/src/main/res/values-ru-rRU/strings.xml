@@ -1,34 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Common -->
     <string name="common_use_system_default">Использовать по умолчанию</string>
     <string name="common_yes">Да</string>
     <string name="common_cancel">Отменить</string>
     <string name="common_password_hint">Пароль</string>
     <string name="common_search_hint">Поиск</string>
-
-    <!-- EditScreen.kt -->
     <string name="edit_screen_basic_info_title">Основная информация</string>
     <string name="edit_field_name_hint">Имя</string>
     <string name="edit_field_issuer_hint">Поставщик</string>
     <string name="edit_field_note_hint">Заметка</string>
     <string name="edit_button_delete">Удалить</string>
     <string name="edit_delete_alert_title">Удалить запись</string>
-    <string name="edit_delete_alert_text">
-        Вы уверены, что хотите удалить эту запись? Это действие необратимо
-    </string>
+    <string name="edit_delete_alert_text">Вы уверены, что хотите удалить эту запись? Это действие необратимо</string>
     <string name="edit_screen_advanced_title">Расширенные настройки</string>
     <string name="edit_field_secret_hint">Секрет</string>
     <string name="edit_unit_seconds">секунд</string>
     <string name="edit_unit_digits">цифр</string>
     <string name="edit_unit_counter">счетчик</string>
-
-    <!-- QRScannerView.kt -->
-    <string name="qr_scanner_permission_required">
-        Требуется доступ к камере для сканирования QR-кодов
-    </string>
-
-    <!-- SettingsScreen.kt -->
+    <string name="qr_scanner_permission_required">Требуется доступ к камере для сканирования QR-кодов</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_option_language">Язык</string>
     <string name="settings_option_appearance">Оформление</string>
@@ -38,9 +27,7 @@
     <string name="settings_section_manage_data">Резервное копирование и восстановление</string>
     <string name="settings_button_backup_codes">Бэкап кодов 2FA</string>
     <string name="settings_button_restore_codes">Восстановить коды 2FA</string>
-    <string name="settings_button_export_google_authenticator">
-        Экспорт в Google Authenticator
-    </string>
+    <string name="settings_button_export_google_authenticator">Экспорт в Google Authenticator</string>
     <string name="settings_section_other">Другие настройки</string>
     <string name="settings_option_screen_security">Безопасность экрана</string>
     <string name="settings_option_tap_to_reveal">Показать коды при нажатии</string>
@@ -48,8 +35,6 @@
     <string name="settings_section_about">О приложении</string>
     <string name="about_button_view_source">Посмотреть исходный код</string>
     <string name="about_button_debug_log">Журнал заметок</string>
-
-    <!-- Backup/Restore -->
     <string name="backup_title_credentials">Учётные данные</string>
     <string name="backup_error_password_length">Должен быть не менее 8 букв</string>
     <string name="backup_error_password_uppercase">Добавьте заглавную букву</string>
@@ -62,12 +47,6 @@
     <string name="restore_error_incorrect_password">Неверный пароль</string>
     <string name="restore_status_restoring">Восстановление</string>
     <string name="restore_button_action">Восстановить</string>
-
-    <!-- ExportToGoogleAuthScreen -->
-    <string name="export_google_authenticator_notice">
-        В Google Authenticator можно экспортировать только токены TOTP и HOTP, которые генерируют 6-значные или 8-значные коды с интервалом в 30 секунд
-    </string>
-
-    <!-- LogScreen.kt-->
+    <string name="export_google_authenticator_notice">В Google Authenticator можно экспортировать только токены TOTP и HOTP, которые генерируют 6-значные или 8-значные коды с интервалом в 30 секунд</string>
     <string name="debug_log">Журнал заметок</string>
 </resources>
