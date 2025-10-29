@@ -1,7 +1,5 @@
 package app.ninesevennine.twofactorauthenticator.features.otp
 
-import java.nio.ByteBuffer
-
 object HOTP {
     fun generate(
         otpHashFunction: OtpHashFunctions,
@@ -9,72 +7,53 @@ object HOTP {
         digits: Int,
         counter: Long
     ): String {
-        val counterBytes = ByteBuffer.allocate(8).putLong(counter).array()
+        val counterBuffer = ByteArray(8)
+        for (i in 7 downTo 0) {
+            val bitShift = (7 - i) shl 3
+            counterBuffer[i] = ((counter ushr bitShift) and 0xFF).toByte()
+        }
 
-        val hmac = HMAC.calculate(secret, counterBytes, otpHashFunction)
+        val hmacResult = HMAC.calculate(secret, counterBuffer, otpHashFunction)
+        val dynamicOffset = hmacResult.last().toInt() and 0x0F
 
-        val offset = (hmac[hmac.size - 1].toInt() and 0x0F)
+        val truncatedBinary =
+            ((hmacResult[dynamicOffset].toInt() and 0x7F) shl 24) or
+            ((hmacResult[dynamicOffset + 1].toInt() and 0xFF) shl 16) or
+            ((hmacResult[dynamicOffset + 2].toInt() and 0xFF) shl 8) or
+            (hmacResult[dynamicOffset + 3].toInt() and 0xFF)
 
-        val binaryCode = ((hmac[offset].toInt() and 0x7F) shl 24) or
-                ((hmac[offset + 1].toInt() and 0xFF) shl 16) or
-                ((hmac[offset + 2].toInt() and 0xFF) shl 8) or
-                (hmac[offset + 3].toInt() and 0xFF)
+        val modulusBase = pow10Bitwise(digits)
+        val otpValue = modBinary(truncatedBinary, modulusBase)
 
-        val otp = constantTimeModPow10(binaryCode, digits)
-
-        return constantTimeToString(otp, digits)
+        return padWithZeros(otpValue, digits)
     }
 
-    private fun constantTimeModPow10(value: Int, digits: Int): Int {
-        val modulus = when (digits) {
-            4 -> 10000
-            5 -> 100000
-            6 -> 1000000
-            7 -> 10000000
-            8 -> 100000000
-            9 -> 1000000000
-            else -> return value
+    private fun pow10Bitwise(exponent: Int): Int {
+        var result = 1
+        var i = 0
+        while (i < exponent) {
+            result = (result shl 3) + (result shl 1)
+            i++
         }
-
-        val iterations = when (digits) {
-            in 4..7 -> 256
-            8 -> 22
-            9 -> 3
-            else -> return value
-        }
-
-        var r = value
-        repeat(iterations) {
-            val diff = r - modulus
-            r = diff + ((diff shr 31) and modulus)
-        }
-
-        return r
+        return result
     }
 
-    private fun constantTimeToString(value: Int, digits: Int): String {
-        val result = CharArray(digits)
-        var remaining = value
-
-        for (i in digits - 1 downTo 0) {
-            val q = (remaining shr 1) + (remaining shr 2)
-            val q2 = q + (q shr 4)
-            val q3 = q2 + (q2 shr 8)
-            val q4 = q3 + (q3 shr 16)
-            val q5 = q4 shr 3
-
-            val digit = remaining - ((q5 shl 3) + (q5 shl 1))
-
-            val diff = 10 - digit
-            val isGte10 = ((diff - 1) shr 31) and 1
-
-            val finalDigit = digit - (isGte10 shl 3) - (isGte10 shl 1)
-            val finalQuotient = q5 + isGte10
-
-            result[i] = ('0'.code + finalDigit).toChar()
-            remaining = finalQuotient
+    private fun modBinary(value: Int, modulus: Int): Int {
+        var remainder = value
+        while (remainder >= modulus) {
+            remainder -= modulus
         }
+        return remainder
+    }
 
-        return String(result)
+    private fun padWithZeros(number: Int, targetLength: Int): String {
+        val numberStr = number.toString()
+        val padding = targetLength - numberStr.length
+        if (padding <= 0) return numberStr
+
+        val builder = StringBuilder(targetLength)
+        repeat(padding) { builder.append('0') }
+        builder.append(numberStr)
+        return builder.toString()
     }
 }
