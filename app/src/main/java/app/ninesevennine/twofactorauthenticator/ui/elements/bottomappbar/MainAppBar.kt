@@ -164,7 +164,7 @@ fun MainAppBar(
                 },
                 placeholder = {
                     Text(
-                        text = localizedString(R.string.common_search_hint),
+                        text = localizedString(R.string.main_bottom_bar_textfield_hint_text_search),
                         fontFamily = InterVariable,
                         letterSpacing = (-0.2).sp,
                         fontWeight = FontWeight.Normal,

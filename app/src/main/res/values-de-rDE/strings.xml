@@ -4,7 +4,12 @@
     <string name="common_yes">Ja</string>
     <string name="common_cancel">Abbrechen</string>
     <string name="common_password_hint">Passwort</string>
-    <string name="common_search_hint">Suche</string>
+    <plurals name="main_list_plural_text_showing_x_entries">
+        <item quantity="one">Showing %d entry</item>
+        <item quantity="other">Showing %d entries</item>
+    </plurals>
+    <string name="main_list_text_no_entries_found">No matching entries found</string>
+    <string name="main_bottom_bar_textfield_hint_text_search">Suche</string>
     <string name="edit_screen_basic_info_title">Übersicht</string>
     <string name="edit_field_name_hint">Name</string>
     <string name="edit_field_issuer_hint">Quelle</string>
@@ -17,7 +22,7 @@
     <string name="edit_unit_seconds">Sekunden</string>
     <string name="edit_unit_digits">Ziffern</string>
     <string name="edit_unit_counter">Zähler</string>
-    <string name="qr_scanner_message_permission_required">Zum Scannen von QR-Codes ist eine Berechtigung für die Kamera erforderlich</string>
+    <string name="qr_scanner_text_camera_permission_required">Zum Scannen von QR-Codes ist eine Berechtigung für die Kamera erforderlich</string>
     <string name="settings_title">Einstellungen</string>
     <string name="settings_option_language">Sprache</string>
     <string name="settings_option_appearance">Aussehen</string>
@@ -49,5 +54,5 @@
     <string name="restore_button_action">Wiederherstellen</string>
     <string name="export_google_authenticator_notice">Nur TOTP- und HOTP-Token, die 6-stellige oder 8-stellige Codes in 30-Sekunden-Intervallen generieren, können in den Google Authenticator exportiert werden</string>
     <string name="debug_log">Debug-Log</string>
-    <string name="qr_scanner_button_enter_manually">Manuell eingeben</string>
+    <string name="qr_scanner_button_text_enter_manually">Manuell eingeben</string>
 </resources>

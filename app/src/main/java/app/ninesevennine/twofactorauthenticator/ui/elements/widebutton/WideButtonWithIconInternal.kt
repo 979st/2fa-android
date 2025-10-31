@@ -1,7 +1,6 @@
 package app.ninesevennine.twofactorauthenticator.ui.elements.widebutton
 
 import android.view.SoundEffectConstants
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,15 +46,14 @@ fun WideButtonWithIconInternal(
             .fillMaxWidth()
             .height(56.dp)
             .background(
-                color = colors.primaryContainer,
-                shape = RoundedCornerShape(28.dp)
-            ).clickable {
+                color = colors.primaryContainer, shape = RoundedCornerShape(28.dp)
+            )
+            .clickable {
                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 view.playSoundEffect(SoundEffectConstants.CLICK)
 
                 onClick()
-            }
-    ) {
+            }) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,

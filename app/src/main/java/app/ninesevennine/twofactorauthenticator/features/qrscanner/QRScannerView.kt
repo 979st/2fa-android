@@ -159,7 +159,7 @@ fun QRScannerView(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = localizedString(R.string.qr_scanner_button_enter_manually),
+                            text = localizedString(R.string.qr_scanner_button_text_enter_manually),
                             fontFamily = InterVariable,
                             color = Color.White,
                             fontWeight = FontWeight.W700,
@@ -187,7 +187,7 @@ private fun PermissionRequiredMessage() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = localizedString(R.string.qr_scanner_message_permission_required),
+            text = localizedString(R.string.qr_scanner_text_camera_permission_required),
             fontFamily = InterVariable,
             textAlign = TextAlign.Center,
             color = Color.White,
