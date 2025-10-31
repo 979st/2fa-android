@@ -12,6 +12,8 @@ class ConfigViewModel : ViewModel() {
     var values by mutableStateOf(ConfigModel.Config())
         private set
 
+    var otpauthUrl by mutableStateOf("")
+
     fun save(context: Context) = values.save(context)
     fun load(context: Context) = ConfigModel.Config.load(context).also { values = it }
 

@@ -1,5 +1,6 @@
 package app.ninesevennine.twofactorauthenticator
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -20,6 +21,8 @@ val LocalNavController =
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        handleOtpAuthIntent(intent)
 
         enableEdgeToEdge()
         setContent {
@@ -50,6 +53,26 @@ class MainActivity : ComponentActivity() {
                 UseIncognitoKeyboard {
                     AppNavigation()
                 }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        handleOtpAuthIntent(intent)
+    }
+
+    private fun handleOtpAuthIntent(intent: Intent?) {
+        if (intent == null)
+            return
+
+        val action = intent.action
+        val data = intent.data
+
+        if (action == Intent.ACTION_VIEW && data != null) {
+            if (data.scheme == "otpauth") {
+                configViewModel.otpauthUrl = data.toString()
             }
         }
     }

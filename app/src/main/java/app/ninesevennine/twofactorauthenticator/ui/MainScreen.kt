@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
+import app.ninesevennine.twofactorauthenticator.configViewModel
 import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
@@ -56,6 +57,10 @@ fun MainScreen() {
     val navController = LocalNavController.current
     val configuration = LocalConfiguration.current
     val vaultViewModel = context.vaultViewModel
+
+    if (context.configViewModel.otpauthUrl.isNotEmpty()) {
+        navController.navigate(EditScreenRoute(Constants.ONEUUIDSTR))
+    }
 
     val items = vaultViewModel.items
 
@@ -138,7 +143,9 @@ fun MainScreen() {
 
     if (items.isNotEmpty() && filteredItems.isEmpty()) {
         Box(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(

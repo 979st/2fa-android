@@ -64,7 +64,9 @@ fun AppNavigation() {
             )
         }
     ) {
-        composable<MainScreenRoute> { MainScreen() }
+        composable<MainScreenRoute> {
+            MainScreen()
+        }
         composable<SettingsScreenRoute> { SettingsScreen() }
         composable<EditScreenRoute> {
             val args = it.toRoute<EditScreenRoute>()

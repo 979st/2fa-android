@@ -40,9 +40,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
+import app.ninesevennine.twofactorauthenticator.configViewModel
 import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.otp.OtpHashFunctions
 import app.ninesevennine.twofactorauthenticator.features.otp.OtpTypes
+import app.ninesevennine.twofactorauthenticator.features.otp.otpParser
 import app.ninesevennine.twofactorauthenticator.features.qrscanner.QRScannerView
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.features.vault.VaultItem
@@ -78,6 +80,7 @@ data class EditScreenRoute(
 fun EditScreen(uuidString: String) {
     val context = LocalContext.current
     val vaultViewModel = context.vaultViewModel
+    val configViewModel = context.configViewModel
 
     var item by remember {
         mutableStateOf(
@@ -87,7 +90,13 @@ fun EditScreen(uuidString: String) {
                 }
 
                 Constants.ONEUUIDSTR -> {
-                    VaultItem(uuid = Uuid.random())
+                    if (configViewModel.otpauthUrl.isEmpty()) {
+                        VaultItem(uuid = Uuid.random())
+                    } else {
+                        val url = configViewModel.otpauthUrl
+                        configViewModel.otpauthUrl = ""
+                        otpParser(url) ?: VaultItem(uuid = Uuid.random())
+                    }
                 }
 
                 else -> {
