@@ -18,11 +18,22 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,10 +73,13 @@ import kotlin.math.min
 
 @Composable
 fun QRScannerView(
+    onEnterManually: () -> Unit,
     onVaultItemChange: (VaultItem) -> Unit
 ) {
     val context = LocalContext.current
-    val configuration = LocalConfiguration.current
+    val haptic = LocalHapticFeedback.current
+    val view = LocalView.current
+    val navController = LocalNavController.current
 
     var hasCameraPermission by remember {
         mutableStateOf(
@@ -87,8 +101,7 @@ fun QRScannerView(
         }
     }
 
-    @SuppressLint("ConfigurationScreenWidthHeight")
-    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+    val navBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -100,23 +113,65 @@ fun QRScannerView(
                 else -> PermissionRequiredMessage()
             }
 
-            if (isLandscape) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 32.dp),
-                    contentAlignment = Alignment.Center
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(all = navBottom + 4.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    CancelButton()
-                }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 64.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CancelButton()
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(RoundedCornerShape(28.dp))
+                            .background(Color(0x99000000))
+                            .clickable {
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                view.playSoundEffect(SoundEffectConstants.CLICK)
+                                navController.popBackStack()
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+
+                    Spacer(Modifier.weight(1f))
+
+                    Box(
+                        modifier = Modifier
+                            .height(56.dp)
+                            .clip(RoundedCornerShape(28.dp))
+                            .background(Color(0x99000000))
+                            .clickable {
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                view.playSoundEffect(SoundEffectConstants.CLICK)
+                                onEnterManually()
+                            }
+                            .padding(horizontal = 24.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = localizedString(R.string.qr_scanner_button_enter_manually),
+                            fontFamily = InterVariable,
+                            color = Color.White,
+                            fontWeight = FontWeight.W700,
+                            fontSize = 16.sp,
+                            maxLines = 1
+                        )
+                    }
+
+                    Spacer(Modifier.weight(1f))
+
+                    // Add from image?
+                    Spacer(Modifier.width(56.dp))
                 }
             }
         }
@@ -124,31 +179,21 @@ fun QRScannerView(
 }
 
 @Composable
-private fun CancelButton() {
-    val haptic = LocalHapticFeedback.current
-    val view = LocalView.current
-    val navController = LocalNavController.current
-
+private fun PermissionRequiredMessage() {
     Box(
         modifier = Modifier
-            .height(64.dp)
-            .clip(RoundedCornerShape(32.dp))
-            .background(Color(0x99000000))
-            .clickable {
-                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                view.playSoundEffect(SoundEffectConstants.CLICK)
-                navController.popBackStack()
-            }
-            .padding(horizontal = 24.dp),
+            .fillMaxSize()
+            .padding(32.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = localizedString(R.string.common_cancel),
+            text = localizedString(R.string.qr_scanner_message_permission_required),
             fontFamily = InterVariable,
+            textAlign = TextAlign.Center,
             color = Color.White,
             fontWeight = FontWeight.W700,
-            fontSize = 18.sp,
-            maxLines = 1
+            fontSize = 20.sp,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
@@ -259,24 +304,6 @@ private fun CameraPreview(
         QRScannerOverlay(
             modifier = Modifier.fillMaxSize(),
             viewfinderWidthPercent = viewfinderPercent
-        )
-    }
-}
-
-@Composable
-private fun PermissionRequiredMessage() {
-    Box(
-        modifier = Modifier.fillMaxSize().padding(32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = localizedString(R.string.qr_scanner_permission_required),
-            fontFamily = InterVariable,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            fontWeight = FontWeight.W700,
-            fontSize = 20.sp,
-            overflow = TextOverflow.Ellipsis
         )
     }
 }

@@ -98,9 +98,15 @@ fun EditScreen(uuidString: String) {
     }
 
     if (item.uuid == Constants.NILUUID) {
-        QRScannerView { newItem ->
-            item = newItem
-        }
+        QRScannerView(
+            onEnterManually = {
+                item = item.copy(uuid = Uuid.random())
+            },
+            onVaultItemChange = { newItem ->
+                item = newItem
+            }
+        )
+
         return
     }
 

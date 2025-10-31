@@ -45,7 +45,7 @@ fun WideButtonError(
             .height(56.dp)
             .background(
                 color = colors.errorContainer,
-                shape = RoundedCornerShape(32.dp)
+                shape = RoundedCornerShape(28.dp)
             )
             .clickable {
                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)

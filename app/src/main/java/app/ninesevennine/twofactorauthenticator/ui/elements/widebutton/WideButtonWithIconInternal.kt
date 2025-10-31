@@ -48,7 +48,7 @@ fun WideButtonWithIconInternal(
             .height(56.dp)
             .background(
                 color = colors.primaryContainer,
-                shape = RoundedCornerShape(32.dp)
+                shape = RoundedCornerShape(28.dp)
             ).clickable {
                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 view.playSoundEffect(SoundEffectConstants.CLICK)

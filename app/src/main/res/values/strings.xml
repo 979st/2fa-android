@@ -23,9 +23,10 @@
     <string name="edit_unit_counter">counter</string>
 
     <!-- QRScannerView.kt -->
-    <string name="qr_scanner_permission_required">
+    <string name="qr_scanner_message_permission_required">
         Camera permission is required to scan QR codes
     </string>
+    <string name="qr_scanner_button_enter_manually">Enter manually</string>
 
     <!-- SettingsScreen.kt -->
     <string name="settings_title">Settings</string>

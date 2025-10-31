@@ -46,7 +46,7 @@ fun WideButton(
             .height(56.dp)
             .background(
                 color = if (color == Color.Unspecified) colors.primaryContainer else color,
-                shape = RoundedCornerShape(32.dp)
+                shape = RoundedCornerShape(28.dp)
             )
             .clickable {
                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)

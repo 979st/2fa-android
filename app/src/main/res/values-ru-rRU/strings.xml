@@ -17,7 +17,7 @@
     <string name="edit_unit_seconds">секунд</string>
     <string name="edit_unit_digits">цифр</string>
     <string name="edit_unit_counter">счетчик</string>
-    <string name="qr_scanner_permission_required">Требуется доступ к камере для сканирования QR-кодов</string>
+    <string name="qr_scanner_message_permission_required">Требуется доступ к камере для сканирования QR-кодов</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_option_language">Язык</string>
     <string name="settings_option_appearance">Оформление</string>
@@ -49,4 +49,5 @@
     <string name="restore_button_action">Восстановить</string>
     <string name="export_google_authenticator_notice">В Google Authenticator можно экспортировать только токены TOTP и HOTP, которые генерируют 6-значные или 8-значные коды с интервалом в 30 секунд</string>
     <string name="debug_log">Журнал заметок</string>
+    <string name="qr_scanner_button_enter_manually">Ввести вручную</string>
 </resources>
