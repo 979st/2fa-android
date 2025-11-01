@@ -5,7 +5,8 @@ enum class LocaleOption(val value: String) {
     EN_US("en-US"),
     ES_ES("es-ES"),
     RU_RU("ru-RU"),
-    DE_DE("de-DE");
+    DE_DE("de-DE"),
+    FR_FR("fr-FR");
 
     companion object {
         private val entriesMap = entries.associateBy { it.value }

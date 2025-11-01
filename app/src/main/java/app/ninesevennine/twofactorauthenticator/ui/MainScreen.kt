@@ -27,13 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedPluralStringFormatted
 import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
@@ -125,7 +125,7 @@ fun MainScreen() {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = pluralStringResource(
+                        text = localizedPluralStringFormatted(
                             R.plurals.main_list_plural_text_showing_x_entries,
                             filteredItems.size,
                             filteredItems.size
@@ -133,8 +133,7 @@ fun MainScreen() {
                         fontFamily = InterVariable,
                         color = colors.onBackground,
                         fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
-                        maxLines = 1
+                        fontSize = 16.sp
                     )
                 }
             }
@@ -154,8 +153,7 @@ fun MainScreen() {
                 fontFamily = InterVariable,
                 color = colors.onBackground,
                 fontWeight = FontWeight.Normal,
-                fontSize = 14.sp,
-                maxLines = 1
+                fontSize = 16.sp
             )
         }
     }
