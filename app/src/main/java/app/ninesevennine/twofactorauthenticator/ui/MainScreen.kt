@@ -106,7 +106,7 @@ fun MainScreen() {
         horizontalArrangement = Arrangement.Center
     ) {
         @OptIn(ExperimentalUuidApi::class)
-        itemsIndexed(filteredItems, key = { _, item -> item.uuid }) { index, item ->
+        itemsIndexed(filteredItems, key = { _, item -> item.uuid }) { _, item ->
             ReorderableItem(reorderState, key = item.uuid) { dragging ->
                 OtpCard(
                     modifier = if (isFiltering) Modifier else Modifier.longPressDraggableHandle(),
@@ -133,7 +133,7 @@ fun MainScreen() {
                         fontFamily = InterVariable,
                         color = colors.onBackground,
                         fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp,
+                        fontSize = 14.sp,
                         maxLines = 1
                     )
                 }
@@ -145,7 +145,8 @@ fun MainScreen() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp)
+                .padding(bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -153,7 +154,7 @@ fun MainScreen() {
                 fontFamily = InterVariable,
                 color = colors.onBackground,
                 fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 maxLines = 1
             )
         }
