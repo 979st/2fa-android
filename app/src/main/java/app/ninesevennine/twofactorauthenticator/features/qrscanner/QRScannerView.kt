@@ -73,8 +73,7 @@ import kotlin.math.min
 
 @Composable
 fun QRScannerView(
-    onEnterManually: () -> Unit,
-    onVaultItemChange: (VaultItem) -> Unit
+    onEnterManually: () -> Unit, onVaultItemChange: (VaultItem) -> Unit
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
@@ -84,16 +83,14 @@ fun QRScannerView(
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.CAMERA
+                context, Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED
         )
     }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
-        onResult = { granted -> hasCameraPermission = granted }
-    )
+        onResult = { granted -> hasCameraPermission = granted })
 
     LaunchedEffect(Unit) {
         if (!hasCameraPermission) {
@@ -104,8 +101,7 @@ fun QRScannerView(
     val navBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color.Black
+        modifier = Modifier.fillMaxSize(), color = Color.Black
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             when {
@@ -132,8 +128,7 @@ fun QRScannerView(
                                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                 view.playSoundEffect(SoundEffectConstants.CLICK)
                                 navController.popBackStack()
-                            },
-                        contentAlignment = Alignment.Center
+                            }, contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
@@ -155,9 +150,7 @@ fun QRScannerView(
                                 view.playSoundEffect(SoundEffectConstants.CLICK)
                                 onEnterManually()
                             }
-                            .padding(horizontal = 24.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
+                            .padding(horizontal = 24.dp), contentAlignment = Alignment.Center) {
                         Text(
                             text = localizedString(R.string.qr_scanner_button_text_enter_manually),
                             fontFamily = InterVariable,
@@ -183,8 +176,7 @@ private fun PermissionRequiredMessage() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp),
-        contentAlignment = Alignment.Center
+            .padding(32.dp), contentAlignment = Alignment.Center
     ) {
         Text(
             text = localizedString(R.string.qr_scanner_text_camera_permission_required),
@@ -208,8 +200,8 @@ private fun CameraPreview(
     val density = LocalDensity.current
 
     // Use minimum screen dimension for viewfinder size
-    @SuppressLint("ConfigurationScreenWidthHeight")
-    val minScreenDp = min(configuration.screenWidthDp, configuration.screenHeightDp)
+    @SuppressLint("ConfigurationScreenWidthHeight") val minScreenDp =
+        min(configuration.screenWidthDp, configuration.screenHeightDp)
     val viewfinderPercent = 0.75f
 
     // Calculate analysis size as 75% of minimum screen dimension
@@ -229,18 +221,13 @@ private fun CameraPreview(
     }
 
     val imageAnalyzer = remember {
-        ImageAnalysis.Builder()
-            .setResolutionSelector(
-                ResolutionSelector.Builder()
-                    .setResolutionStrategy(
+        ImageAnalysis.Builder().setResolutionSelector(
+                ResolutionSelector.Builder().setResolutionStrategy(
                         ResolutionStrategy(
-                            analysisSize,
-                            ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER
+                            analysisSize, ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER
                         )
                     ).build()
-            )
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-            .setImageQueueDepth(1)
+            ).setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).setImageQueueDepth(1)
             .build()
     }
 
@@ -263,10 +250,7 @@ private fun CameraPreview(
                 }
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
-                    lifecycleOwner,
-                    CameraSelector.DEFAULT_BACK_CAMERA,
-                    preview,
-                    imageAnalyzer
+                    lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, imageAnalyzer
                 )
             }.onFailure { e ->
                 Logger.e("QRScannerView", "Camera bind failed: ${e.stackTraceToString()}")
@@ -293,17 +277,14 @@ private fun CameraPreview(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
         AndroidView(
-            factory = { previewView },
-            modifier = Modifier.fillMaxSize()
+            factory = { previewView }, modifier = Modifier.fillMaxSize()
         )
 
         QRScannerOverlay(
-            modifier = Modifier.fillMaxSize(),
-            viewfinderWidthPercent = viewfinderPercent
+            modifier = Modifier.fillMaxSize(), viewfinderWidthPercent = viewfinderPercent
         )
     }
 }
