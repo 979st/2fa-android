@@ -95,7 +95,7 @@ fun BackupVaultScreen() {
     }
 
     val createDocumentLauncher = rememberLauncherForActivityResult(
-        contract = CreateDocument("application/json"),
+        contract = CreateDocument("application/octet-stream"),
     ) { uri: Uri? ->
         if (uri != null) {
             try {
@@ -216,7 +216,7 @@ fun BackupVaultScreen() {
                                 return@launch
                             }
 
-                            createDocumentLauncher.launch("2fa_codes_backup")
+                            createDocumentLauncher.launch("backup.2fa")
                         }
                     }
                 )

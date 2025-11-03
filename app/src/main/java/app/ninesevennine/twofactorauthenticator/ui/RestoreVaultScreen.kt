@@ -83,6 +83,14 @@ fun RestoreVaultScreen() {
         if (uri != null) {
             try {
                 restoreFilename = getDocumentName(context, uri) ?: "???"
+
+                if (!restoreFilename.endsWith(".2fa", ignoreCase = true)) {
+                    Logger.e("BackupVaultScreen", "Invalid file type. Please select a .2fa file")
+
+                    navController.popBackStack()
+                    return@rememberLauncherForActivityResult
+                }
+
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
                     restoreContent =
                         inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
@@ -98,7 +106,7 @@ fun RestoreVaultScreen() {
     }
 
     LaunchedEffect(Unit) {
-        openDocumentLauncher.launch(arrayOf("application/json"))
+        openDocumentLauncher.launch(arrayOf("application/octet-stream"))
     }
 
     if (restoreContent.isEmpty()) return
