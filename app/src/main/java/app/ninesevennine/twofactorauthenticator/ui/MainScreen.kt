@@ -159,6 +159,9 @@ fun MainScreen() {
     }
 
     MainAppBar(
+        onSearch = { q ->
+            query = q.lowercase()
+        },
         onSettings = {
             navController.navigate(SettingsScreenRoute)
         },
@@ -167,9 +170,6 @@ fun MainScreen() {
         },
         onAddLongPress = {
             navController.navigate(EditScreenRoute(Constants.ONEUUIDSTR))
-        },
-        onSearch = { q ->
-            query = q.lowercase()
         }
     )
 }

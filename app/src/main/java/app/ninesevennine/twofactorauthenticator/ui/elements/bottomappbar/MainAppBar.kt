@@ -57,6 +57,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.R
@@ -67,33 +68,34 @@ import app.ninesevennine.twofactorauthenticator.themeViewModel
 
 @Composable
 fun MainAppBar(
+    onSearch: (String) -> Unit,
     onSettings: () -> Unit,
     onAdd: () -> Unit,
-    onAddLongPress: () -> Unit,
-    onSearch: (String) -> Unit
+    onAddLongPress: () -> Unit
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
     val view = LocalView.current
-    val colors = context.themeViewModel.colors
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val layoutDirection = LocalLayoutDirection.current
 
+    val colors = context.themeViewModel.colors
+    val primaryColor = colors.onPrimaryContainer
+
     var query by remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
 
-    val navBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    val imeBottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
+    val navBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val imeBottomPadding = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
 
-    val cutoutLeft =
+    val cutoutLeftPadding =
         WindowInsets.displayCutout.asPaddingValues().calculateLeftPadding(layoutDirection)
-    val cutoutRight =
+    val cutoutRightPadding =
         WindowInsets.displayCutout.asPaddingValues().calculateRightPadding(layoutDirection)
 
-    val isKeyboardOpen = imeBottom > 80.dp
-    val bottomPadding = if (isKeyboardOpen) imeBottom else navBottom + 4.dp
-
-    val focusRequester = remember { FocusRequester() }
+    val isKeyboardOpen = imeBottomPadding > navBottomPadding + 4.dp + 56.dp
+    val bottomPadding = if (isKeyboardOpen) imeBottomPadding else navBottomPadding
 
     if (context.configViewModel.values.enableFocusSearch) {
         LaunchedEffect(Unit) {
@@ -102,170 +104,206 @@ fun MainAppBar(
         }
     }
 
+    fun triggerFeedback(type: HapticFeedbackType = HapticFeedbackType.TextHandleMove) {
+        haptic.performHapticFeedback(type)
+        view.playSoundEffect(SoundEffectConstants.CLICK)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(PaddingValues(bottom = bottomPadding)),
+            .padding(PaddingValues(bottom = if (!isKeyboardOpen) bottomPadding + 4.dp else 0.dp)),
         contentAlignment = Alignment.BottomCenter
     ) {
         Row(
             modifier = Modifier
-                .widthIn(max = if (!isKeyboardOpen) 500.dp else Int.MAX_VALUE.dp)
+                .widthIn(max = if (!isKeyboardOpen) 500.dp else Dp.Infinity)
                 .fillMaxWidth()
-                .then(
-                    if (isKeyboardOpen) Modifier.padding(start = cutoutLeft, end = cutoutRight)
-                    else Modifier.padding(horizontal = 24.dp)
+                .padding(
+                    start = if (isKeyboardOpen) cutoutLeftPadding else bottomPadding + 4.dp,
+                    end = if (isKeyboardOpen) cutoutRightPadding else bottomPadding + 4.dp
                 )
-                .height(56.dp)
-                .shadow(
-                    elevation = 8.dp,
-                    shape = RoundedCornerShape(26.dp),
-                    clip = false
-                )
-                .then(
-                    if (isKeyboardOpen) Modifier.clip(
-                        RoundedCornerShape(
-                            topStart = 26.dp,
-                            topEnd = 26.dp
-                        )
-                    )
-                    else Modifier.clip(RoundedCornerShape(26.dp))
+                .height(if (isKeyboardOpen) 56.dp + bottomPadding else 56.dp)
+                .shadow(elevation = 8.dp, shape = RoundedCornerShape(28.dp))
+                .clip(
+                    if (isKeyboardOpen) {
+                        RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+                    } else {
+                        RoundedCornerShape(28.dp)
+                    }
                 )
                 .background(colors.primaryContainer),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
-            TextField(
-                value = query,
-                onValueChange = { new ->
-                    query = new
-                    onSearch(new)
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
-                singleLine = true,
-                textStyle = TextStyle(
-                    fontFamily = InterVariable,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
-                    color = colors.onPrimaryContainer
-                ),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(26.dp)
-                            .offset(x = 8.dp),
-                        tint = colors.onPrimaryContainer
-                    )
-                },
-                placeholder = {
-                    Text(
-                        text = localizedString(R.string.main_bottom_bar_textfield_hint_text_search),
-                        fontFamily = InterVariable,
-                        letterSpacing = (-0.2).sp,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 18.sp,
-                        color = colors.onPrimaryContainer
-                    )
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedTextColor = colors.onPrimaryContainer,
-                    unfocusedTextColor = colors.onPrimaryContainer,
-                    disabledTextColor = colors.onPrimaryContainer.copy(alpha = 0.6f),
-                    cursorColor = colors.onPrimaryContainer,
-
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-
-                    focusedLeadingIconColor = colors.onPrimaryContainer,
-                    unfocusedLeadingIconColor = colors.onPrimaryContainer,
-                    disabledLeadingIconColor = colors.onPrimaryContainer.copy(alpha = 0.6f),
-
-                    focusedPlaceholderColor = colors.onPrimaryContainer.copy(alpha = 0.7f),
-                    unfocusedPlaceholderColor = colors.onPrimaryContainer.copy(alpha = 0.7f),
-                    disabledPlaceholderColor = colors.onPrimaryContainer.copy(alpha = 0.5f)
-                ),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SearchTextField(
+                    query = query,
+                    onQueryChange = { new ->
+                        query = new
+                        onSearch(new)
+                    },
                     onSearch = {
                         keyboardController?.hide()
                         focusManager.clearFocus()
-                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        view.playSoundEffect(SoundEffectConstants.CLICK)
+                        triggerFeedback()
                         onSearch(query)
-                    }
+                    },
+                    focusRequester = focusRequester,
+                    primaryColor = primaryColor,
+                    modifier = Modifier.weight(1f)
                 )
-            )
 
-            Spacer(
-                modifier = Modifier
-                    .width(1.dp)
-                    .height(32.dp)
-                    .background(colors.onPrimaryContainer.copy(alpha = 0.1f))
-            )
+                VerticalDivider(primaryColor)
 
-            Box(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .clickable {
-                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        view.playSoundEffect(SoundEffectConstants.CLICK)
+                SettingsButton(
+                    onClick = {
+                        triggerFeedback()
                         onSettings()
                     },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    contentDescription = null,
-                    modifier = Modifier.size(26.dp),
-                    tint = colors.onPrimaryContainer
+                    primaryColor = primaryColor,
                 )
-            }
 
-            Spacer(
-                modifier = Modifier
-                    .width(1.dp)
-                    .height(32.dp)
-                    .background(colors.onPrimaryContainer.copy(alpha = 0.1f))
-            )
+                VerticalDivider(primaryColor)
 
-            Box(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .size(48.dp)
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                view.playSoundEffect(SoundEffectConstants.CLICK)
-                                onAdd()
-                            },
-                            onLongPress = {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                view.playSoundEffect(SoundEffectConstants.CLICK)
-                                onAddLongPress()
-                            }
-                        )
+                AddButton(
+                    onTap = {
+                        triggerFeedback()
+                        onAdd()
                     },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = null,
-                    modifier = Modifier.size(32.dp),
-                    tint = colors.onPrimaryContainer
+                    onLongPress = {
+                        triggerFeedback(HapticFeedbackType.LongPress)
+                        onAddLongPress()
+                    },
+                    primaryColor = primaryColor
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun SearchTextField(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onSearch: () -> Unit,
+    focusRequester: FocusRequester,
+    primaryColor: Color,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = query,
+        onValueChange = onQueryChange,
+        modifier = modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequester),
+        singleLine = true,
+        textStyle = TextStyle(
+            fontFamily = InterVariable,
+            fontWeight = FontWeight.Normal,
+            fontSize = 18.sp,
+            color = primaryColor
+        ),
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(26.dp)
+                    .offset(x = 8.dp),
+                tint = primaryColor
+            )
+        },
+        placeholder = {
+            Text(
+                text = localizedString(R.string.main_bottom_bar_textfield_hint_text_search),
+                fontFamily = InterVariable,
+                letterSpacing = (-0.2).sp,
+                fontWeight = FontWeight.Normal,
+                fontSize = 18.sp,
+                color = primaryColor
+            )
+        },
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = primaryColor,
+            unfocusedTextColor = primaryColor,
+            disabledTextColor = primaryColor.copy(alpha = 0.6f),
+            cursorColor = primaryColor,
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            focusedLeadingIconColor = primaryColor,
+            unfocusedLeadingIconColor = primaryColor,
+            disabledLeadingIconColor = primaryColor.copy(alpha = 0.6f),
+            focusedPlaceholderColor = primaryColor.copy(alpha = 0.7f),
+            unfocusedPlaceholderColor = primaryColor.copy(alpha = 0.7f),
+            disabledPlaceholderColor = primaryColor.copy(alpha = 0.5f)
+        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(onSearch = { onSearch() })
+    )
+}
+
+@Composable
+private fun VerticalDivider(color: Color) {
+    Spacer(
+        modifier = Modifier
+            .width(1.dp)
+            .height(32.dp)
+            .background(color.copy(alpha = 0.1f))
+    )
+}
+
+@Composable
+private fun SettingsButton(
+    onClick: () -> Unit,
+    primaryColor: Color,
+) {
+    Box(
+        modifier = Modifier
+            .size(56.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Settings,
+            contentDescription = null,
+            modifier = Modifier.size(26.dp),
+            tint = primaryColor
+        )
+    }
+}
+
+@Composable
+private fun AddButton(
+    onTap: () -> Unit,
+    onLongPress: () -> Unit,
+    primaryColor: Color
+) {
+    Box(
+        modifier = Modifier
+            .padding(end = 8.dp)
+            .size(48.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { onTap() },
+                    onLongPress = { onLongPress() }
+                )
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Add,
+            contentDescription = null,
+            modifier = Modifier.size(32.dp),
+            tint = primaryColor
+        )
     }
 }

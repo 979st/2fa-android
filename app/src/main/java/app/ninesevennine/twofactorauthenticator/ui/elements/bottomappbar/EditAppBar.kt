@@ -52,7 +52,7 @@ fun EditAppBar(
         Row(
             modifier = Modifier
                 .widthIn(max = 500.dp)
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = navBottom + 4.dp)
                 .shadow(
                     elevation = 8.dp,
                     shape = RoundedCornerShape(26.dp),
