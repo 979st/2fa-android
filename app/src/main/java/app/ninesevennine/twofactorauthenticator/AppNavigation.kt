@@ -17,6 +17,8 @@ import app.ninesevennine.twofactorauthenticator.ui.EditScreen
 import app.ninesevennine.twofactorauthenticator.ui.EditScreenRoute
 import app.ninesevennine.twofactorauthenticator.ui.ExportToGoogleAuthScreen
 import app.ninesevennine.twofactorauthenticator.ui.ExportToGoogleAuthScreenRoute
+import app.ninesevennine.twofactorauthenticator.ui.ImportFromAegisScreen
+import app.ninesevennine.twofactorauthenticator.ui.ImportFromAegisScreenRoute
 import app.ninesevennine.twofactorauthenticator.ui.LogScreen
 import app.ninesevennine.twofactorauthenticator.ui.LogScreenRoute
 import app.ninesevennine.twofactorauthenticator.ui.MainScreen
@@ -73,6 +75,7 @@ fun AppNavigation() {
         composable<BackupVaultScreenRoute> { BackupVaultScreen() }
         composable<RestoreVaultScreenRoute> { RestoreVaultScreen() }
         composable<ExportToGoogleAuthScreenRoute> { ExportToGoogleAuthScreen() }
+        composable<ImportFromAegisScreenRoute> { ImportFromAegisScreen() }
         composable<LogScreenRoute> { LogScreen() }
     }
 }

@@ -200,6 +200,12 @@ private fun BackupSettingsSection() {
         label = localizedString(R.string.settings_button_export_google_authenticator),
         onClick = { navController.navigate(ExportToGoogleAuthScreenRoute) }
     )
+
+    WideButtonWithIcon(
+        icon = painterResource(R.drawable.aegis),
+        label = "Import from Aegis",
+        onClick = { navController.navigate(ImportFromAegisScreenRoute) }
+    )
 }
 
 @Composable

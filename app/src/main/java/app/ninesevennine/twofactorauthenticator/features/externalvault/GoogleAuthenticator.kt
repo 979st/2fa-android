@@ -1,4 +1,4 @@
-package app.ninesevennine.twofactorauthenticator.features.googleauthenticator
+package app.ninesevennine.twofactorauthenticator.features.externalvault
 
 import android.graphics.Bitmap
 import app.ninesevennine.twofactorauthenticator.features.otp.OtpHashFunctions
@@ -242,7 +242,7 @@ object GoogleAuthenticator {
     @OptIn(ExperimentalEncodingApi::class)
     private fun createMigrationUrl(payload: MigrationPayload): String {
         val protobufData = encodeProtobuf(payload)
-        val base64Data = Base64.Default.encode(protobufData)
+        val base64Data = Base64.encode(protobufData)
         val urlEncodedData = URLEncoder.encode(base64Data, "UTF-8")
         return "otpauth-migration://offline?data=$urlEncodedData"
     }

@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Download
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,9 +30,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
+import app.ninesevennine.twofactorauthenticator.features.externalvault.AegisAuthenticator
 import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 import app.ninesevennine.twofactorauthenticator.ui.elements.WideText
@@ -50,10 +50,10 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 
 @Serializable
-object RestoreVaultScreenRoute
+object ImportFromAegisScreenRoute
 
 @Composable
-fun RestoreVaultScreen() {
+fun ImportFromAegisScreen() {
     val context = LocalContext.current
     val colors = context.themeViewModel.colors
     val navController = LocalNavController.current
@@ -61,34 +61,42 @@ fun RestoreVaultScreen() {
 
     var password by remember { mutableStateOf("") }
 
-    val restoreScope = rememberCoroutineScope()
-    var restoreContent by remember { mutableStateOf("") }
-    var restoreFilename by remember { mutableStateOf("") }
-    var isRestoring by remember { mutableStateOf(false) }
-    var restoreError by remember { mutableStateOf(false) }
+    val importScope = rememberCoroutineScope()
+    var importContent by remember { mutableStateOf("") }
+    var importFilename by remember { mutableStateOf("") }
+    var isImporting by remember { mutableStateOf(false) }
+    var importError by remember { mutableStateOf(false) }
 
     val openDocumentLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         if (uri != null) {
             try {
-                restoreFilename = getDocumentName(context, uri) ?: "???"
-
-                if (!restoreFilename.endsWith(".2fa", ignoreCase = true)) {
-                    Logger.e("RestoreVaultScreen", "Invalid file type. Please select a .2fa file")
-
-                    navController.popBackStack()
-                    return@rememberLauncherForActivityResult
-                }
+                importFilename = getDocumentName(context, uri) ?: "???"
 
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                    restoreContent =
-                        inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                    val content = inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                    val vault = AegisAuthenticator.importUnencrypted(content)
 
-                    Logger.i("RestoreVaultScreen", "Vault successfully read")
+                    if (vault == null) {
+                        importContent = content
+                        Logger.i(
+                            "ImportFromAegisScreen",
+                            "Password required to import from this Aegis vault"
+                        )
+                    } else {
+                        vaultViewModel.restoreVaultItems(vault)
+
+                        navController.popBackStack(
+                            navController.graph.startDestinationId,
+                            inclusive = false
+                        )
+
+                        Logger.i("ImportFromAegisScreen", "Aegis successfully read")
+                    }
                 }
             } catch (e: Exception) {
-                Logger.e("RestoreVaultScreen", "Error reading vault: ${e.message}")
+                Logger.e("ImportFromAegisScreen", "Error reading Aegis: ${e.message}")
             }
         } else {
             navController.popBackStack()
@@ -96,16 +104,16 @@ fun RestoreVaultScreen() {
     }
 
     LaunchedEffect(Unit) {
-        openDocumentLauncher.launch(arrayOf("application/octet-stream"))
+        openDocumentLauncher.launch(arrayOf("application/json"))
     }
 
-    if (restoreContent.isEmpty()) return
+    if (importContent.isEmpty()) return
 
     val dots = arrayOf("", ".", "..", "...")
     var dotCount by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(isRestoring) {
-        while (isRestoring) {
+    LaunchedEffect(isImporting) {
+        while (isImporting) {
             dotCount = (dotCount + 1) % 4
             delay(250L)
         }
@@ -132,14 +140,14 @@ fun RestoreVaultScreen() {
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Download,
+                        painter = painterResource(R.drawable.aegis),
                         contentDescription = null,
                         modifier = Modifier.size(128.dp),
                         tint = colors.onBackground
                     )
                 }
 
-                WideTitle(text = "${localizedString(R.string.restore_prompt_credentials)} ($restoreFilename)")
+                WideTitle(text = "${localizedString(R.string.restore_prompt_credentials)} ($importFilename)")
 
                 ConfidentialSingleLineTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -149,28 +157,32 @@ fun RestoreVaultScreen() {
                     isError = password.isEmpty()
                 )
 
-                if (restoreError) WideText(
+                if (importError) WideText(
                     text = localizedString(R.string.restore_error_incorrect_password),
                     color = colors.error
                 )
 
                 WideButton(
-                    label = if (isRestoring)
-                        "${localizedString(R.string.restore_status_restoring)}${dots[dotCount]}"
+                    label = if (isImporting)
+                        "Importing${dots[dotCount]}"
                     else
-                        localizedString(R.string.restore_button_action),
+                        "Import",
                     color = colors.primary,
                     textColor = colors.onPrimary,
                     onClick = {
-                        if (isRestoring || password.isEmpty()) {
+                        if (isImporting || password.isEmpty()) {
                             return@WideButton
                         }
 
-                        isRestoring = true
+                        isImporting = true
 
-                        restoreScope.launch {
+                        importScope.launch {
                             val success = withContext(Dispatchers.Default) {
-                                vaultViewModel.restoreVault(password, restoreContent)
+                                val vault = AegisAuthenticator.importEncrypted(importContent, password)
+                                if (vault != null ) {
+                                    vaultViewModel.restoreVaultItems(vault)
+                                }
+                                vault != null
                             }
 
                             if (success) {
@@ -179,8 +191,8 @@ fun RestoreVaultScreen() {
                                     inclusive = false
                                 )
                             } else {
-                                restoreError = true
-                                isRestoring = false
+                                importError = true
+                                isImporting = false
                             }
                         }
                     }

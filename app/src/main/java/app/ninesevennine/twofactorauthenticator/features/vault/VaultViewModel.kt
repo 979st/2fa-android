@@ -7,7 +7,7 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.ninesevennine.twofactorauthenticator.BuildConfig
-import app.ninesevennine.twofactorauthenticator.features.googleauthenticator.GoogleAuthenticator
+import app.ninesevennine.twofactorauthenticator.features.externalvault.GoogleAuthenticator
 import app.ninesevennine.twofactorauthenticator.features.otp.HOTP
 import app.ninesevennine.twofactorauthenticator.features.otp.OtpHashFunctions
 import app.ninesevennine.twofactorauthenticator.features.otp.OtpTypes
