@@ -164,9 +164,9 @@ fun ImportFromAegisScreen() {
 
                 WideButton(
                     label = if (isImporting)
-                        "Importing${dots[dotCount]}"
+                        "${localizedString(R.string.import_from_aegis_button_text_importing)}${dots[dotCount]}"
                     else
-                        "Import",
+                        localizedString(R.string.import_from_aegis_button_text_import),
                     color = colors.primary,
                     textColor = colors.onPrimary,
                     onClick = {
@@ -178,8 +178,9 @@ fun ImportFromAegisScreen() {
 
                         importScope.launch {
                             val success = withContext(Dispatchers.Default) {
-                                val vault = AegisAuthenticator.importEncrypted(importContent, password)
-                                if (vault != null ) {
+                                val vault =
+                                    AegisAuthenticator.importEncrypted(importContent, password)
+                                if (vault != null) {
                                     vaultViewModel.restoreVaultItems(vault)
                                 }
                                 vault != null

@@ -203,7 +203,7 @@ private fun BackupSettingsSection() {
 
     WideButtonWithIcon(
         icon = painterResource(R.drawable.aegis),
-        label = "Import from Aegis",
+        label = localizedString(R.string.settings_button_text_import_aegis),
         onClick = { navController.navigate(ImportFromAegisScreenRoute) }
     )
 }

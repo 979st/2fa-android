@@ -47,6 +47,7 @@
     <string name="settings_button_export_google_authenticator">
         Export to Google Authenticator
     </string>
+    <string name="settings_button_text_import_aegis">Import from Aegis</string>
     <string name="settings_section_other">Other settings</string>
     <string name="settings_option_screen_security">Screen security</string>
     <string name="settings_option_tap_to_reveal">Tap to reveal codes</string>
@@ -69,7 +70,11 @@
     <string name="restore_status_restoring">Restoring</string>
     <string name="restore_button_action">Restore</string>
 
-    <!-- ExportToGoogleAuthScreen -->
+    <!-- ImportFromAegisScreen.kt -->
+    <string name="import_from_aegis_button_text_import">Import</string>
+    <string name="import_from_aegis_button_text_importing">Importing</string>
+
+    <!-- ExportToGoogleAuthScreen.kt -->
     <string name="export_google_authenticator_notice">
         Only TOTP and HOTP tokens that generate 6-digit or 8-digit codes with 30-second intervals can be exported to Google Authenticator
     </string>

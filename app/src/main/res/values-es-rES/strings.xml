@@ -53,4 +53,7 @@
         <item quantity="one">Mostrando %d entrada</item>
         <item quantity="other">Mostrando %d entradas</item>
     </plurals>
+    <string name="settings_button_text_import_aegis">Importar desde Aegis</string>
+    <string name="import_from_aegis_button_text_import">Importar</string>
+    <string name="import_from_aegis_button_text_importing">Importando</string>
 </resources>
