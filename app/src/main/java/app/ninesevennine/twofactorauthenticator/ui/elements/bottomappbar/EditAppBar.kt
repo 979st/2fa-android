@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -41,77 +39,55 @@ fun EditAppBar(
     val view = LocalView.current
     val colors = context.themeViewModel.colors
 
-    val navBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 4.dp
 
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = navBottom + 4.dp),
-        contentAlignment = Alignment.BottomCenter
+            .padding(start = navPadding, bottom = navPadding, end = navPadding),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Bottom
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .widthIn(max = 500.dp)
-                .padding(horizontal = navBottom + 4.dp)
-                .shadow(
-                    elevation = 8.dp,
-                    shape = RoundedCornerShape(26.dp),
-                    clip = false
-                ),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+                .size(56.dp)
+                .shadow(8.dp, RoundedCornerShape(28.dp))
+                .clip(RoundedCornerShape(28.dp))
+                .background(colors.primaryContainer)
+                .clickable {
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    view.playSoundEffect(SoundEffectConstants.CLICK)
+                    onCancel()
+                },
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .height(56.dp)
-                    .weight(1f)
-                    .clip(
-                        RoundedCornerShape(
-                            topStart = 26.dp, bottomStart = 26.dp
-                        )
-                    )
-                    .background(colors.primaryContainer)
-                    .clickable {
-                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        view.playSoundEffect(SoundEffectConstants.CLICK)
+            Icon(
+                imageVector = Icons.Filled.Close,
+                contentDescription = null,
+                tint = colors.onPrimaryContainer,
+                modifier = Modifier.size(28.dp)
+            )
+        }
 
-                        onCancel()
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = null,
-                    modifier = Modifier.size(26.dp),
-                    tint = colors.onPrimaryContainer
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .height(56.dp)
-                    .weight(1f)
-                    .clip(
-                        RoundedCornerShape(
-                            topEnd = 26.dp, bottomEnd = 26.dp
-                        )
-                    )
-                    .background(colors.primary)
-                    .clickable {
-                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        view.playSoundEffect(SoundEffectConstants.CLICK)
-
-                        onDone()
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Done,
-                    contentDescription = null,
-                    modifier = Modifier.size(26.dp),
-                    tint = colors.onPrimary
-                )
-            }
+        Box(
+            modifier = Modifier
+                .size(56.dp)
+                .shadow(8.dp, RoundedCornerShape(28.dp))
+                .clip(RoundedCornerShape(28.dp))
+                .background(colors.primary)
+                .clickable {
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    view.playSoundEffect(SoundEffectConstants.CLICK)
+                    onDone()
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Done,
+                contentDescription = null,
+                tint = colors.onPrimary,
+                modifier = Modifier.size(28.dp)
+            )
         }
     }
 }

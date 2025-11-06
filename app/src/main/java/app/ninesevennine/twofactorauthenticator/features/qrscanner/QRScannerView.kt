@@ -222,12 +222,12 @@ private fun CameraPreview(
 
     val imageAnalyzer = remember {
         ImageAnalysis.Builder().setResolutionSelector(
-                ResolutionSelector.Builder().setResolutionStrategy(
-                        ResolutionStrategy(
-                            analysisSize, ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER
-                        )
-                    ).build()
-            ).setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).setImageQueueDepth(1)
+            ResolutionSelector.Builder().setResolutionStrategy(
+                ResolutionStrategy(
+                    analysisSize, ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER
+                )
+            ).build()
+        ).setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).setImageQueueDepth(1)
             .build()
     }
 

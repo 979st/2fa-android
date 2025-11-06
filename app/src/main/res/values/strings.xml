@@ -36,7 +36,6 @@
     <string name="qr_scanner_button_text_enter_manually">Enter manually</string>
 
     <!-- SettingsScreen.kt -->
-    <string name="settings_title">Settings</string>
     <string name="settings_option_language">Language</string>
     <string name="settings_option_appearance">Appearance</string>
     <string name="settings_appearance_light">Light</string>
@@ -74,7 +73,4 @@
     <string name="export_google_authenticator_notice">
         Only TOTP and HOTP tokens that generate 6-digit or 8-digit codes with 30-second intervals can be exported to Google Authenticator
     </string>
-
-    <!-- LogScreen.kt-->
-    <string name="debug_log">Debug Log</string>
 </resources>
