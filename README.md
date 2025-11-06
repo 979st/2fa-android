@@ -15,7 +15,7 @@
         <img alt="EUPL" src="https://img.shields.io/badge/license-EUPL-blue">
     </a>
     <a href="https://developer.android.com/about/versions/15">
-        <img alt="Minimum SDK Version" src="https://img.shields.io/badge/api-35%2B-blue">
+        <img alt="Minimum SDK Version" src="https://img.shields.io/badge/api-34%2B-blue">
     </a>
 </p>
 <p align="center">
