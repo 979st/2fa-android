@@ -17,7 +17,7 @@ fun WideButtonWithTintedIcon(
 ) {
     WideButtonWithIconInternal(
         modifier = modifier,
-        iconContent = { it ->
+        iconContent = {
             Icon(
                 painter = icon,
                 contentDescription = null,
@@ -40,7 +40,7 @@ fun WideButtonWithTintedIcon(
 ) {
     WideButtonWithIconInternal(
         modifier = modifier,
-        iconContent = { it ->
+        iconContent = {
             Icon(
                 imageVector = icon,
                 contentDescription = null,

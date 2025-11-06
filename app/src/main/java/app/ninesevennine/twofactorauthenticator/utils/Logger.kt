@@ -84,7 +84,7 @@ object Logger {
     // ISO 8601 formatting with UTC timezone
     @OptIn(ExperimentalTime::class)
     private fun formatIsoTimestamp(instant: Instant): String {
-        val dateTime = instant.toLocalDateTime(TimeZone.Companion.UTC)
+        val dateTime = instant.toLocalDateTime(TimeZone.UTC)
         return buildString {
             append(dateTime.year)
             append("-")

@@ -18,7 +18,7 @@ fun WideRadioButtonWithTintedIcon(
 ) {
     WideRadioButtonWithIconInternal(
         modifier = modifier,
-        iconContent = { it ->
+        iconContent = {
             Icon(
                 painter = icon,
                 contentDescription = null,
@@ -43,7 +43,7 @@ fun WideRadioButtonWithTintedIcon(
 ) {
     WideRadioButtonWithIconInternal(
         modifier = modifier,
-        iconContent = { it ->
+        iconContent = {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
