@@ -53,13 +53,14 @@
 - Encryption keys are stored in the Android Keystore, with StrongBox hardware protection when supported  
 - No cloud or external servers involved
 
-### Backup & Restore 2FA Codes
+### Backup & Restore 2fa Codes
 - Create encrypted backups to external storage (SD card, USB drive, or Files)  
 - Protected with a password using Argon2id for key derivation  
 - Backups are encrypted and authenticated with ChaCha20-Poly1305
 
-### Export to Google Authenticator
-- Transfer accounts easily using QR code migration  
+### Transfering 2fa codes
+- Export to Google Authenticator via QR code
+- Import from Aegis Authenticator via json
 
 ### Honorable mentions
 - Works fully without Google Play Services
