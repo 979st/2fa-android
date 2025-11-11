@@ -132,6 +132,14 @@ private fun LanguageSettingsSection() {
         onClick = { localeViewModel.updateLocale(context, LocaleOption.FR_FR) }
     )
 
+    WideRadioButtonWithTintedIcon(
+        icon = painterResource(id = R.drawable.lang_vi),
+        tint = Color.Unspecified,
+        label = "Tiếng Việt",
+        enabled = localeViewModel.effectiveLocale == LocaleOption.VI_VN.value,
+        onClick = { localeViewModel.updateLocale(context, LocaleOption.VI_VN) }
+    )
+
     WideButtonWithIcon(
         icon = Icons.Default.Refresh,
         label = localizedString(R.string.common_use_system_default),
