@@ -9,11 +9,8 @@ import app.ninesevennine.twofactorauthenticator.utils.QRCode
 import java.net.URLEncoder
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 object GoogleAuthenticator {
-    @OptIn(ExperimentalTime::class)
     fun exportVaultItems(vaultItems: List<VaultItem>): List<Bitmap> {
         Logger.i("GoogleAuthenticator", "exportVaultItems")
 
@@ -44,7 +41,7 @@ object GoogleAuthenticator {
             version = 1,
             batchSize = 1,
             batchIndex = 0,
-            batchId = Clock.System.now().epochSeconds.toInt()
+            batchId = (System.currentTimeMillis() / 1000).toInt()
         )
 
         val singleUrl = createMigrationUrl(singlePayload)
@@ -125,6 +122,11 @@ object GoogleAuthenticator {
             OtpTypes.TOTP -> 2
         }
 
+        val digitCount = when (item.digits) {
+            6 -> 1
+            8 -> 2
+            else -> 1
+        }
 
         val (finalName, finalIssuer) = when {
             item.name.isBlank() && item.issuer.isBlank() -> "?" to ""
@@ -137,7 +139,7 @@ object GoogleAuthenticator {
             name = finalName,
             issuer = finalIssuer,
             algorithm = algorithm,
-            digits = item.digits,
+            digits = digitCount,
             type = type,
             counter = item.counter
         )
@@ -179,11 +181,11 @@ object GoogleAuthenticator {
             if (bitmap != null) {
                 bitmaps.add(bitmap)
                 // Remove processed items
-                repeat(batchSize) { remainingItems.removeFirst() }
+                repeat(batchSize) { remainingItems.removeAt(0) }
                 batchIndex++
             } else {
                 // Even single item doesn't fit, skip it
-                remainingItems.removeFirst()
+                remainingItems.removeAt(0)
             }
         }
 
@@ -230,7 +232,7 @@ object GoogleAuthenticator {
 
             if (bitmap != null) {
                 bitmaps.add(bitmap)
-                repeat(batchSize) { remainingItems.removeFirst() }
+                repeat(batchSize) { remainingItems.removeAt(0) }
             }
 
             batchIndex++
