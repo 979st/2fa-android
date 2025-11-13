@@ -1,5 +1,8 @@
 package app.ninesevennine.twofactorauthenticator.ui
 
+import android.view.SoundEffectConstants
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,8 +22,10 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
@@ -33,7 +38,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -81,6 +91,9 @@ fun EditScreen(uuidString: String) {
     val context = LocalContext.current
     val vaultViewModel = context.vaultViewModel
     val configViewModel = context.configViewModel
+    val haptic = LocalHapticFeedback.current
+    val view = LocalView.current
+    val navController = LocalNavController.current
 
     var item by remember {
         mutableStateOf(
@@ -108,18 +121,70 @@ fun EditScreen(uuidString: String) {
 
     if (item.uuid == Constants.NILUUID) {
         QRScannerView(
-            onEnterManually = {
-                item = item.copy(uuid = Uuid.random())
+            onQrCodeScanned = {
+                otpParser(it)?.let { parsedItem ->
+                    @Suppress("AssignedValueIsNeverRead") // piece of shit
+                    item = parsedItem
+                }
             },
-            onVaultItemChange = { newItem ->
-                item = newItem
+            bottomBar = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(RoundedCornerShape(28.dp))
+                            .background(Color(0x99000000))
+                            .clickable {
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                view.playSoundEffect(SoundEffectConstants.CLICK)
+                                navController.popBackStack()
+                            }, contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+
+                    Spacer(Modifier.weight(1f))
+
+                    Box(
+                        modifier = Modifier
+                            .height(56.dp)
+                            .clip(RoundedCornerShape(28.dp))
+                            .background(Color(0x99000000))
+                            .clickable {
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                view.playSoundEffect(SoundEffectConstants.CLICK)
+                                item = item.copy(uuid = Uuid.random())
+                            }
+                            .padding(horizontal = 24.dp), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = localizedString(R.string.qr_scanner_button_text_enter_manually),
+                            fontFamily = InterVariable,
+                            color = Color.White,
+                            fontWeight = FontWeight.W700,
+                            fontSize = 16.sp,
+                            maxLines = 1
+                        )
+                    }
+
+                    Spacer(Modifier.weight(1f))
+
+                    // Add from image?
+                    Spacer(Modifier.width(56.dp))
+                }
             }
         )
 
         return
     }
 
-    val navController = LocalNavController.current
     val colors = context.themeViewModel.colors
 
     var secretInput by remember { mutableStateOf(Base32.encode(item.secret)) }
@@ -397,7 +462,7 @@ fun EditScreen(uuidString: String) {
                         digitsInput = it.trim()
                         val digits = it.trim().toIntOrNull()
                         if (digits != null) {
-                            if (digits < 4 || digits > 10) {
+                            if (digits !in 4..10) {
                                 digitsError = true
                             } else {
                                 digitsError = false

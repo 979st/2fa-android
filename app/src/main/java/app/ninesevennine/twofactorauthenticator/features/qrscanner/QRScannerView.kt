@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.util.Size
-import android.view.SoundEffectConstants
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -16,24 +15,12 @@ import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,14 +32,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -61,24 +44,20 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
-import app.ninesevennine.twofactorauthenticator.features.otp.otpParser
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
-import app.ninesevennine.twofactorauthenticator.features.vault.VaultItem
 import app.ninesevennine.twofactorauthenticator.utils.Logger
 import java.util.concurrent.Executors
 import kotlin.math.min
 
+
 @Composable
 fun QRScannerView(
-    onEnterManually: () -> Unit, onVaultItemChange: (VaultItem) -> Unit
+    onQrCodeScanned: (String) -> Unit,
+    bottomBar: @Composable () -> Unit
 ) {
     val context = LocalContext.current
-    val haptic = LocalHapticFeedback.current
-    val view = LocalView.current
-    val navController = LocalNavController.current
 
     var hasCameraPermission by remember {
         mutableStateOf(
@@ -105,7 +84,7 @@ fun QRScannerView(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             when {
-                hasCameraPermission -> CameraPreview(onVaultItemChange)
+                hasCameraPermission -> CameraPreview(onQrCodeScanned)
                 else -> PermissionRequiredMessage()
             }
 
@@ -115,57 +94,7 @@ fun QRScannerView(
                     .padding(all = navBottom + 4.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clip(RoundedCornerShape(28.dp))
-                            .background(Color(0x99000000))
-                            .clickable {
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                view.playSoundEffect(SoundEffectConstants.CLICK)
-                                navController.popBackStack()
-                            }, contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-
-                    Spacer(Modifier.weight(1f))
-
-                    Box(
-                        modifier = Modifier
-                            .height(56.dp)
-                            .clip(RoundedCornerShape(28.dp))
-                            .background(Color(0x99000000))
-                            .clickable {
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                view.playSoundEffect(SoundEffectConstants.CLICK)
-                                onEnterManually()
-                            }
-                            .padding(horizontal = 24.dp), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = localizedString(R.string.qr_scanner_button_text_enter_manually),
-                            fontFamily = InterVariable,
-                            color = Color.White,
-                            fontWeight = FontWeight.W700,
-                            fontSize = 16.sp,
-                            maxLines = 1
-                        )
-                    }
-
-                    Spacer(Modifier.weight(1f))
-
-                    // Add from image?
-                    Spacer(Modifier.width(56.dp))
-                }
+                bottomBar()
             }
         }
     }
@@ -192,7 +121,7 @@ private fun PermissionRequiredMessage() {
 
 @Composable
 private fun CameraPreview(
-    onVaultItemChange: (VaultItem) -> Unit
+    onQrCodeScanned: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -232,10 +161,8 @@ private fun CameraPreview(
     }
 
     val analyzer = remember {
-        ZXingQrAnalyzer(viewfinderPercent) { scanned ->
-            otpParser(scanned)?.let { item ->
-                onVaultItemChange(item)
-            }
+        ZXingQrAnalyzer(viewfinderPercent) {
+            onQrCodeScanned(it)
         }
     }
 
@@ -279,12 +206,15 @@ private fun CameraPreview(
     Box(
         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
-        AndroidView(
-            factory = { previewView }, modifier = Modifier.fillMaxSize()
-        )
+        CameraPreviewAndroid(previewView)
 
         QRScannerOverlay(
             modifier = Modifier.fillMaxSize(), viewfinderWidthPercent = viewfinderPercent
         )
     }
+}
+
+@Composable
+private fun CameraPreviewAndroid(previewView: PreviewView) {
+    AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
 }
