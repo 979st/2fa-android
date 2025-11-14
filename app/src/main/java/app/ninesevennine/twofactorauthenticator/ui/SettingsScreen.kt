@@ -205,6 +205,13 @@ private fun BackupSettingsSection() {
     WideButtonWithTintedIcon(
         icon = painterResource(R.drawable.icon_google_authenticator),
         tint = Color.Unspecified,
+        label = "Import from Google Authenticator",
+        onClick = { navController.navigate(ImportFromGoogleAuthScreenRoute) }
+    )
+
+    WideButtonWithTintedIcon(
+        icon = painterResource(R.drawable.icon_google_authenticator),
+        tint = Color.Unspecified,
         label = localizedString(R.string.settings_button_export_google_authenticator),
         onClick = { navController.navigate(ExportToGoogleAuthScreenRoute) }
     )

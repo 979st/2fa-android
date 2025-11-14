@@ -1,7 +1,6 @@
 package app.ninesevennine.twofactorauthenticator.features.qrscanner
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.util.Size
 import android.view.ViewGroup
@@ -49,6 +48,7 @@ import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.utils.Logger
 import java.util.concurrent.Executors
+import kotlin.math.max
 import kotlin.math.min
 
 
@@ -129,15 +129,17 @@ private fun CameraPreview(
     val density = LocalDensity.current
 
     // Use minimum screen dimension for viewfinder size
-    @SuppressLint("ConfigurationScreenWidthHeight") val minScreenDp =
-        min(configuration.screenWidthDp, configuration.screenHeightDp)
+    val minScreenDp = min(configuration.screenWidthDp, configuration.screenHeightDp)
     val viewfinderPercent = 0.75f
 
     // Calculate analysis size as 75% of minimum screen dimension
-    val analysisWidth = with(density) {
+    val requestedAnalysisPx = with(density) {
         (minScreenDp * viewfinderPercent).dp.toPx().toInt()
     }
-    val analysisSize = Size(analysisWidth, analysisWidth)
+
+    val minReliablePx = 1280
+    val analysisPx = max(requestedAnalysisPx, minReliablePx)
+    val analysisSize = Size(analysisPx, analysisPx)
 
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
 
@@ -150,20 +152,23 @@ private fun CameraPreview(
     }
 
     val imageAnalyzer = remember {
-        ImageAnalysis.Builder().setResolutionSelector(
-            ResolutionSelector.Builder().setResolutionStrategy(
-                ResolutionStrategy(
-                    analysisSize, ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER
-                )
-            ).build()
-        ).setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).setImageQueueDepth(1)
+        ImageAnalysis.Builder()
+            .setResolutionSelector(
+                ResolutionSelector.Builder()
+                    .setResolutionStrategy(
+                        ResolutionStrategy(
+                            analysisSize, ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER
+                        )
+                    ).build()
+            )
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .setImageQueueDepth(1)
+            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
             .build()
     }
 
     val analyzer = remember {
-        ZXingQrAnalyzer(viewfinderPercent) {
-            onQrCodeScanned(it)
-        }
+        ZXingQrAnalyzer(viewfinderPercent, onQrCodeScanned)
     }
 
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
@@ -177,7 +182,10 @@ private fun CameraPreview(
                 }
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
-                    lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, imageAnalyzer
+                    lifecycleOwner,
+                    CameraSelector.DEFAULT_BACK_CAMERA,
+                    preview,
+                    imageAnalyzer
                 )
             }.onFailure { e ->
                 Logger.e("QRScannerView", "Camera bind failed: ${e.stackTraceToString()}")

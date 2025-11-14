@@ -6,11 +6,360 @@ import app.ninesevennine.twofactorauthenticator.features.otp.OtpTypes
 import app.ninesevennine.twofactorauthenticator.features.vault.VaultItem
 import app.ninesevennine.twofactorauthenticator.utils.Logger
 import app.ninesevennine.twofactorauthenticator.utils.QRCode
+import java.net.URLDecoder
 import java.net.URLEncoder
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 object GoogleAuthenticator {
+    data class ImportResult(
+        val items: List<VaultItem>,
+        val batchInfo: BatchInfo?
+    )
+
+    data class BatchInfo(
+        val batchIndex: Int,
+        val batchSize: Int,
+        val batchId: Int
+    )
+
+    fun importFromQrCode(content: String): ImportResult? {
+        try {
+            if (!content.startsWith("otpauth-migration://offline?data=")) {
+                return null
+            }
+
+            val dataParam = content.substringAfter("data=")
+            val urlDecoded = URLDecoder.decode(dataParam, "UTF-8")
+
+            val protobufData = try {
+                Base64.decode(urlDecoded)
+            } catch (_: Exception) {
+                Base64.UrlSafe.decode(urlDecoded.replace(' ', '+'))
+            }
+
+            val payload = decodeProtobuf(protobufData)
+
+            if (payload.otpParameters.isEmpty()) {
+                return null
+            }
+
+            val vaultItems = payload.otpParameters.mapNotNull { param ->
+                try {
+                    convertToVaultItem(param)
+                } catch (_: Exception) {
+                    null
+                }
+            }
+
+            val batchInfo = if (payload.batchSize > 0 && payload.batchSize != 1) {
+                BatchInfo(
+                    batchIndex = payload.batchIndex,
+                    batchSize = payload.batchSize,
+                    batchId = payload.batchId
+                )
+            } else {
+                null
+            }
+
+            return ImportResult(vaultItems, batchInfo)
+        } catch (_: Exception) {
+            return null
+        }
+    }
+
+    private fun decodeProtobuf(data: ByteArray): MigrationPayload {
+        val otpParameters = mutableListOf<MigrationOtpParameters>()
+        var version = 1
+        var batchSize = 0
+        var batchIndex = 0
+        var batchId = 0
+
+        var position = 0
+
+        while (position < data.size) {
+            val fieldTag = data[position++].toInt() and 0xFF
+            val fieldNumber = fieldTag shr 3
+            val wireType = fieldTag and 0x07
+
+            when (fieldNumber) {
+                1 if wireType == 2 -> { // OTP Parameters
+                    val length = readVarInt(data, position)
+                    position += getVarIntSize(data, position)
+
+                    if (position + length > data.size) break
+
+                    val otpData = data.sliceArray(position until position + length)
+                    position += length
+
+                    try {
+                        val otpParam = decodeOtpParameters(otpData)
+                        otpParameters.add(otpParam)
+                    } catch (e: Exception) {
+                        Logger.e(
+                            "GoogleAuthenticator",
+                            "Failed to decode OTP parameter: ${e.message}"
+                        )
+                    }
+                }
+
+                2 if wireType == 0 -> { // Version
+                    version = readVarInt(data, position)
+                    position += getVarIntSize(data, position)
+                }
+
+                3 if wireType == 0 -> { // Batch Size
+                    batchSize = readVarInt(data, position)
+                    position += getVarIntSize(data, position)
+                }
+
+                4 if wireType == 0 -> { // Batch Index
+                    batchIndex = readVarInt(data, position)
+                    position += getVarIntSize(data, position)
+                }
+
+                5 if wireType == 0 -> { // Batch ID
+                    batchId = readVarInt(data, position)
+                    position += getVarIntSize(data, position)
+                }
+
+                else -> {
+                    // Skip unknown field
+                    position = skipField(data, position, wireType)
+                }
+            }
+        }
+
+        return MigrationPayload(
+            otpParameters = otpParameters,
+            version = version,
+            batchSize = batchSize,
+            batchIndex = batchIndex,
+            batchId = batchId
+        )
+    }
+
+    private fun decodeOtpParameters(data: ByteArray): MigrationOtpParameters {
+        var secret = ByteArray(0)
+        var name = ""
+        var issuer = ""
+        var algorithm = 1
+        var digits = 1
+        var type = 2
+        var counter = 0L
+
+        var position = 0
+
+        while (position < data.size) {
+            val fieldTag = data[position++].toInt() and 0xFF
+            val fieldNumber = fieldTag shr 3
+            val wireType = fieldTag and 0x07
+
+            when (fieldNumber) {
+                1 if wireType == 2 -> { // Secret
+                    val length = readVarInt(data, position)
+                    position += getVarIntSize(data, position)
+
+                    if (position + length > data.size) break
+                    secret = data.sliceArray(position until position + length)
+                    position += length
+                }
+
+                2 if wireType == 2 -> { // Name
+                    val length = readVarInt(data, position)
+                    position += getVarIntSize(data, position)
+
+                    if (position + length > data.size) break
+                    name = String(data.sliceArray(position until position + length), Charsets.UTF_8)
+                    position += length
+                }
+
+                3 if wireType == 2 -> { // Issuer
+                    val length = readVarInt(data, position)
+                    position += getVarIntSize(data, position)
+
+                    if (position + length > data.size) break
+                    issuer =
+                        String(data.sliceArray(position until position + length), Charsets.UTF_8)
+                    position += length
+                }
+
+                4 if wireType == 0 -> { // Algorithm
+                    algorithm = readVarInt(data, position)
+                    position += getVarIntSize(data, position)
+                }
+
+                5 if wireType == 0 -> { // Digits
+                    digits = readVarInt(data, position)
+                    position += getVarIntSize(data, position)
+                }
+
+                6 if wireType == 0 -> { // Type
+                    type = readVarInt(data, position)
+                    position += getVarIntSize(data, position)
+                }
+
+                7 if wireType == 0 -> { // Counter
+                    counter = readVarInt64(data, position)
+                    position += getVarInt64Size(data, position)
+                }
+
+                else -> {
+                    // Skip unknown field
+                    position = skipField(data, position, wireType)
+                }
+            }
+        }
+
+        return MigrationOtpParameters(
+            secret = secret,
+            name = name,
+            issuer = issuer,
+            algorithm = algorithm,
+            digits = digits,
+            type = type,
+            counter = counter
+        )
+    }
+
+    private fun skipField(data: ByteArray, position: Int, wireType: Int): Int {
+        var pos = position
+        when (wireType) {
+            0 -> { // Varint
+                while (pos < data.size && (data[pos].toInt() and 0x80) != 0) {
+                    pos++
+                }
+                pos++
+            }
+
+            2 -> { // Length-delimited
+                val length = readVarInt(data, pos)
+                pos += getVarIntSize(data, pos) + length
+            }
+
+            else -> {
+                // Unknown wire type, try to skip by breaking
+                pos = data.size
+            }
+        }
+        return pos
+    }
+
+    private fun convertToVaultItem(param: MigrationOtpParameters): VaultItem {
+        val otpHashFunction = when (param.algorithm) {
+            1 -> OtpHashFunctions.SHA1
+            2 -> OtpHashFunctions.SHA256
+            3 -> OtpHashFunctions.SHA512
+            else -> OtpHashFunctions.SHA1
+        }
+
+        val otpType = when (param.type) {
+            1 -> OtpTypes.HOTP
+            2 -> OtpTypes.TOTP
+            else -> OtpTypes.TOTP
+        }
+
+        val digitCount = when (param.digits) {
+            1 -> 6
+            2 -> 8
+            else -> 6
+        }
+
+        val finalName = if (param.name == "?") "" else param.name
+        val finalIssuer = param.issuer
+
+        @OptIn(ExperimentalUuidApi::class)
+        return VaultItem(
+            uuid = Uuid.random(),
+            secret = param.secret,
+            name = finalName,
+            issuer = finalIssuer,
+            otpHashFunction = otpHashFunction,
+            otpType = otpType,
+            digits = digitCount,
+            period = 30,
+            counter = param.counter
+        )
+    }
+
+    private fun readVarInt(data: ByteArray, position: Int): Int {
+        var result = 0
+        var shift = 0
+        var pos = position
+
+        while (pos < data.size) {
+            val byte = data[pos].toInt() and 0xFF
+            result = result or ((byte and 0x7F) shl shift)
+
+            if ((byte and 0x80) == 0) {
+                break
+            }
+
+            shift += 7
+            pos++
+        }
+
+        return result
+    }
+
+    private fun readVarInt64(data: ByteArray, position: Int): Long {
+        var result = 0L
+        var shift = 0
+        var pos = position
+
+        while (pos < data.size) {
+            val byte = data[pos].toLong() and 0xFF
+            result = result or ((byte and 0x7F) shl shift)
+
+            if ((byte and 0x80L) == 0L) {
+                break
+            }
+
+            shift += 7
+            pos++
+        }
+
+        return result
+    }
+
+    private fun getVarIntSize(data: ByteArray, position: Int): Int {
+        var size = 0
+        var pos = position
+
+        while (pos < data.size) {
+            val byte = data[pos].toInt() and 0xFF
+            size++
+
+            if ((byte and 0x80) == 0) {
+                break
+            }
+
+            pos++
+        }
+
+        return size
+    }
+
+    private fun getVarInt64Size(data: ByteArray, position: Int): Int {
+        var size = 0
+        var pos = position
+
+        while (pos < data.size) {
+            val byte = data[pos].toInt() and 0xFF
+            size++
+
+            if ((byte and 0x80) == 0) {
+                break
+            }
+
+            pos++
+        }
+
+        return size
+    }
+
     fun exportVaultItems(vaultItems: List<VaultItem>): List<Bitmap> {
         Logger.i("GoogleAuthenticator", "exportVaultItems")
 
@@ -68,13 +417,7 @@ object GoogleAuthenticator {
             if (javaClass != other?.javaClass) return false
 
             other as MigrationOtpParameters
-            return secret.contentEquals(other.secret) &&
-                    name == other.name &&
-                    issuer == other.issuer &&
-                    algorithm == other.algorithm &&
-                    digits == other.digits &&
-                    type == other.type &&
-                    counter == other.counter
+            return secret.contentEquals(other.secret) && name == other.name && issuer == other.issuer && algorithm == other.algorithm && digits == other.digits && type == other.type && counter == other.counter
         }
 
         override fun hashCode(): Int {
@@ -198,9 +541,7 @@ object GoogleAuthenticator {
     }
 
     private fun regenerateWithCorrectBatchSizes(
-        otpParameters: List<MigrationOtpParameters>,
-        batchId: Int,
-        totalBatches: Int
+        otpParameters: List<MigrationOtpParameters>, batchId: Int, totalBatches: Int
     ): List<Bitmap> {
         val bitmaps = mutableListOf<Bitmap>()
         val remainingItems = otpParameters.toMutableList()
