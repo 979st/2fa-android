@@ -59,6 +59,7 @@
 - Backups are encrypted and authenticated with ChaCha20-Poly1305
 
 ### Transfering 2fa codes
+- Import from Google Authenticator via QR code
 - Export to Google Authenticator via QR code
 - Import from Aegis Authenticator via json
 
