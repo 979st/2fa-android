@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
@@ -26,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +32,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
@@ -77,7 +76,9 @@ fun OtpCardUpper(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.fillMaxWidth().padding(start = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp)
         ) {
             Box(
                 contentAlignment = Alignment.Center
@@ -126,7 +127,8 @@ fun OtpCardUpper(
                     color = colors.thirdColor,
                     fontWeight = FontWeight.W700,
                     fontSize = 16.sp,
-                    maxLines = 1
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 if (item.name.isNotEmpty()) {
@@ -136,7 +138,8 @@ fun OtpCardUpper(
                         color = colors.thirdColor,
                         fontWeight = FontWeight.Normal,
                         fontSize = 14.sp,
-                        maxLines = 1
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
@@ -144,7 +147,9 @@ fun OtpCardUpper(
             Spacer(Modifier.width(8.dp))
 
             if (item.otpType != OtpTypes.HOTP) {
-                Canvas(Modifier.padding(12.dp).size(24.dp)) {
+                Canvas(Modifier
+                    .padding(12.dp)
+                    .size(24.dp)) {
                     drawArc(
                         color = colors.secondColor,
                         startAngle = -90f,
