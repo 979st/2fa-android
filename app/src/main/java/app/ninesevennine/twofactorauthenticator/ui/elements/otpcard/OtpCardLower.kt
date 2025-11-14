@@ -1,6 +1,5 @@
 package app.ninesevennine.twofactorauthenticator.ui.elements.otpcard
 
-import android.content.ClipData
 import android.view.SoundEffectConstants
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,7 +27,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
@@ -41,6 +39,7 @@ import app.ninesevennine.twofactorauthenticator.configViewModel
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.features.vault.VaultItem
 import app.ninesevennine.twofactorauthenticator.themeViewModel
+import app.ninesevennine.twofactorauthenticator.utils.Clipboard
 import app.ninesevennine.twofactorauthenticator.utils.Logger
 import app.ninesevennine.twofactorauthenticator.vaultViewModel
 import java.security.SecureRandom
@@ -59,7 +58,6 @@ fun OtpCardLower(
     val colors = remember(item.otpCardColor) {
         theme.getOtpCardColors(context, item.otpCardColor)
     }
-    val clipboard = LocalClipboard.current
     val vaultViewModel = context.vaultViewModel
 
     var revealed by remember { mutableStateOf(!context.configViewModel.values.requireTapToReveal) }
@@ -111,7 +109,7 @@ fun OtpCardLower(
         } else {
             if (otpCode.length >= 6) {
                 val midpoint = otpCode.length / 2
-                "${otpCode.substring(0, midpoint)} ${otpCode.substring(midpoint)}"
+                "${otpCode.take(midpoint)} ${otpCode.substring(midpoint)}"
             } else {
                 otpCode
             }
@@ -133,7 +131,7 @@ fun OtpCardLower(
 
             Logger.i("OtpCardLower", "Copied OTP code to clipboard")
             if (revealed) {
-                clipboard.nativeClipboard.setPrimaryClip(ClipData.newPlainText("OTP Code", otpCode))
+                Clipboard.copy(context, "authenticator-contents", otpCode, true)
             }
 
             if (context.configViewModel.values.requireTapToReveal) {
