@@ -44,6 +44,9 @@
     <string name="settings_section_manage_data">Backup &amp; Restore</string>
     <string name="settings_button_backup_codes">Backup 2FA Codes</string>
     <string name="settings_button_restore_codes">Restore 2FA Codes</string>
+    <string name="settings_button_text_import_google_authenticator">
+        Import from Google Authenticator
+    </string>
     <string name="settings_button_export_google_authenticator">
         Export to Google Authenticator
     </string>

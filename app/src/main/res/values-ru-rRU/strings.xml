@@ -55,6 +55,7 @@
         <item quantity="many">Показано %d записей</item>
         <item quantity="other">Показано %d записи</item>
     </plurals>
+    <string name="settings_button_text_import_google_authenticator">Импорт из Google Authenticator</string>
     <string name="settings_button_text_import_aegis">Импорт из Aegis</string>
     <string name="import_from_aegis_button_text_import">Импорт</string>
     <string name="import_from_aegis_button_text_importing">Импортирование</string>

@@ -53,6 +53,7 @@
         <item quantity="one">Affichage de %d entrée</item>
         <item quantity="other">Affichage de %d entrées</item>
     </plurals>
+    <string name="settings_button_text_import_google_authenticator">Importer depuis Google Authenticator</string>
     <string name="settings_button_text_import_aegis">Importer depuis Aegis</string>
     <string name="import_from_aegis_button_text_import">Importer</string>
     <string name="import_from_aegis_button_text_importing">Importation</string>

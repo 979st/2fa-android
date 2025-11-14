@@ -52,6 +52,7 @@
     <plurals name="main_list_plural_text_showing_x_entries">
         <item quantity="other">Đang hiện các mục của %d</item>
     </plurals>
+    <string name="settings_button_text_import_google_authenticator">Nhập xuất từ Google Authenticator</string>
     <string name="settings_button_text_import_aegis">Nhập xuất từ Aegis</string>
     <string name="import_from_aegis_button_text_import">Nhập xuất</string>
     <string name="import_from_aegis_button_text_importing">Đang nhập xuất</string>

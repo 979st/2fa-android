@@ -25,7 +25,7 @@
     <string name="settings_appearance_dynamic">Dynamisch</string>
     <string name="settings_section_manage_data">Backup &amp; Wiederherstellung</string>
     <string name="settings_button_backup_codes">Erstelle Backup der 2FA Codes</string>
-    <string name="settings_button_restore_codes">2FA Codes wieder herstellen</string>
+    <string name="settings_button_restore_codes">2FA Codes wiederherstellen</string>
     <string name="settings_button_export_google_authenticator">In Google Authenticator exportieren</string>
     <string name="settings_section_other">Weiteres</string>
     <string name="settings_option_screen_security">Bildschirmsicherheit</string>
@@ -48,11 +48,12 @@
     <string name="restore_button_action">Wiederherstellen</string>
     <string name="export_google_authenticator_notice">Nur TOTP- und HOTP-Token, die 6-stellige oder 8-stellige Codes in 30-Sekunden-Intervallen generieren, können in den Google Authenticator exportiert werden</string>
     <string name="qr_scanner_button_text_enter_manually">Manuell eingeben</string>
-    <string name="main_list_text_no_entries_found">Es wurden keine Einträge gefunden</string>
+    <string name="main_list_text_no_entries_found">Es wurden keine Einträge gefunden.</string>
     <plurals name="main_list_plural_text_showing_x_entries">
         <item quantity="one">%d Eintrag angezeigt</item>
         <item quantity="other">%d Einträge angezeigt</item>
     </plurals>
+    <string name="settings_button_text_import_google_authenticator">Importieren von Google Authenticator</string>
     <string name="settings_button_text_import_aegis">Importieren von Aegis</string>
     <string name="import_from_aegis_button_text_import">Importieren</string>
     <string name="import_from_aegis_button_text_importing">Importieren</string>
