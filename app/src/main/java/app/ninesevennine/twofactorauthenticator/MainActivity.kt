@@ -1,6 +1,7 @@
 package app.ninesevennine.twofactorauthenticator
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -10,10 +11,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import app.ninesevennine.twofactorauthenticator.features.qrscanner.ZXingQrUri
 import app.ninesevennine.twofactorauthenticator.features.theme.ThemeOption
 import app.ninesevennine.twofactorauthenticator.ui.elements.UseIncognitoKeyboard
+import kotlinx.coroutines.launch
 
 val LocalNavController =
     staticCompositionLocalOf<NavHostController> { error("NavController not provided") }
@@ -22,7 +26,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        handleOtpAuthIntent(intent)
+        handleIntents(intent)
 
         enableEdgeToEdge()
         setContent {
@@ -60,19 +64,35 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
-        handleOtpAuthIntent(intent)
+        handleIntents(intent)
     }
 
-    private fun handleOtpAuthIntent(intent: Intent?) {
+    private fun handleIntents(intent: Intent?) {
         if (intent == null)
             return
 
         val action = intent.action
         val data = intent.data
 
-        if (action == Intent.ACTION_VIEW && data != null) {
-            if (data.scheme == "otpauth") {
-                configViewModel.otpauthUrl = data.toString()
+        when (action) {
+            Intent.ACTION_VIEW -> {
+                data?.let {
+                    if (it.scheme == "otpauth") {
+                        configViewModel.otpauthUrl = data.toString()
+                    }
+                }
+            }
+
+            Intent.ACTION_SEND -> {
+                val uri: Uri? = intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+                if (uri != null && (intent.type?.startsWith("image/") ?: false)) {
+                    lifecycleScope.launch {
+                        val url = ZXingQrUri.decode(uri, this@MainActivity.contentResolver)
+                        url?.let { decodedUrl ->
+                            configViewModel.otpauthUrl = decodedUrl
+                        }
+                    }
+                }
             }
         }
     }

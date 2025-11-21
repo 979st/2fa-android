@@ -1,6 +1,8 @@
 package app.ninesevennine.twofactorauthenticator.ui
 
 import android.view.SoundEffectConstants
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -35,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +60,7 @@ import app.ninesevennine.twofactorauthenticator.features.otp.OtpHashFunctions
 import app.ninesevennine.twofactorauthenticator.features.otp.OtpTypes
 import app.ninesevennine.twofactorauthenticator.features.otp.otpParser
 import app.ninesevennine.twofactorauthenticator.features.qrscanner.QRScannerView
+import app.ninesevennine.twofactorauthenticator.features.qrscanner.ZXingQrUri
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.features.vault.VaultItem
 import app.ninesevennine.twofactorauthenticator.themeViewModel
@@ -73,6 +78,7 @@ import app.ninesevennine.twofactorauthenticator.ui.elements.widebutton.WideButto
 import app.ninesevennine.twofactorauthenticator.utils.Base32
 import app.ninesevennine.twofactorauthenticator.utils.Constants
 import app.ninesevennine.twofactorauthenticator.vaultViewModel
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -117,6 +123,22 @@ fun EditScreen(uuidString: String) {
                 }
             }
         )
+    }
+
+    val pickScope = rememberCoroutineScope()
+    val pickImage = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            pickScope.launch {
+                val url = ZXingQrUri.decode(it, context.contentResolver)
+                if (url != null) {
+                    otpParser(url)?.let { vaultItem ->
+                        item = vaultItem.copy()
+                    }
+                }
+            }
+        }
     }
 
     if (item.uuid == Constants.NILUUID) {
@@ -176,8 +198,25 @@ fun EditScreen(uuidString: String) {
 
                     Spacer(Modifier.weight(1f))
 
-                    // Add from image?
-                    Spacer(Modifier.width(56.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(RoundedCornerShape(28.dp))
+                            .background(Color(0x99000000))
+                            .clickable {
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                view.playSoundEffect(SoundEffectConstants.CLICK)
+
+                                pickImage.launch("image/*")
+                            }, contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ImageSearch,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
                 }
             }
         )
