@@ -44,6 +44,7 @@ import app.ninesevennine.twofactorauthenticator.ui.elements.WideTitle
 import app.ninesevennine.twofactorauthenticator.ui.elements.bottomappbar.SettingsAppBar
 import app.ninesevennine.twofactorauthenticator.ui.elements.widebutton.WideButtonWithIcon
 import app.ninesevennine.twofactorauthenticator.ui.elements.widebutton.WideButtonWithTintedIcon
+import app.ninesevennine.twofactorauthenticator.ui.elements.wideradiobutton.WideRadioButton
 import app.ninesevennine.twofactorauthenticator.ui.elements.wideradiobutton.WideRadioButtonWithIcon
 import app.ninesevennine.twofactorauthenticator.ui.elements.wideradiobutton.WideRadioButtonWithTintedIcon
 import app.ninesevennine.twofactorauthenticator.utils.Logger
@@ -71,6 +72,8 @@ fun SettingsScreen() {
             LanguageSettingsSection()
 
             ThemeSettingsSection()
+
+            CardTypeSettingsSection()
 
             BackupSettingsSection()
 
@@ -180,6 +183,27 @@ private fun ThemeSettingsSection() {
         icon = Icons.Default.Refresh,
         label = localizedString(R.string.common_use_system_default),
         onClick = { themeViewModel.updateTheme(context, ThemeOption.SYSTEM_DEFAULT) }
+    )
+}
+
+@Composable
+private fun CardTypeSettingsSection() {
+    val context = LocalContext.current
+    val configViewModel = context.configViewModel
+
+    Spacer(modifier = Modifier.height(16.dp))
+    WideTitle(text = "Card style")
+
+    WideRadioButton(
+        label = "Classic",
+        enabled = configViewModel.values.cardStyle == 0,
+        onClick = { configViewModel.updateCardStyle(0) }
+    )
+
+    WideRadioButton(
+        label = "Minimal",
+        enabled = configViewModel.values.cardStyle == 1,
+        onClick = { configViewModel.updateCardStyle(1) }
     )
 }
 

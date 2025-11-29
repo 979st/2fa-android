@@ -40,4 +40,8 @@ class ConfigViewModel : ViewModel() {
     fun updateAntiPixnapping(value: Boolean) {
         values = values.copy(antiPixnapping = value)
     }
+
+    fun updateCardStyle(value: Int) {
+        values = values.copy(cardStyle = value)
+    }
 }

@@ -16,7 +16,8 @@ object ConfigModel {
         var requireTapToReveal: Boolean = false,
         var enableFocusSearch: Boolean = false,
         var screenSecurity: Boolean = true,
-        var antiPixnapping: Boolean = false
+        var antiPixnapping: Boolean = false,
+        var cardStyle: Int = 0
     ) {
         fun save(context: Context) {
             runCatching {
@@ -28,6 +29,7 @@ object ConfigModel {
                     put("enableFocusSearch", enableFocusSearch)
                     put("screenSecurity", screenSecurity)
                     put("antiPixnapping", antiPixnapping)
+                    put("cardStyle", cardStyle)
                 }.toString().let { jsonString ->
                     File(context.noBackupFilesDir, FILE_NAME)
                         .writeText(jsonString, Charsets.UTF_8)
@@ -54,8 +56,9 @@ object ConfigModel {
                         theme = ThemeOption.fromInt(json.getInt("theme")),
                         requireTapToReveal = json.getBoolean("requireTapToReveal"),
                         enableFocusSearch = json.getBoolean("enableFocusSearch"),
-                        screenSecurity = json.optBoolean("screenSecurity", true),
-                        antiPixnapping = json.optBoolean("antiPixnapping", false)
+                        screenSecurity = json.getBoolean("screenSecurity"),
+                        antiPixnapping = json.getBoolean("antiPixnapping"),
+                        cardStyle = json.optInt("cardStyle", 0)
                     )
                 }.getOrElse { e ->
                     Log.e("ConfigModel", "Failed loading config", e)
