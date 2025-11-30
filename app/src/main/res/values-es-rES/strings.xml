@@ -57,4 +57,7 @@
     <string name="settings_button_text_import_aegis">Importar desde Aegis</string>
     <string name="import_from_aegis_button_text_import">Importar</string>
     <string name="import_from_aegis_button_text_importing">Importando</string>
+    <string name="settings_option_card_style">Estilo de tarjeta</string>
+    <string name="settings_card_style_classic">Clásico</string>
+    <string name="settings_card_style_minimal">Minimalista</string>
 </resources>

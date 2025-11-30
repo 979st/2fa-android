@@ -192,16 +192,16 @@ private fun CardTypeSettingsSection() {
     val configViewModel = context.configViewModel
 
     Spacer(modifier = Modifier.height(16.dp))
-    WideTitle(text = "Card style")
+    WideTitle(text = localizedString(R.string.settings_option_card_style))
 
     WideRadioButton(
-        label = "Classic",
+        label = localizedString(R.string.settings_card_style_classic),
         enabled = configViewModel.values.cardStyle == 0,
         onClick = { configViewModel.updateCardStyle(0) }
     )
 
     WideRadioButton(
-        label = "Minimal",
+        label = localizedString(R.string.settings_card_style_minimal),
         enabled = configViewModel.values.cardStyle == 1,
         onClick = { configViewModel.updateCardStyle(1) }
     )

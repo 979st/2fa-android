@@ -59,4 +59,7 @@
     <string name="settings_button_text_import_aegis">Импорт из Aegis</string>
     <string name="import_from_aegis_button_text_import">Импорт</string>
     <string name="import_from_aegis_button_text_importing">Импортирование</string>
+    <string name="settings_option_card_style">Карточный стиль</string>
+    <string name="settings_card_style_classic">Классический</string>
+    <string name="settings_card_style_minimal">Минималистичный</string>
 </resources>

@@ -41,6 +41,9 @@
     <string name="settings_appearance_light">Light</string>
     <string name="settings_appearance_dark">Dark</string>
     <string name="settings_appearance_dynamic">Dynamic</string>
+    <string name="settings_option_card_style">Card style</string>
+    <string name="settings_card_style_classic">Classic</string>
+    <string name="settings_card_style_minimal">Minimal</string>
     <string name="settings_section_manage_data">Backup &amp; Restore</string>
     <string name="settings_button_backup_codes">Backup 2FA Codes</string>
     <string name="settings_button_restore_codes">Restore 2FA Codes</string>
