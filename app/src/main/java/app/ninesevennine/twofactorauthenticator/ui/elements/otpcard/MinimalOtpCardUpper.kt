@@ -2,7 +2,6 @@ package app.ninesevennine.twofactorauthenticator.ui.elements.otpcard
 
 import android.view.SoundEffectConstants
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,18 +24,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
-import app.ninesevennine.twofactorauthenticator.features.otp.OtpIssuer
 import app.ninesevennine.twofactorauthenticator.features.otp.OtpTypes
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.features.vault.VaultItem
@@ -47,21 +43,21 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun OtpCardUpper(
+fun MinimalOtpCardUpper(
     item: VaultItem,
     enableEditing: Boolean
 ) {
     val context = LocalContext.current
+    val theme = context.themeViewModel
     val view = LocalView.current
     val haptic = LocalHapticFeedback.current
-    val theme = context.themeViewModel
+    val navController = LocalNavController.current
+
+    val vaultViewModel = context.vaultViewModel
+
     val colors = remember(item.otpCardColor) {
         theme.getOtpCardColors(context, item.otpCardColor)
     }
-    val navController = LocalNavController.current
-    val vaultViewModel = context.vaultViewModel
-
-    val issuerIcon = remember(item.issuer) { OtpIssuer.getIcon(item.issuer) }
 
     val currentTimeSeconds by vaultViewModel.currentTimeSeconds.collectAsState()
     val secondsLeft = item.period - (currentTimeSeconds % item.period)
@@ -71,51 +67,14 @@ fun OtpCardUpper(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 6.dp)
+            .height(42.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Box(
-                contentAlignment = Alignment.Center
-            ) {
-                if (issuerIcon != null) {
-                    Icon(
-                        painter = painterResource(id = issuerIcon),
-                        contentDescription = null,
-                        modifier = Modifier.size(54.dp),
-                        tint = Color.Unspecified
-                    )
-                } else {
-                    Canvas(Modifier.size(54.dp)) {
-                        drawCircle(
-                            color = colors.thirdColor
-                        )
-                    }
-
-                    Text(
-                        text = if (item.issuer.isNotEmpty()) {
-                            item.issuer.first().uppercase()
-                        } else if (item.name.isNotEmpty()) {
-                            item.name.first().uppercase()
-                        } else {
-                            "?"
-                        },
-                        fontFamily = InterVariable,
-                        color = colors.firstColor,
-                        fontWeight = FontWeight.W700,
-                        fontSize = 26.sp,
-                        maxLines = 1
-                    )
-                }
-            }
-
-            Spacer(Modifier.width(8.dp))
-
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.SpaceEvenly,
@@ -126,7 +85,7 @@ fun OtpCardUpper(
                     fontFamily = InterVariable,
                     color = colors.thirdColor,
                     fontWeight = FontWeight.W700,
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -137,7 +96,7 @@ fun OtpCardUpper(
                         fontFamily = InterVariable,
                         color = colors.thirdColor,
                         fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -147,9 +106,11 @@ fun OtpCardUpper(
             Spacer(Modifier.width(8.dp))
 
             if (item.otpType != OtpTypes.HOTP) {
-                Canvas(Modifier
-                    .padding(12.dp)
-                    .size(24.dp)) {
+                Canvas(
+                    Modifier
+                        .padding(end = 6.dp)
+                        .size(20.dp)
+                ) {
                     drawArc(
                         color = colors.secondColor,
                         startAngle = -90f,
@@ -160,7 +121,7 @@ fun OtpCardUpper(
             } else {
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(32.dp)
                         .clickable {
                             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             view.playSoundEffect(SoundEffectConstants.CLICK)
@@ -174,21 +135,15 @@ fun OtpCardUpper(
                     Icon(
                         imageVector = Icons.Filled.Refresh,
                         contentDescription = null,
+                        modifier = Modifier.size(24.dp),
                         tint = colors.secondColor
                     )
                 }
             }
 
-            Spacer(
-                modifier = Modifier
-                    .width(1.dp)
-                    .height(32.dp)
-                    .background(colors.secondColor)
-            )
-
             Box(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(32.dp)
                     .clickable {
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         view.playSoundEffect(SoundEffectConstants.CLICK)
@@ -202,6 +157,7 @@ fun OtpCardUpper(
                 Icon(
                     imageVector = Icons.Filled.Edit,
                     contentDescription = null,
+                    modifier = Modifier.size(24.dp),
                     tint = colors.secondColor
                 )
             }

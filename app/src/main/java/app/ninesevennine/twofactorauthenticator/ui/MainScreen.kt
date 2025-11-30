@@ -38,7 +38,8 @@ import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 import app.ninesevennine.twofactorauthenticator.ui.elements.bottomappbar.MainAppBar
-import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.OtpCard
+import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.ClassicOtpCard
+import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.MinimalOtpCard
 import app.ninesevennine.twofactorauthenticator.utils.Constants
 import app.ninesevennine.twofactorauthenticator.vaultViewModel
 import kotlinx.serialization.Serializable
@@ -57,6 +58,7 @@ fun MainScreen() {
     val navController = LocalNavController.current
     val configuration = LocalConfiguration.current
     val vaultViewModel = context.vaultViewModel
+    val configViewModel = context.configViewModel
 
     if (context.configViewModel.otpauthUrl.isNotEmpty()) {
         navController.navigate(EditScreenRoute(Constants.ONEUUIDSTR))
@@ -90,7 +92,11 @@ fun MainScreen() {
 
     @SuppressLint("ConfigurationScreenWidthHeight")
     val columnCount = remember(configuration.screenWidthDp) {
-        max(1, configuration.screenWidthDp / 400)
+        if (configViewModel.values.cardStyle == 1) {
+            max(2, configuration.screenWidthDp / 264)
+        } else {
+            max(1, configuration.screenWidthDp / 400)
+        }
     }
 
     LazyVerticalGrid(
@@ -108,11 +114,22 @@ fun MainScreen() {
         @OptIn(ExperimentalUuidApi::class)
         itemsIndexed(filteredItems, key = { _, item -> item.uuid }) { _, item ->
             ReorderableItem(reorderState, key = item.uuid) { dragging ->
-                OtpCard(
-                    modifier = if (isFiltering) Modifier else Modifier.longPressDraggableHandle(),
-                    item = item,
-                    dragging = dragging
-                )
+                when (configViewModel.values.cardStyle) {
+                    0 -> {
+                        ClassicOtpCard(
+                            modifier = if (isFiltering) Modifier else Modifier.longPressDraggableHandle(),
+                            item = item,
+                            dragging = dragging
+                        )
+                    }
+                    1 -> {
+                        MinimalOtpCard(
+                            modifier = if (isFiltering) Modifier else Modifier.longPressDraggableHandle(),
+                            item = item,
+                            dragging = dragging
+                        )
+                    }
+                }
             }
         }
 

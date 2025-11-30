@@ -19,7 +19,7 @@ import app.ninesevennine.twofactorauthenticator.features.vault.VaultItem
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 
 @Composable
-fun OtpCard(
+fun MinimalOtpCard(
     modifier: Modifier = Modifier,
     item: VaultItem,
     dragging: Boolean,
@@ -35,9 +35,9 @@ fun OtpCard(
     val shape = RoundedCornerShape(32.dp)
 
     val cardModifier = modifier
-        .padding(vertical = 8.dp, horizontal = 8.dp)
+        .padding(vertical = 4.dp, horizontal = 4.dp)
         .fillMaxWidth()
-        .height(152.dp)
+        .height(100.dp)
         .then(
             if (dragging) Modifier.shadow(
                 elevation = 8.dp,
@@ -53,12 +53,10 @@ fun OtpCard(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
-            OtpCardUpper(item = item, enableEditing = enableEditing)
-            OtpCardLower(item = item)
+            MinimalOtpCardUpper(item = item, enableEditing = enableEditing)
+            MinimalOtpCardLower(item = item)
         }
     }
 }

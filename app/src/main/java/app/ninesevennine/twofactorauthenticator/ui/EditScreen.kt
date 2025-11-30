@@ -68,7 +68,8 @@ import app.ninesevennine.twofactorauthenticator.ui.elements.ItemColorOption
 import app.ninesevennine.twofactorauthenticator.ui.elements.WideTitle
 import app.ninesevennine.twofactorauthenticator.ui.elements.bottomappbar.EditAppBar
 import app.ninesevennine.twofactorauthenticator.ui.elements.dropdown.DropDownSingleChoice
-import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.OtpCard
+import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.ClassicOtpCard
+import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.MinimalOtpCard
 import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.OtpCardColors
 import app.ninesevennine.twofactorauthenticator.ui.elements.textfields.NumbersOnlyTextField
 import app.ninesevennine.twofactorauthenticator.ui.elements.textfields.SingleLineTextField
@@ -261,12 +262,32 @@ fun EditScreen(uuidString: String) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            OtpCard(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                item = item,
-                dragging = false,
-                enableEditing = false
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                when (configViewModel.values.cardStyle) {
+                    0 -> {
+                        ClassicOtpCard(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            item = item,
+                            dragging = false,
+                            enableEditing = false
+                        )
+                    }
+                    1 -> {
+                        MinimalOtpCard(
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp, vertical = 8.dp)
+                                .width(264.dp),
+                            item = item,
+                            dragging = false,
+                            enableEditing = false
+                        )
+                    }
+                }
+            }
 
             WideTitle(text = localizedString(R.string.edit_screen_basic_info_title))
 

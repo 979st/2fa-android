@@ -48,16 +48,18 @@ import kotlin.random.Random
 private val secureRandom = SecureRandom()
 
 @Composable
-fun OtpCardLower(
+fun ClassicOtpCardLower(
     item: VaultItem
 ) {
     val context = LocalContext.current
     val view = LocalView.current
     val haptic = LocalHapticFeedback.current
     val theme = context.themeViewModel
+
     val colors = remember(item.otpCardColor) {
         theme.getOtpCardColors(context, item.otpCardColor)
     }
+
     val vaultViewModel = context.vaultViewModel
 
     var revealed by remember { mutableStateOf(!context.configViewModel.values.requireTapToReveal) }
@@ -129,7 +131,7 @@ fun OtpCardLower(
             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
             view.playSoundEffect(SoundEffectConstants.CLICK)
 
-            Logger.i("OtpCardLower", "Copied OTP code to clipboard")
+            Logger.i("ClassicOtpCardLower", "Copied OTP code to clipboard")
             if (revealed) {
                 Clipboard.copy(context, "authenticator-contents", otpCode, true)
             }
