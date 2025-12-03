@@ -13,7 +13,7 @@ class MyApplication : Application() {
     val configViewModel = ConfigViewModel()
     val localeViewModel = LocaleViewModel()
     val themeViewModel = ThemeViewModel()
-    val secureCryptoViewModel = SecureCryptoViewModel()
+    val secureCryptoViewModel by lazy { SecureCryptoViewModel(this) }
     val vaultViewModel = VaultViewModel()
 
     override fun onCreate() {

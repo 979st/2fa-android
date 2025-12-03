@@ -36,6 +36,7 @@ object SecureCryptoModel {
             setBlockModes(KeyProperties.BLOCK_MODE_GCM)
             setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
             setUserAuthenticationRequired(false)
+            setInvalidatedByBiometricEnrollment(false)
             setRandomizedEncryptionRequired(true)
             setUnlockedDeviceRequired(true)
             setKeySize(256)
@@ -52,6 +53,18 @@ object SecureCryptoModel {
             keyGenerator.init(builder.build())
             keyGenerator.generateKey()
         }
+    }
+
+    fun isKeyPermanentlyInvalidated(key: SecretKey): Boolean {
+        try {
+            val cipher = Cipher.getInstance(TRANSFORMATION_ALGORITHM)
+            cipher.init(Cipher.ENCRYPT_MODE, key)
+        } catch (e: Exception) {
+            Logger.w("SecureCryptoModel", "isKeyPermanentlyInvalidated $e")
+            return true
+        }
+
+        return false
     }
 
     fun encrypt(key: SecretKey, data: ByteArray): ByteArray? {
