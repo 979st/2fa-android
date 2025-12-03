@@ -36,7 +36,7 @@ androidx-camerax-camera2 = { group = "androidx.camera", name = "camera-camera2",
 androidx-camerax-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version = "1.5.1" }
 androidx-camerax-view = { group = "androidx.camera", name = "camera-view", version = "1.5.1" }
 zxing = { group = "com.google.zxing", name = "core", version = "3.5.4" }
-bouncycastle = { group = "org.bouncycastle", name = "bcprov-jdk18on", version = "1.82" }
+bouncycastle = { group = "org.bouncycastle", name = "bcprov-jdk18on", version = "1.83" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
