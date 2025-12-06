@@ -21,6 +21,8 @@ import app.ninesevennine.twofactorauthenticator.ui.ImportFromAegisScreen
 import app.ninesevennine.twofactorauthenticator.ui.ImportFromAegisScreenRoute
 import app.ninesevennine.twofactorauthenticator.ui.ImportFromGoogleAuthScreen
 import app.ninesevennine.twofactorauthenticator.ui.ImportFromGoogleAuthScreenRoute
+import app.ninesevennine.twofactorauthenticator.ui.LanguageSelectionScreen
+import app.ninesevennine.twofactorauthenticator.ui.LanguageSelectionScreenRoute
 import app.ninesevennine.twofactorauthenticator.ui.LogScreen
 import app.ninesevennine.twofactorauthenticator.ui.LogScreenRoute
 import app.ninesevennine.twofactorauthenticator.ui.MainScreen
@@ -70,6 +72,7 @@ fun AppNavigation() {
     ) {
         composable<MainScreenRoute> { MainScreen() }
         composable<SettingsScreenRoute> { SettingsScreen() }
+        composable<LanguageSelectionScreenRoute>{ LanguageSelectionScreen() }
         composable<EditScreenRoute> {
             val args = it.toRoute<EditScreenRoute>()
             EditScreen(args.uuidString)

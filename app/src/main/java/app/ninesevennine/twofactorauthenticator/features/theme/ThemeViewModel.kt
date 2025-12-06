@@ -85,13 +85,15 @@ class ThemeViewModel() : ViewModel() {
         background = Color(0xffffffff),
         onBackground = Color(0xff060606),
         primaryContainer = Color(0xffeeeeee),
-        onPrimaryContainer = Color(0xff060606)
+        onPrimaryContainer = Color(0xff060606),
+        outline = Color(0xffdedede)
     )
 
     private fun darkColorScheme() = darkColorScheme(
         background = Color(0xff0b0b0b),
         onBackground = Color(0xffdedede),
         primaryContainer = Color(0xff161616),
-        onPrimaryContainer = Color(0xffdedede)
+        onPrimaryContainer = Color(0xffdedede),
+        outline = Color(0xff222222)
     )
 }

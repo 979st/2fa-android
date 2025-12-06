@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.ScreenLockPortrait
@@ -40,6 +41,8 @@ import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.ThemeOption
 import app.ninesevennine.twofactorauthenticator.localeViewModel
 import app.ninesevennine.twofactorauthenticator.themeViewModel
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionButton
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionGroup
 import app.ninesevennine.twofactorauthenticator.ui.elements.WideTitle
 import app.ninesevennine.twofactorauthenticator.ui.elements.bottomappbar.SettingsAppBar
 import app.ninesevennine.twofactorauthenticator.ui.elements.widebutton.WideButtonWithIcon
@@ -55,6 +58,10 @@ object SettingsScreenRoute
 
 @Composable
 fun SettingsScreen() {
+    val context = LocalContext.current
+    val navController = LocalNavController.current
+    val localeViewModel = context.localeViewModel
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -68,6 +75,29 @@ fun SettingsScreen() {
             horizontalAlignment = Alignment.Start
         ) {
             Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+
+            SectionGroup("Appearance") {
+                SectionButton(
+                    imageVector = Icons.Default.Language,
+                    primaryText = "Language",
+                    secondaryText = languageLabelFromLocale(localeViewModel.effectiveLocale),
+                    onClick = { navController.navigate(LanguageSelectionScreenRoute) }
+                )
+                SectionButton(primaryText = "Theme", secondaryText = "Light")
+                SectionButton(primaryText = "Card style", secondaryText = "Classic")
+
+                val requireTapToReveal = context.configViewModel.values.requireTapToReveal
+                SectionButton(
+                    imageVector = Icons.Default.TouchApp,
+                    primaryText = "Tap to reveal codes",
+                    enabled = requireTapToReveal,
+                    onClick = { context.configViewModel.updateTapToReveal(!requireTapToReveal) }
+                )
+            }
+
+            SectionGroup("Exploit protection") {
+                SectionButton(primaryText = "Pixnapping")
+            }
 
             LanguageSettingsSection()
 
@@ -96,7 +126,7 @@ private fun LanguageSettingsSection() {
     WideTitle(text = localizedString(R.string.settings_option_language))
 
     WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.lang_en),
+        icon = painterResource(id = R.drawable.flag_european_union),
         tint = Color.Unspecified,
         label = "English International",
         enabled = localeViewModel.effectiveLocale == LocaleOption.EN_US.value,
@@ -104,7 +134,7 @@ private fun LanguageSettingsSection() {
     )
 
     WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.lang_es),
+        icon = painterResource(id = R.drawable.flag_spain),
         tint = Color.Unspecified,
         label = "Español",
         enabled = localeViewModel.effectiveLocale == LocaleOption.ES_ES.value,
@@ -112,7 +142,7 @@ private fun LanguageSettingsSection() {
     )
 
     WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.lang_ru),
+        icon = painterResource(id = R.drawable.flag_russia),
         tint = Color.Unspecified,
         label = "Русский",
         enabled = localeViewModel.effectiveLocale == LocaleOption.RU_RU.value,
@@ -120,7 +150,7 @@ private fun LanguageSettingsSection() {
     )
 
     WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.lang_de),
+        icon = painterResource(id = R.drawable.flag_germany),
         tint = Color.Unspecified,
         label = "Deutsch",
         enabled = localeViewModel.effectiveLocale == LocaleOption.DE_DE.value,
@@ -128,7 +158,7 @@ private fun LanguageSettingsSection() {
     )
 
     WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.lang_fr),
+        icon = painterResource(id = R.drawable.flag_france),
         tint = Color.Unspecified,
         label = "Français",
         enabled = localeViewModel.effectiveLocale == LocaleOption.FR_FR.value,
@@ -136,7 +166,7 @@ private fun LanguageSettingsSection() {
     )
 
     WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.lang_vi),
+        icon = painterResource(id = R.drawable.flag_vietnam),
         tint = Color.Unspecified,
         label = "Tiếng Việt",
         enabled = localeViewModel.effectiveLocale == LocaleOption.VI_VN.value,
