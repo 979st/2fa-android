@@ -61,6 +61,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        vaultViewModel.load(this)
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
