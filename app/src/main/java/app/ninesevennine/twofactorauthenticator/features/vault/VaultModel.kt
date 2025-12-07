@@ -145,7 +145,7 @@ object VaultModel {
         return String(rawData, Charsets.UTF_8)
     }
 
-    fun readVault(context: Context): List<VaultItem> {
+    fun readVault(context: Context): List<VaultItem>? {
         Logger.i("VaultModel", "readVault")
 
         val file = File(context.noBackupFilesDir, FILE_NAME)
@@ -163,7 +163,7 @@ object VaultModel {
             jsonAsVaultItems(version, decryptVault(context, rawData))
         }.getOrElse { e ->
             Logger.e("VaultModel", "Error reading vault: ${e.stackTraceToString()}")
-            emptyList()
+            null
         }
     }
 
