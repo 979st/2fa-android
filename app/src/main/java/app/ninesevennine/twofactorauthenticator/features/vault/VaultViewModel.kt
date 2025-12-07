@@ -28,14 +28,29 @@ class VaultViewModel() : ViewModel() {
     private val _items = mutableListOf<VaultItem>().toMutableStateList()
     val items: SnapshotStateList<VaultItem> = _items
 
+    var isVaultLoaded: Boolean = false
+        private set
+
     fun save(context: Context) {
+        if (!isVaultLoaded) {
+            Logger.e("VaultViewModel", "Vault not loaded, skipping save to prevent data loss")
+            return
+        }
+
         VaultModel.saveVault(context, _items.toList())
     }
 
     fun load(context: Context) {
-        _items.addAll(VaultModel.readVault(context))
+        if (isVaultLoaded) return
 
-        if (BuildConfig.DEBUG && _items.isEmpty()) {
+        val items = VaultModel.readVault(context)
+        if (items != null) {
+            _items.clear()
+            _items.addAll(items)
+            isVaultLoaded = true
+        }
+
+        if (BuildConfig.DEBUG && _items.isEmpty() && isVaultLoaded) {
             otpParser("otpauth://totp/Google:user%40gmail.com?issuer=Google&secret=FLBGI3IGK2CKXLRC&algorithm=SHA1&digits=6&period=30")
                 ?.let { addItem(it) }
             otpParser("otpauth://totp/Cloudflare:user%40gmail.com?issuer=Cloudflare&secret=DXTBJDXEL7IC4MV2&algorithm=SHA1&digits=6&period=30")
