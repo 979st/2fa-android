@@ -76,28 +76,28 @@ fun SettingsScreen() {
         ) {
             Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
 
-            SectionGroup("Appearance") {
-                SectionButton(
-                    imageVector = Icons.Default.Language,
-                    primaryText = "Language",
-                    secondaryText = languageLabelFromLocale(localeViewModel.effectiveLocale),
-                    onClick = { navController.navigate(LanguageSelectionScreenRoute) }
-                )
-                SectionButton(primaryText = "Theme", secondaryText = "Light")
-                SectionButton(primaryText = "Card style", secondaryText = "Classic")
-
-                val requireTapToReveal = context.configViewModel.values.requireTapToReveal
-                SectionButton(
-                    imageVector = Icons.Default.TouchApp,
-                    primaryText = "Tap to reveal codes",
-                    enabled = requireTapToReveal,
-                    onClick = { context.configViewModel.updateTapToReveal(!requireTapToReveal) }
-                )
-            }
-
-            SectionGroup("Exploit protection") {
-                SectionButton(primaryText = "Pixnapping")
-            }
+//            SectionGroup("Appearance") {
+//                SectionButton(
+//                    imageVector = Icons.Default.Language,
+//                    primaryText = "Language",
+//                    secondaryText = languageLabelFromLocale(localeViewModel.effectiveLocale),
+//                    onClick = { navController.navigate(LanguageSelectionScreenRoute) }
+//                )
+//                SectionButton(primaryText = "Theme", secondaryText = "Light")
+//                SectionButton(primaryText = "Card style", secondaryText = "Classic")
+//
+//                val requireTapToReveal = context.configViewModel.values.requireTapToReveal
+//                SectionButton(
+//                    imageVector = Icons.Default.TouchApp,
+//                    primaryText = "Tap to reveal codes",
+//                    enabled = requireTapToReveal,
+//                    onClick = { context.configViewModel.updateTapToReveal(!requireTapToReveal) }
+//                )
+//            }
+//
+//            SectionGroup("Exploit protection") {
+//                SectionButton(primaryText = "Pixnapping")
+//            }
 
             LanguageSettingsSection()
 

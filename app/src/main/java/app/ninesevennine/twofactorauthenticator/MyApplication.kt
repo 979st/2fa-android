@@ -33,7 +33,5 @@ class MyApplication : Application() {
         configViewModel.load(this)
 
         secureCryptoViewModel.init()
-
-        vaultViewModel.load(this)
     }
 }
