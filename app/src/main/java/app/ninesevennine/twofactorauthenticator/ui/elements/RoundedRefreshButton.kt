@@ -4,6 +4,7 @@ import android.view.SoundEffectConstants
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,13 +17,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,13 +46,15 @@ import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
+import kotlinx.coroutines.delay
 
 @Composable
-fun RoundedRadioButton(
+fun RoundedRefreshButton(
     painter: Painter? = null,
     imageVector: ImageVector? = null,
     label: String,
-    enabled: Boolean = false,
+    spinDegrees: Float = 360f,
+    spinDurationMs: Int = 600,
     onClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -57,22 +62,30 @@ fun RoundedRadioButton(
     val view = LocalView.current
     val haptic = LocalHapticFeedback.current
 
-    val checkmarkScale by animateFloatAsState(
-        targetValue = if (enabled) 1f else 0f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioLowBouncy,
-            stiffness = Spring.StiffnessMediumLow
-        ),
-        label = "checkmarkScale"
+    var cumulativeRotation by remember { mutableFloatStateOf(0f) }
+    val iconRotation by animateFloatAsState(
+        targetValue = cumulativeRotation,
+        animationSpec = tween(durationMillis = spinDurationMs),
+        label = "iconRotation"
     )
 
-    val backgroundScale by animateFloatAsState(
-        targetValue = if (enabled) 1f else 0f,
-        animationSpec = spring(
-            dampingRatio = 0.7f,
-            stiffness = Spring.StiffnessMedium
-        ),
-        label = "backgroundScale"
+    LaunchedEffect(Unit) {
+        cumulativeRotation += spinDegrees
+    }
+
+    var pressed by remember { mutableStateOf(false) }
+
+    LaunchedEffect(pressed) {
+        if (pressed) {
+            delay(250)
+            pressed = false
+        }
+    }
+
+    val backgroundAlpha by animateFloatAsState(
+        targetValue = if (pressed) 1f else 0f,
+        animationSpec = spring(dampingRatio = 0.7f, stiffness = Spring.StiffnessMedium),
+        label = "backgroundAlpha"
     )
 
     val shape = remember { RoundedCornerShape(28.dp) }
@@ -87,6 +100,9 @@ fun RoundedRadioButton(
                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                     view.playSoundEffect(SoundEffectConstants.CLICK)
 
+                    cumulativeRotation += spinDegrees
+                    pressed = true
+
                     onClick()
                 },
                 indication = null,
@@ -94,21 +110,17 @@ fun RoundedRadioButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-        if (enabled || backgroundScale > 0.01f) {
+        if (backgroundAlpha > 0.01f) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
-                    .graphicsLayer(
-                        scaleX = backgroundScale,
-                        scaleY = backgroundScale
-                    )
                     .clip(shape)
                     .background(
-                        color = colors.onBackground.copy(alpha = 0.08f),
+                        color = colors.onBackground.copy(alpha = 0.08f * backgroundAlpha),
                         shape = shape
                     )
-                    .border(width = 1.dp, color = colors.outline, shape = shape)
+                    .border(width = 1.dp, color = colors.outline.copy(alpha = backgroundAlpha), shape = shape)
             )
         }
 
@@ -119,7 +131,7 @@ fun RoundedRadioButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            val iconModifier = Modifier.size(35.dp)
+            val iconModifier = Modifier.size(35.dp).graphicsLayer( rotationZ = iconRotation )
 
             when {
                 painter != null -> {
@@ -161,20 +173,6 @@ fun RoundedRadioButton(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
-
-            if (enabled || checkmarkScale > 0.01f) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(horizontal = 6.dp)
-                        .size(28.dp)
-                        .graphicsLayer(
-                            scaleX = checkmarkScale, scaleY = checkmarkScale
-                        ),
-                    tint = colors.onBackground
-                )
-            }
         }
     }
 }

@@ -36,7 +36,7 @@ crashlytics.properties
 # GoogleService-Info.plist
 
 ### IDE Configuration ###
-.idea/*
+.idea
 *.iml
 *.ipr
 *.iws
