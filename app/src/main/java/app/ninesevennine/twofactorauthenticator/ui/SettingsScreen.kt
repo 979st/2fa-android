@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
@@ -59,7 +61,9 @@ object SettingsScreenRoute
 @Composable
 fun SettingsScreen() {
     val context = LocalContext.current
+    val colors = context.themeViewModel.colors
     val navController = LocalNavController.current
+    val configViewModel = context.configViewModel
     val localeViewModel = context.localeViewModel
 
     Box(
@@ -84,7 +88,15 @@ fun SettingsScreen() {
                     onClick = { navController.navigate(LanguageSelectionScreenRoute) }
                 )
                 SectionButton(primaryText = "Theme", secondaryText = "Light")
-                SectionButton(primaryText = "Card style", secondaryText = "Classic")
+                SectionButton(
+                    primaryText = "Card style",
+                    secondaryText = when (configViewModel.values.cardStyle) {
+                        0 -> "Classic"
+                        1 -> "Minimal"
+                        else -> "Unknown"
+                    },
+                    onClick = { navController.navigate(CardStyleSelectionScreenRoute)}
+                )
 
                 val requireTapToReveal = context.configViewModel.values.requireTapToReveal
                 SectionButton(
@@ -95,8 +107,97 @@ fun SettingsScreen() {
                 )
             }
 
-            SectionGroup("Exploit protection") {
-                SectionButton(primaryText = "Pixnapping")
+            SectionGroup("Behavior") {
+                val enableFocusSearch = context.configViewModel.values.enableFocusSearch
+                SectionButton(
+                    painter = painterResource(R.drawable.frame_inspect),
+                    tint = colors.onBackground,
+                    primaryText = "Focus search on launch",
+                    enabled = enableFocusSearch,
+                    onClick = { context.configViewModel.updateFocusSearch(!enableFocusSearch) }
+                )
+            }
+
+            SectionGroup("Backup & Restore") {
+                SectionButton(
+                    imageVector = Icons.Default.Upload,
+                    primaryText = "Backup codes",
+                    onClick = { navController.navigate(BackupVaultScreenRoute) }
+                )
+
+                SectionButton(
+                    imageVector = Icons.Default.Download,
+                    primaryText = "Restore codes",
+                    onClick = { navController.navigate(RestoreVaultScreenRoute) }
+                )
+
+                SectionButton(
+                    painter = painterResource(R.drawable.icon_google_authenticator),
+                    primaryText = "Export to Google Authenticator",
+                    secondaryText = "QR code",
+                    onClick = { navController.navigate(ExportToGoogleAuthScreenRoute) }
+                )
+
+                SectionButton(
+                    painter = painterResource(R.drawable.icon_google_authenticator),
+                    primaryText = "Import from Google Authenticator",
+                    secondaryText = "QR code",
+                    onClick = { navController.navigate(ImportFromGoogleAuthScreenRoute) }
+                )
+
+                SectionButton(
+                    painter = painterResource(R.drawable.aegis),
+                    primaryText = "Import from Aegis",
+                    secondaryText = "JSON file",
+                    onClick = { navController.navigate(ImportFromAegisScreenRoute) }
+                )
+            }
+
+            SectionGroup("Security") {
+                SectionButton(
+                    imageVector = Icons.Default.Description,
+                    primaryText = "Download security log",
+                    onClick = {}
+                )
+
+                val screenSecurity = context.configViewModel.values.screenSecurity
+                SectionButton(
+                    imageVector = Icons.Default.ScreenLockPortrait,
+                    primaryText = "Screen security",
+                    secondaryText = "Block screenshots and recordings",
+                    enabled = screenSecurity,
+                    onClick = { context.configViewModel.updateScreenSecurity(!screenSecurity) }
+                )
+
+                val antiPixnapping = context.configViewModel.values.antiPixnapping
+                SectionButton(
+                    imageVector = Icons.Default.BugReport,
+                    tint = Color.Red,
+                    primaryText = "Anti-Pixnapping",
+                    secondaryText = "CVE-2025-48561",
+                    enabled = antiPixnapping,
+                    onClick = { context.configViewModel.updateAntiPixnapping(!antiPixnapping) }
+                )
+            }
+
+            SectionGroup("About") {
+                SectionButton(
+                    primaryText = "979",
+                    secondaryText = "About us",
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, "https://979.st/en/about".toUri())
+                        context.startActivity(intent)
+                    }
+                )
+                SectionButton(
+                    painter = painterResource(R.drawable.github),
+                    primaryText = "Source code",
+                    secondaryText = "View 2fa's source code",
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, "https://github.com/979st/2fa-android".toUri())
+                        context.startActivity(intent)
+                    }
+                )
             }
 
             LanguageSettingsSection()

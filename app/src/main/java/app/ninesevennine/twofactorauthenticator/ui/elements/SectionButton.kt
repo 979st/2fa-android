@@ -50,6 +50,7 @@ import kotlinx.coroutines.delay
 fun SectionButton(
     painter: Painter? = null,
     imageVector: ImageVector? = null,
+    tint: Color? = null,
     primaryText: String,
     secondaryText: String? = null,
     enabled: Boolean = false,
@@ -123,7 +124,7 @@ fun SectionButton(
                     painter = painter,
                     contentDescription = null,
                     modifier = iconModifier,
-                    tint = Color.Unspecified
+                    tint = tint ?: Color.Unspecified
                 )
             }
 
@@ -132,7 +133,7 @@ fun SectionButton(
                     imageVector = imageVector,
                     contentDescription = null,
                     modifier = iconModifier,
-                    tint = colors.onBackground
+                    tint = tint ?: colors.onBackground
                 )
             }
 

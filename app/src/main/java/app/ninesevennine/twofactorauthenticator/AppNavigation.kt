@@ -13,6 +13,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import app.ninesevennine.twofactorauthenticator.ui.BackupVaultScreen
 import app.ninesevennine.twofactorauthenticator.ui.BackupVaultScreenRoute
+import app.ninesevennine.twofactorauthenticator.ui.CardStyleSelectionScreen
+import app.ninesevennine.twofactorauthenticator.ui.CardStyleSelectionScreenRoute
 import app.ninesevennine.twofactorauthenticator.ui.EditScreen
 import app.ninesevennine.twofactorauthenticator.ui.EditScreenRoute
 import app.ninesevennine.twofactorauthenticator.ui.ExportToGoogleAuthScreen
@@ -72,7 +74,8 @@ fun AppNavigation() {
     ) {
         composable<MainScreenRoute> { MainScreen() }
         composable<SettingsScreenRoute> { SettingsScreen() }
-        composable<LanguageSelectionScreenRoute>{ LanguageSelectionScreen() }
+        composable<LanguageSelectionScreenRoute> { LanguageSelectionScreen() }
+        composable<CardStyleSelectionScreenRoute> { CardStyleSelectionScreen() }
         composable<EditScreenRoute> {
             val args = it.toRoute<EditScreenRoute>()
             EditScreen(args.uuidString)
