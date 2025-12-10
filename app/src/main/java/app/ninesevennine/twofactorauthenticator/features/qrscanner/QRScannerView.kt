@@ -1,6 +1,7 @@
 package app.ninesevennine.twofactorauthenticator.features.qrscanner
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.util.Size
 import android.view.ViewGroup
@@ -129,6 +130,7 @@ private fun CameraPreview(
     val density = LocalDensity.current
 
     // Use minimum screen dimension for viewfinder size
+    @SuppressLint("ConfigurationScreenWidthHeight")
     val minScreenDp = min(configuration.screenWidthDp, configuration.screenHeightDp)
     val viewfinderPercent = 0.75f
 

@@ -63,6 +63,7 @@ fun SettingsScreen() {
     val context = LocalContext.current
     val colors = context.themeViewModel.colors
     val navController = LocalNavController.current
+    val themeViewModel = context.themeViewModel
     val configViewModel = context.configViewModel
     val localeViewModel = context.localeViewModel
 
@@ -87,7 +88,30 @@ fun SettingsScreen() {
                     secondaryText = languageLabelFromLocale(localeViewModel.effectiveLocale),
                     onClick = { navController.navigate(LanguageSelectionScreenRoute) }
                 )
-                SectionButton(primaryText = "Theme", secondaryText = "Light")
+                SectionButton(
+                    imageVector = when (themeViewModel.theme) {
+                        ThemeOption.LIGHT.value -> Icons.Default.LightMode
+                        ThemeOption.DARK.value -> Icons.Default.DarkMode
+                        ThemeOption.DYNAMIC.value -> Icons.Default.Contrast
+                        else -> null
+                    },
+                    primaryText = "Theme",
+                    secondaryText = if (themeViewModel.theme == ThemeOption.SYSTEM_DEFAULT.value) {
+                        if (themeViewModel.isSystemDark(context)) {
+                            "Dark"
+                        } else {
+                            "Light"
+                        }
+                    } else {
+                        when (themeViewModel.theme) {
+                            ThemeOption.LIGHT.value -> "Light"
+                            ThemeOption.DARK.value -> "Dark"
+                            ThemeOption.DYNAMIC.value -> "Dynamic"
+                            else -> null
+                        }
+                    },
+                    onClick = { navController.navigate(ThemeSelectionScreenRoute) }
+                )
                 SectionButton(
                     primaryText = "Card style",
                     secondaryText = when (configViewModel.values.cardStyle) {
@@ -157,7 +181,10 @@ fun SettingsScreen() {
                 SectionButton(
                     imageVector = Icons.Default.Description,
                     primaryText = "Download security log",
-                    onClick = {}
+                    onClick = {
+                        Logger.i("SettingsScreen", "Opened debug log")
+                        navController.navigate(LogScreenRoute)
+                    }
                 )
 
                 val screenSecurity = context.configViewModel.values.screenSecurity
@@ -191,6 +218,7 @@ fun SettingsScreen() {
                 )
                 SectionButton(
                     painter = painterResource(R.drawable.github),
+                    tint = colors.onBackground,
                     primaryText = "Source code",
                     secondaryText = "View 2fa's source code",
                     onClick = {
@@ -200,268 +228,9 @@ fun SettingsScreen() {
                 )
             }
 
-            LanguageSettingsSection()
-
-            ThemeSettingsSection()
-
-            CardTypeSettingsSection()
-
-            BackupSettingsSection()
-
-            OtherSettingsScreen()
-
-            AboutSettingsSection()
-
             Spacer(modifier = Modifier.height(192.dp))
         }
     }
 
     SettingsAppBar()
-}
-
-@Composable
-private fun LanguageSettingsSection() {
-    val context = LocalContext.current
-    val localeViewModel = context.localeViewModel
-
-    WideTitle(text = localizedString(R.string.settings_option_language))
-
-    WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.flag_european_union),
-        tint = Color.Unspecified,
-        label = "English International",
-        enabled = localeViewModel.effectiveLocale == LocaleOption.EN_US.value,
-        onClick = { localeViewModel.updateLocale(context, LocaleOption.EN_US) }
-    )
-
-    WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.flag_spain),
-        tint = Color.Unspecified,
-        label = "Español",
-        enabled = localeViewModel.effectiveLocale == LocaleOption.ES_ES.value,
-        onClick = { localeViewModel.updateLocale(context, LocaleOption.ES_ES) }
-    )
-
-    WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.flag_russia),
-        tint = Color.Unspecified,
-        label = "Русский",
-        enabled = localeViewModel.effectiveLocale == LocaleOption.RU_RU.value,
-        onClick = { localeViewModel.updateLocale(context, LocaleOption.RU_RU) }
-    )
-
-    WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.flag_germany),
-        tint = Color.Unspecified,
-        label = "Deutsch",
-        enabled = localeViewModel.effectiveLocale == LocaleOption.DE_DE.value,
-        onClick = { localeViewModel.updateLocale(context, LocaleOption.DE_DE) }
-    )
-
-    WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.flag_france),
-        tint = Color.Unspecified,
-        label = "Français",
-        enabled = localeViewModel.effectiveLocale == LocaleOption.FR_FR.value,
-        onClick = { localeViewModel.updateLocale(context, LocaleOption.FR_FR) }
-    )
-
-    WideRadioButtonWithTintedIcon(
-        icon = painterResource(id = R.drawable.flag_vietnam),
-        tint = Color.Unspecified,
-        label = "Tiếng Việt",
-        enabled = localeViewModel.effectiveLocale == LocaleOption.VI_VN.value,
-        onClick = { localeViewModel.updateLocale(context, LocaleOption.VI_VN) }
-    )
-
-    WideButtonWithIcon(
-        icon = Icons.Default.Refresh,
-        label = localizedString(R.string.common_use_system_default),
-        onClick = { localeViewModel.updateLocale(context, LocaleOption.SYSTEM_DEFAULT) }
-    )
-}
-
-@Composable
-private fun ThemeSettingsSection() {
-    val context = LocalContext.current
-    val themeViewModel = context.themeViewModel
-
-    Spacer(modifier = Modifier.height(16.dp))
-    WideTitle(text = localizedString(R.string.settings_option_appearance))
-
-    WideRadioButtonWithIcon(
-        icon = Icons.Filled.LightMode,
-        label = localizedString(R.string.settings_appearance_light),
-        enabled = themeViewModel.theme == ThemeOption.LIGHT.value,
-        onClick = { themeViewModel.updateTheme(context, ThemeOption.LIGHT) }
-    )
-
-    WideRadioButtonWithIcon(
-        icon = Icons.Filled.DarkMode,
-        label = localizedString(R.string.settings_appearance_dark),
-        enabled = themeViewModel.theme == ThemeOption.DARK.value,
-        onClick = { themeViewModel.updateTheme(context, ThemeOption.DARK) }
-    )
-
-    WideRadioButtonWithIcon(
-        icon = Icons.Filled.Contrast,
-        label = localizedString(R.string.settings_appearance_dynamic),
-        enabled = themeViewModel.theme == ThemeOption.DYNAMIC.value,
-        onClick = { themeViewModel.updateTheme(context, ThemeOption.DYNAMIC) }
-    )
-
-    WideButtonWithIcon(
-        icon = Icons.Default.Refresh,
-        label = localizedString(R.string.common_use_system_default),
-        onClick = { themeViewModel.updateTheme(context, ThemeOption.SYSTEM_DEFAULT) }
-    )
-}
-
-@Composable
-private fun CardTypeSettingsSection() {
-    val context = LocalContext.current
-    val configViewModel = context.configViewModel
-
-    Spacer(modifier = Modifier.height(16.dp))
-    WideTitle(text = localizedString(R.string.settings_option_card_style))
-
-    WideRadioButton(
-        label = localizedString(R.string.settings_card_style_classic),
-        enabled = configViewModel.values.cardStyle == 0,
-        onClick = { configViewModel.updateCardStyle(0) }
-    )
-
-    WideRadioButton(
-        label = localizedString(R.string.settings_card_style_minimal),
-        enabled = configViewModel.values.cardStyle == 1,
-        onClick = { configViewModel.updateCardStyle(1) }
-    )
-}
-
-@Composable
-private fun BackupSettingsSection() {
-    val navController = LocalNavController.current
-
-    Spacer(modifier = Modifier.height(16.dp))
-    WideTitle(text = localizedString(R.string.settings_section_manage_data))
-
-    WideButtonWithIcon(
-        icon = Icons.Filled.Upload,
-        label = localizedString(R.string.settings_button_backup_codes),
-        onClick = { navController.navigate(BackupVaultScreenRoute) }
-    )
-
-    WideButtonWithIcon(
-        icon = Icons.Filled.Download,
-        label = localizedString(R.string.settings_button_restore_codes),
-        onClick = { navController.navigate(RestoreVaultScreenRoute) }
-    )
-
-    WideButtonWithTintedIcon(
-        icon = painterResource(R.drawable.icon_google_authenticator),
-        tint = Color.Unspecified,
-        label = localizedString(R.string.settings_button_text_import_google_authenticator),
-        onClick = { navController.navigate(ImportFromGoogleAuthScreenRoute) }
-    )
-
-    WideButtonWithTintedIcon(
-        icon = painterResource(R.drawable.icon_google_authenticator),
-        tint = Color.Unspecified,
-        label = localizedString(R.string.settings_button_export_google_authenticator),
-        onClick = { navController.navigate(ExportToGoogleAuthScreenRoute) }
-    )
-
-    WideButtonWithIcon(
-        icon = painterResource(R.drawable.aegis),
-        label = localizedString(R.string.settings_button_text_import_aegis),
-        onClick = { navController.navigate(ImportFromAegisScreenRoute) }
-    )
-}
-
-@Composable
-private fun OtherSettingsScreen() {
-    val context = LocalContext.current
-
-    Spacer(modifier = Modifier.height(16.dp))
-    WideTitle(text = localizedString(R.string.settings_section_other))
-
-    val antiPixnapping = context.configViewModel.values.antiPixnapping
-    WideRadioButtonWithTintedIcon(
-        icon = painterResource(R.drawable.bug),
-        tint = Color.Unspecified,
-        label = "Anti-Pixnapping (CVE-2025-48561)",
-        enabled = antiPixnapping,
-        onClick = { context.configViewModel.updateAntiPixnapping(!antiPixnapping) }
-    )
-
-    val screenSecurity = context.configViewModel.values.screenSecurity
-    WideRadioButtonWithIcon(
-        icon = Icons.Default.ScreenLockPortrait,
-        label = localizedString(R.string.settings_option_screen_security),
-        enabled = screenSecurity,
-        onClick = { context.configViewModel.updateScreenSecurity(!screenSecurity) }
-    )
-
-    val requireTapToReveal = context.configViewModel.values.requireTapToReveal
-    WideRadioButtonWithIcon(
-        icon = Icons.Default.TouchApp,
-        label = localizedString(R.string.settings_option_tap_to_reveal),
-        enabled = requireTapToReveal,
-        onClick = { context.configViewModel.updateTapToReveal(!requireTapToReveal) }
-    )
-
-    val enableFocusSearch = context.configViewModel.values.enableFocusSearch
-    WideRadioButtonWithIcon(
-        icon = painterResource(R.drawable.frame_inspect),
-        label = localizedString(R.string.settings_option_focus_search),
-        enabled = enableFocusSearch,
-        onClick = { context.configViewModel.updateFocusSearch(!enableFocusSearch) }
-    )
-}
-
-@Composable
-private fun AboutSettingsSection() {
-    val context = LocalContext.current
-    val navController = LocalNavController.current
-
-    Spacer(modifier = Modifier.height(16.dp))
-    WideTitle(text = localizedString(R.string.settings_section_about))
-
-    WideButtonWithTintedIcon(
-        icon = painterResource(R.drawable.issuer_discord),
-        tint = Color.Unspecified,
-        label = "Discord",
-        onClick = {
-            val intent = Intent(Intent.ACTION_VIEW, "https://discord.com/invite/zxgXNzhYJu".toUri())
-            context.startActivity(intent)
-        }
-    )
-
-    WideButtonWithTintedIcon(
-        icon = painterResource(R.drawable.bluesky),
-        tint = Color.Unspecified,
-        label = "Bluesky",
-        onClick = {
-            val intent = Intent(Intent.ACTION_VIEW, "https://bsky.app/profile/979.st".toUri())
-            context.startActivity(intent)
-        }
-    )
-
-    WideButtonWithIcon(
-        icon = painterResource(R.drawable.github),
-        label = localizedString(R.string.about_button_view_source),
-        onClick = {
-            val intent = Intent(Intent.ACTION_VIEW, "https://github.com/979st/2fa-android".toUri())
-            context.startActivity(intent)
-        }
-    )
-
-    WideButtonWithIcon(
-        icon = Icons.Filled.Code,
-        label = localizedString(R.string.about_button_debug_log),
-        onClick = {
-            Logger.i("SettingsScreen", "Opened debug log")
-            navController.navigate(LogScreenRoute)
-        }
-    )
 }

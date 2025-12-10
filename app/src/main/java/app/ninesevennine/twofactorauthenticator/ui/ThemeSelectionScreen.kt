@@ -25,32 +25,33 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Contrast
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
-import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
-import app.ninesevennine.twofactorauthenticator.features.locale.LocaleOption
-import app.ninesevennine.twofactorauthenticator.localeViewModel
+import app.ninesevennine.twofactorauthenticator.features.theme.ThemeOption
+import app.ninesevennine.twofactorauthenticator.themeViewModel
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedButton
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedRadioButton
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedRefreshButton
 import kotlinx.serialization.Serializable
 
 @Serializable
-object LanguageSelectionScreenRoute
+object ThemeSelectionScreenRoute
 
 @Composable
-fun LanguageSelectionScreen() {
+fun ThemeSelectionScreen() {
     val context = LocalContext.current
     val navController = LocalNavController.current
+    val themeViewModel = context.themeViewModel
     val configViewModel = context.configViewModel
-    val localeViewModel = context.localeViewModel
 
     val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
@@ -76,44 +77,28 @@ fun LanguageSelectionScreen() {
                 Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
 
                 RoundedRadioButton(
-                    painter = painterResource(R.drawable.flag_european_union),
-                    label = languageLabelFromLocale(LocaleOption.EN_US.value),
-                    enabled = localeViewModel.effectiveLocale == LocaleOption.EN_US.value,
-                    onClick = { localeViewModel.updateLocale(context, LocaleOption.EN_US) }
+                    imageVector = Icons.Default.LightMode,
+                    label = "Light",
+                    enabled = themeViewModel.theme == ThemeOption.LIGHT.value,
+                    onClick = { themeViewModel.updateTheme(context, ThemeOption.LIGHT) }
                 )
+
                 RoundedRadioButton(
-                    painter = painterResource(R.drawable.flag_spain),
-                    label = languageLabelFromLocale(LocaleOption.ES_ES.value),
-                    enabled = localeViewModel.effectiveLocale == LocaleOption.ES_ES.value,
-                    onClick = { localeViewModel.updateLocale(context, LocaleOption.ES_ES) }
+                    imageVector = Icons.Default.DarkMode,
+                    label = "Dark",
+                    enabled = themeViewModel.theme == ThemeOption.DARK.value,
+                    onClick = { themeViewModel.updateTheme(context, ThemeOption.DARK) }
                 )
+
                 RoundedRadioButton(
-                    painter = painterResource(R.drawable.flag_russia),
-                    label = languageLabelFromLocale(LocaleOption.RU_RU.value),
-                    enabled = localeViewModel.effectiveLocale == LocaleOption.RU_RU.value,
-                    onClick = { localeViewModel.updateLocale(context, LocaleOption.RU_RU) }
-                )
-                RoundedRadioButton(
-                    painter = painterResource(R.drawable.flag_germany),
-                    label = languageLabelFromLocale(LocaleOption.DE_DE.value),
-                    enabled = localeViewModel.effectiveLocale == LocaleOption.DE_DE.value,
-                    onClick = { localeViewModel.updateLocale(context, LocaleOption.DE_DE) }
-                )
-                RoundedRadioButton(
-                    painter = painterResource(R.drawable.flag_france),
-                    label = languageLabelFromLocale(LocaleOption.FR_FR.value),
-                    enabled = localeViewModel.effectiveLocale == LocaleOption.FR_FR.value,
-                    onClick = { localeViewModel.updateLocale(context, LocaleOption.FR_FR) }
-                )
-                RoundedRadioButton(
-                    painter = painterResource(R.drawable.flag_vietnam),
-                    label = languageLabelFromLocale(LocaleOption.VI_VN.value),
-                    enabled = localeViewModel.effectiveLocale == LocaleOption.VI_VN.value,
-                    onClick = { localeViewModel.updateLocale(context, LocaleOption.VI_VN) }
+                    imageVector = Icons.Default.Contrast,
+                    label = "Dynamic",
+                    enabled = themeViewModel.theme == ThemeOption.DYNAMIC.value,
+                    onClick = { themeViewModel.updateTheme(context, ThemeOption.DYNAMIC) }
                 )
 
                 AnimatedVisibility(
-                    visible = configViewModel.values.locale != LocaleOption.SYSTEM_DEFAULT,
+                    visible = configViewModel.values.theme != ThemeOption.SYSTEM_DEFAULT,
                     enter = slideInVertically(
                         initialOffsetY = { fullHeight -> -fullHeight / 4 },
                         animationSpec = spring(stiffness = 250f, dampingRatio = 0.85f)
@@ -131,7 +116,7 @@ fun LanguageSelectionScreen() {
                     RoundedRefreshButton(
                         imageVector = Icons.Default.Refresh,
                         label = "Use System Default",
-                        onClick = { localeViewModel.updateLocale(context, LocaleOption.SYSTEM_DEFAULT) }
+                        onClick = { themeViewModel.updateTheme(context, ThemeOption.SYSTEM_DEFAULT) }
                     )
                 }
             }
@@ -141,17 +126,5 @@ fun LanguageSelectionScreen() {
                 onClick = { navController.popBackStack()}
             )
         }
-    }
-}
-
-fun languageLabelFromLocale(locale: String): String {
-    return when (locale) {
-        LocaleOption.EN_US.value -> "English International"
-        LocaleOption.ES_ES.value -> "Español"
-        LocaleOption.RU_RU.value -> "Русский"
-        LocaleOption.DE_DE.value -> "Deutsch"
-        LocaleOption.FR_FR.value -> "Français"
-        LocaleOption.VI_VN.value -> "Tiếng Việt"
-        else -> "Unknown"
     }
 }

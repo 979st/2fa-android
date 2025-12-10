@@ -33,6 +33,8 @@ import app.ninesevennine.twofactorauthenticator.ui.RestoreVaultScreen
 import app.ninesevennine.twofactorauthenticator.ui.RestoreVaultScreenRoute
 import app.ninesevennine.twofactorauthenticator.ui.SettingsScreen
 import app.ninesevennine.twofactorauthenticator.ui.SettingsScreenRoute
+import app.ninesevennine.twofactorauthenticator.ui.ThemeSelectionScreen
+import app.ninesevennine.twofactorauthenticator.ui.ThemeSelectionScreenRoute
 
 
 @Composable
@@ -75,6 +77,7 @@ fun AppNavigation() {
         composable<MainScreenRoute> { MainScreen() }
         composable<SettingsScreenRoute> { SettingsScreen() }
         composable<LanguageSelectionScreenRoute> { LanguageSelectionScreen() }
+        composable<ThemeSelectionScreenRoute>{ ThemeSelectionScreen() }
         composable<CardStyleSelectionScreenRoute> { CardStyleSelectionScreen() }
         composable<EditScreenRoute> {
             val args = it.toRoute<EditScreenRoute>()
