@@ -1,10 +1,14 @@
 package app.ninesevennine.twofactorauthenticator.ui
 
+import android.view.SoundEffectConstants
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,11 +24,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowLeft
-import androidx.compose.material.icons.automirrored.filled.ArrowRight
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.East
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -34,27 +41,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
-import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
-import app.ninesevennine.twofactorauthenticator.ui.elements.WideText
-import app.ninesevennine.twofactorauthenticator.ui.elements.WideTitle
-import app.ninesevennine.twofactorauthenticator.ui.elements.widebutton.WideButton
+import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedButton
 import app.ninesevennine.twofactorauthenticator.vaultViewModel
 import kotlinx.serialization.Serializable
 
@@ -64,6 +72,8 @@ object ExportToGoogleAuthScreenRoute
 @Composable
 fun ExportToGoogleAuthScreen() {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
+    val view = LocalView.current
     val colors = context.themeViewModel.colors
     val navController = LocalNavController.current
     val vaultViewModel = context.vaultViewModel
@@ -73,6 +83,10 @@ fun ExportToGoogleAuthScreen() {
     val qrBitmaps by remember { mutableStateOf(vaultViewModel.exportToGoogleAuth()) }
     val qrPages by remember { mutableIntStateOf(qrBitmaps.size) }
     var qrIndex by remember { mutableIntStateOf(0) }
+
+    val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+    val shape = remember { RoundedCornerShape(28.dp) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -84,20 +98,38 @@ fun ExportToGoogleAuthScreen() {
                 .fillMaxHeight()
                 .padding(
                     top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
-                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-                ),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.Start,
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.icon_google_authenticator),
-                    contentDescription = null,
-                    modifier = Modifier.size(128.dp),
-                    tint = Color.Unspecified
+                    bottom = navPadding
                 )
+                .padding(horizontal = navPadding),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.test),
+                        contentDescription = null,
+                        modifier = Modifier.size(128.dp),
+                        tint = Color.Unspecified
+                    )
+
+                    Icon(
+                        imageVector = Icons.Default.East,
+                        contentDescription = null,
+                        modifier = Modifier.size(64.dp),
+                        tint = Color.Unspecified
+                    )
+
+                    Icon(
+                        painter = painterResource(R.drawable.icon_google_authenticator),
+                        contentDescription = null,
+                        modifier = Modifier.size(128.dp),
+                        tint = Color.Unspecified
+                    )
+                }
 
                 if (qrBitmaps.isEmpty()) {
                     Box(
@@ -105,8 +137,9 @@ fun ExportToGoogleAuthScreen() {
                     ) {
                         Canvas(
                             modifier = Modifier
+                                .padding(all = 8.dp)
+                                .widthIn(max = 400.dp)
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp, horizontal = 32.dp)
                                 .aspectRatio(1f)
                         ) {
                             drawRect(
@@ -134,66 +167,100 @@ fun ExportToGoogleAuthScreen() {
                         modifier = Modifier
                             .widthIn(max = 400.dp)
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp, horizontal = 32.dp)
                             .aspectRatio(1f)
                     )
                 }
 
-                WideText(
-                    text = localizedString(R.string.export_google_authenticator_notice),
+                Text(
+                    text = "Only TOTP and HOTP tokens that generate 6-digit or 8-digit codes with 30 second intervals can be exported to Google Authenticator",
+                    color = colors.onBackground,
+                    fontSize = 14.sp,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight.W700,
+                    fontFamily = InterVariable,
                     textAlign = TextAlign.Center
                 )
 
                 if (qrBitmaps.isNotEmpty()) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
+                        horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(64.dp)
-                                .clickable {
-                                    qrIndex = (qrIndex - 1).coerceAtLeast(0)
-                                },
+                                .size(56.dp)
+                                .clip(shape)
+                                .background(
+                                    color = colors.background,
+                                    shape = shape
+                                )
+                                .border(width = 1.dp, color = colors.outline, shape = shape)
+                                .clickable(
+                                    onClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        view.playSoundEffect(SoundEffectConstants.CLICK)
+
+                                        qrIndex = (qrIndex - 1).coerceAtLeast(0)
+                                    },
+                                    indication = ripple(color = colors.onBackground.copy(alpha = 0.08f)),
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowLeft,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = null,
-                                modifier = Modifier.size(32.dp),
-                                tint = colors.onBackground
+                                tint = colors.onPrimaryContainer,
+                                modifier = Modifier.size(35.dp)
                             )
                         }
 
-                        WideTitle(
+                        Text(
                             text = "${qrIndex + 1} / $qrPages",
+                            color = colors.onBackground,
+                            fontSize = 14.sp,
+                            fontStyle = FontStyle.Normal,
+                            fontWeight = FontWeight.W700,
+                            fontFamily = InterVariable,
                             textAlign = TextAlign.Center
                         )
 
                         Box(
                             modifier = Modifier
-                                .size(64.dp)
-                                .clickable {
-                                    qrIndex = (qrIndex + 1).coerceAtMost(qrPages - 1)
-                                },
+                                .size(56.dp)
+                                .clip(shape)
+                                .background(
+                                    color = colors.background,
+                                    shape = shape
+                                )
+                                .border(width = 1.dp, color = colors.outline, shape = shape)
+                                .clickable(
+                                    onClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        view.playSoundEffect(SoundEffectConstants.CLICK)
+
+                                        qrIndex = (qrIndex + 1).coerceAtMost(qrPages - 1)
+                                    },
+                                    indication = ripple(color = colors.onBackground.copy(alpha = 0.08f)),
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowRight,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = null,
-                                modifier = Modifier.size(32.dp),
-                                tint = colors.onBackground
+                                tint = colors.onPrimaryContainer,
+                                modifier = Modifier.size(35.dp)
                             )
                         }
                     }
                 }
             }
 
-            WideButton(
-                label = localizedString(R.string.common_cancel),
-                onClick = { navController.popBackStack() }
-            )
+            RoundedButton("Done") {
+                navController.popBackStack()
+            }
         }
     }
 }

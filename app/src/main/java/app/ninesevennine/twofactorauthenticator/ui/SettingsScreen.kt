@@ -1,6 +1,9 @@
 package app.ninesevennine.twofactorauthenticator.ui
 
 import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,14 +19,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.ScreenLockPortrait
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.Upload
@@ -38,20 +39,12 @@ import androidx.core.net.toUri
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
-import app.ninesevennine.twofactorauthenticator.features.locale.LocaleOption
-import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.ThemeOption
 import app.ninesevennine.twofactorauthenticator.localeViewModel
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 import app.ninesevennine.twofactorauthenticator.ui.elements.SectionButton
 import app.ninesevennine.twofactorauthenticator.ui.elements.SectionGroup
-import app.ninesevennine.twofactorauthenticator.ui.elements.WideTitle
 import app.ninesevennine.twofactorauthenticator.ui.elements.bottomappbar.SettingsAppBar
-import app.ninesevennine.twofactorauthenticator.ui.elements.widebutton.WideButtonWithIcon
-import app.ninesevennine.twofactorauthenticator.ui.elements.widebutton.WideButtonWithTintedIcon
-import app.ninesevennine.twofactorauthenticator.ui.elements.wideradiobutton.WideRadioButton
-import app.ninesevennine.twofactorauthenticator.ui.elements.wideradiobutton.WideRadioButtonWithIcon
-import app.ninesevennine.twofactorauthenticator.ui.elements.wideradiobutton.WideRadioButtonWithTintedIcon
 import app.ninesevennine.twofactorauthenticator.utils.Logger
 import kotlinx.serialization.Serializable
 
@@ -66,6 +59,21 @@ fun SettingsScreen() {
     val themeViewModel = context.themeViewModel
     val configViewModel = context.configViewModel
     val localeViewModel = context.localeViewModel
+
+    val internalAppLogLauncher = rememberLauncherForActivityResult(
+        contract = CreateDocument("text/plain"),
+    ) { uri: Uri? ->
+        if (uri != null) {
+            try {
+                val logContent = Logger.getFullLog()
+                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                    outputStream.write(logContent.toByteArray())
+                }
+            } catch (e: Exception) {
+                Logger.e("internalAppLogLauncher", "Error saving log file: ${e.message}")
+            }
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -171,6 +179,7 @@ fun SettingsScreen() {
 
                 SectionButton(
                     painter = painterResource(R.drawable.aegis),
+                    tint = colors.onBackground,
                     primaryText = "Import from Aegis",
                     secondaryText = "JSON file",
                     onClick = { navController.navigate(ImportFromAegisScreenRoute) }
@@ -180,10 +189,10 @@ fun SettingsScreen() {
             SectionGroup("Security") {
                 SectionButton(
                     imageVector = Icons.Default.Description,
-                    primaryText = "Download security log",
+                    primaryText = "Download internal app log",
                     onClick = {
-                        Logger.i("SettingsScreen", "Opened debug log")
-                        navController.navigate(LogScreenRoute)
+                        Logger.i("SettingsScreen", "Downloading internal app log")
+                        internalAppLogLauncher.launch("2fa_log")
                     }
                 )
 

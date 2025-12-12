@@ -30,6 +30,11 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -54,6 +59,12 @@ fun ThemeSelectionScreen() {
     val configViewModel = context.configViewModel
 
     val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+    var showRefreshButton by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        showRefreshButton = true
+    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -98,7 +109,7 @@ fun ThemeSelectionScreen() {
                 )
 
                 AnimatedVisibility(
-                    visible = configViewModel.values.theme != ThemeOption.SYSTEM_DEFAULT,
+                    visible = showRefreshButton && configViewModel.values.theme != ThemeOption.SYSTEM_DEFAULT,
                     enter = slideInVertically(
                         initialOffsetY = { fullHeight -> -fullHeight / 4 },
                         animationSpec = spring(stiffness = 250f, dampingRatio = 0.85f)
