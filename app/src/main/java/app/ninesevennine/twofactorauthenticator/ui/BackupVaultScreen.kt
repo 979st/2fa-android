@@ -6,22 +6,26 @@ import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,15 +37,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
-import app.ninesevennine.twofactorauthenticator.R
-import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
+import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
-import app.ninesevennine.twofactorauthenticator.ui.elements.WideText
-import app.ninesevennine.twofactorauthenticator.ui.elements.WideTitle
-import app.ninesevennine.twofactorauthenticator.ui.elements.textfields.ConfidentialSingleLineTextField
-import app.ninesevennine.twofactorauthenticator.ui.elements.widebutton.WideButton
+import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedButton
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionConfidentialTextBox
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionGroup
 import app.ninesevennine.twofactorauthenticator.utils.Logger
 import app.ninesevennine.twofactorauthenticator.utils.Password
 import app.ninesevennine.twofactorauthenticator.vaultViewModel
@@ -65,17 +70,16 @@ fun BackupVaultScreen() {
     var confirmPassword by remember { mutableStateOf("") }
 
     var isPasswordLong by remember { mutableStateOf(false) }
-    var hasPasswordUppercase by remember { mutableStateOf(false) }
+    var hasNoLeadingOrTrailingWhitespace by remember { mutableStateOf(false) }
     var hasPasswordDigit by remember { mutableStateOf(false) }
     var hasPasswordSpecial by remember { mutableStateOf(false) }
 
     isPasswordLong = Password.isLong(password)
-    hasPasswordUppercase = Password.hasUppercase(password)
+    hasNoLeadingOrTrailingWhitespace = Password.hasNoLeadingOrTrailingWhitespace(password)
     hasPasswordDigit = Password.hasDigit(password)
     hasPasswordSpecial = Password.hasSpecial(password)
 
-    val isPasswordStrong =
-        isPasswordLong && hasPasswordUppercase && hasPasswordDigit && hasPasswordSpecial
+    val isPasswordStrong = Password.isValid(password)
 
     var passwordsMatch by remember { mutableStateOf(true) }
     passwordsMatch = password == confirmPassword
@@ -84,13 +88,13 @@ fun BackupVaultScreen() {
     var backupContent by remember { mutableStateOf("") }
     var isBackingUp by remember { mutableStateOf(false) }
 
-    val dots = arrayOf("", ".", "..", "...")
-    var dotCount by remember { mutableIntStateOf(0) }
+    val spinnerFrames = arrayOf("|", "/", "-", "\\")
+    var spinnerIndex by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(isBackingUp) {
         while (isBackingUp) {
-            dotCount = (dotCount + 1) % 4
-            delay(250L)
+            spinnerIndex = (spinnerIndex + 1) % spinnerFrames.size
+            delay(200L)
         }
     }
 
@@ -129,18 +133,17 @@ fun BackupVaultScreen() {
             modifier = Modifier
                 .widthIn(max = 500.dp)
                 .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
                 .padding(
-                    top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
-                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                    start = navBottom,
+                    bottom = bottomPadding,
+                    end = navBottom,
                 ),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(bottom = bottomPadding)
-                    .verticalScroll(rememberScrollState())
-            ) {
+            Column {
+                Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
@@ -153,79 +156,118 @@ fun BackupVaultScreen() {
                     )
                 }
 
-                WideTitle(text = localizedString(R.string.backup_title_credentials))
-
-                ConfidentialSingleLineTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = password,
-                    onValueChange = { password = it },
-                    placeholder = localizedString(R.string.common_password_hint),
-                    isError = !isPasswordStrong
-                )
-
-                if (!isPasswordLong) WideText(
-                    text = localizedString(R.string.backup_error_password_length),
-                    color = colors.error
-                )
-
-                if (!hasPasswordUppercase) WideText(
-                    text = localizedString(R.string.backup_error_password_uppercase),
-                    color = colors.error
-                )
-
-                if (!hasPasswordDigit) WideText(
-                    text = localizedString(R.string.backup_error_password_digit),
-                    color = colors.error
-                )
-
-                if (!hasPasswordSpecial) WideText(
-                    text = localizedString(R.string.backup_error_password_special),
-                    color = colors.error
-                )
-
-                ConfidentialSingleLineTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    placeholder = localizedString(R.string.backup_field_confirm_password_hint),
-                    isError = !passwordsMatch
-                )
-
-                WideButton(
-                    label = if (isBackingUp)
-                        "${localizedString(R.string.backup_status_backing_up)}${dots[dotCount]}"
-                    else
-                        localizedString(R.string.backup_button_action),
-                    color = colors.primary,
-                    textColor = colors.onPrimary,
-                    onClick = {
-                        if (!isPasswordStrong || !passwordsMatch || isBackingUp) {
-                            return@WideButton
-                        }
-
-                        isBackingUp = true
-
-                        backupScope.launch {
-                            backupContent = withContext(Dispatchers.Default) {
-                                vaultViewModel.backupVault(password)
-                            }
-
-                            if (backupContent.isEmpty()) {
-                                Logger.e("BackupVaultScreen", "Backup content is empty")
-                                isBackingUp = false
-                                return@launch
-                            }
-
-                            createDocumentLauncher.launch("backup.2fa")
-                        }
+                SectionGroup(
+                    modifier = Modifier.padding(vertical = 16.dp),
+                    title = "Credentials"
+                ) {
+                    Spacer(Modifier.height(6.dp))
+                    SectionConfidentialTextBox(
+                        title = "Password",
+                        value = password,
+                        onValueChange = { password = it },
+                        error = !isPasswordStrong
+                    )
+                    SectionConfidentialTextBox(
+                        title = "Confirm password",
+                        value = confirmPassword,
+                        onValueChange = { confirmPassword = it },
+                        error = !passwordsMatch
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            text = if (isPasswordStrong)
+                                "Password requirements met!"
+                            else
+                                "Try another password that contains at least:",
+                            modifier = Modifier.padding(start = 4.dp),
+                            color = colors.onBackground,
+                            fontSize = 14.sp,
+                            fontStyle = FontStyle.Normal,
+                            fontWeight = FontWeight.W700,
+                            fontFamily = InterVariable
+                        )
+                        Text(
+                            text = "8 characters",
+                            modifier = Modifier.padding(start = 20.dp),
+                            color = if (isPasswordLong) colors.onBackground else colors.error,
+                            fontSize = 14.sp,
+                            fontStyle = FontStyle.Normal,
+                            fontWeight = FontWeight.W700,
+                            fontFamily = InterVariable,
+                            maxLines = 1
+                        )
+                        Text(
+                            text = "1 number",
+                            modifier = Modifier.padding(start = 20.dp),
+                            color = if (hasPasswordDigit) colors.onBackground else colors.error,
+                            fontSize = 14.sp,
+                            fontStyle = FontStyle.Normal,
+                            fontWeight = FontWeight.W700,
+                            fontFamily = InterVariable,
+                            maxLines = 1
+                        )
+                        Text(
+                            text = "1 special character e.g., $, !, @, %, &",
+                            modifier = Modifier.padding(start = 20.dp),
+                            color = if (hasPasswordSpecial) colors.onBackground else colors.error,
+                            fontSize = 14.sp,
+                            fontStyle = FontStyle.Normal,
+                            fontWeight = FontWeight.W700,
+                            fontFamily = InterVariable,
+                            maxLines = 1
+                        )
+                        Text(
+                            text = "No leading or trailing whitespace",
+                            modifier = Modifier.padding(start = 20.dp),
+                            color = if (hasNoLeadingOrTrailingWhitespace) colors.onBackground else colors.error,
+                            fontSize = 14.sp,
+                            fontStyle = FontStyle.Normal,
+                            fontWeight = FontWeight.W700,
+                            fontFamily = InterVariable,
+                            maxLines = 1
+                        )
                     }
-                )
+                    Spacer(Modifier.height(10.dp))
+                }
+
+                RoundedButton(
+                    label = if (isBackingUp)
+                        spinnerFrames[spinnerIndex]
+                    else
+                        "Create backup"
+                ) {
+                    if (!isPasswordStrong || !passwordsMatch || isBackingUp) {
+                        return@RoundedButton
+                    }
+
+                    isBackingUp = true
+
+                    backupScope.launch {
+                        backupContent = withContext(Dispatchers.Default) {
+                            vaultViewModel.backupVault(password)
+                        }
+
+                        if (backupContent.isEmpty()) {
+                            Logger.e("BackupVaultScreen", "Backup content is empty")
+                            isBackingUp = false
+                            return@launch
+                        }
+
+                        createDocumentLauncher.launch("backup.2fa")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
-            WideButton(
-                label = localizedString(R.string.common_cancel),
-                onClick = { navController.popBackStack() }
-            )
+            RoundedButton("Cancel") {
+                navController.popBackStack()
+            }
         }
     }
 }

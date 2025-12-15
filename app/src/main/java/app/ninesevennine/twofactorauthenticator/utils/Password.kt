@@ -16,4 +16,16 @@ object Password {
     fun hasSpecial(password: String): Boolean {
         return password.any { !it.isLetterOrDigit() }
     }
+
+    fun hasNoLeadingOrTrailingWhitespace(password: String): Boolean {
+        return password == password.trim()
+    }
+
+    fun isValid(password: String): Boolean {
+        return isLong(password)
+                && hasUppercase(password)
+                && hasDigit(password)
+                && hasSpecial(password)
+                && hasNoLeadingOrTrailingWhitespace(password)
+    }
 }

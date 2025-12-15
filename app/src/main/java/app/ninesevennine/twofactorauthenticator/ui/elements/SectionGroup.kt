@@ -22,6 +22,7 @@ import app.ninesevennine.twofactorauthenticator.themeViewModel
 
 @Composable
 fun SectionGroup(
+    modifier: Modifier = Modifier,
     title: String,
     content: @Composable () -> Unit
 ) {
@@ -29,9 +30,7 @@ fun SectionGroup(
     val colors = context.themeViewModel.colors
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier = modifier.fillMaxWidth()
     ) {
         Text(
             text = title,

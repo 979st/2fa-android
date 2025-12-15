@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsTopHeight
@@ -76,20 +77,24 @@ fun SettingsScreen() {
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.TopCenter
     ) {
         Column(
             modifier = Modifier
                 .widthIn(max = 500.dp)
-                .fillMaxHeight()
-                .verticalScroll(rememberScrollState()),
+                .fillMaxHeight(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
             Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
 
-            SectionGroup("Appearance") {
+            SectionGroup(
+                modifier = Modifier.padding(all = 16.dp),
+                title = "Appearance"
+            ) {
                 SectionButton(
                     imageVector = Icons.Default.Language,
                     primaryText = "Language",
@@ -139,7 +144,10 @@ fun SettingsScreen() {
                 )
             }
 
-            SectionGroup("Behavior") {
+            SectionGroup(
+                modifier = Modifier.padding(all = 16.dp),
+                title = "Behavior"
+            ) {
                 val enableFocusSearch = context.configViewModel.values.enableFocusSearch
                 SectionButton(
                     painter = painterResource(R.drawable.frame_inspect),
@@ -150,7 +158,10 @@ fun SettingsScreen() {
                 )
             }
 
-            SectionGroup("Backup & Restore") {
+            SectionGroup(
+                modifier = Modifier.padding(all = 16.dp),
+                title = "Backup & Restore"
+            ) {
                 SectionButton(
                     imageVector = Icons.Default.Upload,
                     primaryText = "Backup codes",
@@ -186,7 +197,10 @@ fun SettingsScreen() {
                 )
             }
 
-            SectionGroup("Security") {
+            SectionGroup(
+                modifier = Modifier.padding(all = 16.dp),
+                title = "Security"
+            ) {
                 SectionButton(
                     imageVector = Icons.Default.Description,
                     primaryText = "Download internal app log",
@@ -216,7 +230,10 @@ fun SettingsScreen() {
                 )
             }
 
-            SectionGroup("About") {
+            SectionGroup(
+                modifier = Modifier.padding(all = 16.dp),
+                title = "About"
+            ) {
                 SectionButton(
                     primaryText = "979",
                     secondaryText = "About us",
