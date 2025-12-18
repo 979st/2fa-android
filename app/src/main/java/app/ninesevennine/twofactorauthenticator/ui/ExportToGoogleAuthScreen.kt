@@ -28,7 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.East
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -105,31 +104,13 @@ fun ExportToGoogleAuthScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.test),
-                        contentDescription = null,
-                        modifier = Modifier.size(128.dp),
-                        tint = Color.Unspecified
-                    )
 
-                    Icon(
-                        imageVector = Icons.Default.East,
-                        contentDescription = null,
-                        modifier = Modifier.size(64.dp),
-                        tint = Color.Unspecified
-                    )
-
-                    Icon(
-                        painter = painterResource(R.drawable.icon_google_authenticator),
-                        contentDescription = null,
-                        modifier = Modifier.size(128.dp),
-                        tint = Color.Unspecified
-                    )
-                }
+                Icon(
+                    painter = painterResource(R.drawable.icon_google_authenticator),
+                    contentDescription = null,
+                    modifier = Modifier.size(128.dp),
+                    tint = Color.Unspecified
+                )
 
                 if (qrBitmaps.isEmpty()) {
                     Box(

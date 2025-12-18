@@ -8,17 +8,24 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsTopHeight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,16 +38,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.features.externalvault.AegisAuthenticator
-import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
+import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
-import app.ninesevennine.twofactorauthenticator.ui.elements.WideText
-import app.ninesevennine.twofactorauthenticator.ui.elements.WideTitle
-import app.ninesevennine.twofactorauthenticator.ui.elements.textfields.ConfidentialSingleLineTextField
-import app.ninesevennine.twofactorauthenticator.ui.elements.widebutton.WideButton
+import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedButton
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionButton
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionConfidentialTextBox
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionGroup
 import app.ninesevennine.twofactorauthenticator.utils.Logger
 import app.ninesevennine.twofactorauthenticator.vaultViewModel
 import kotlinx.coroutines.Dispatchers
@@ -109,15 +119,20 @@ fun ImportFromAegisScreen() {
 
     if (importContent.isEmpty()) return
 
-    val dots = arrayOf("", ".", "..", "...")
-    var dotCount by remember { mutableIntStateOf(0) }
+    val spinnerFrames = arrayOf("|", "/", "-", "\\")
+    var spinnerIndex by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(isImporting) {
         while (isImporting) {
-            dotCount = (dotCount + 1) % 4
-            delay(250L)
+            spinnerIndex = (spinnerIndex + 1) % spinnerFrames.size
+            delay(200L)
         }
     }
+
+    val navBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val imeBottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
+
+    val bottomPadding = if (imeBottom > 0.dp) imeBottom else navBottom
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -128,13 +143,15 @@ fun ImportFromAegisScreen() {
                 .widthIn(max = 500.dp)
                 .fillMaxHeight()
                 .padding(
-                    top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
-                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                    start = navBottom,
+                    bottom = navBottom,
+                    end = navBottom,
                 ),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            Column(Modifier.padding(bottom = bottomPadding)) {
+                Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
@@ -147,63 +164,79 @@ fun ImportFromAegisScreen() {
                     )
                 }
 
-                WideTitle(text = "${localizedString(R.string.restore_prompt_credentials)} ($importFilename)")
-
-                ConfidentialSingleLineTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = password,
-                    onValueChange = { password = it },
-                    placeholder = localizedString(R.string.common_password_hint),
-                    isError = password.isEmpty()
-                )
-
-                if (importError) WideText(
-                    text = localizedString(R.string.restore_error_incorrect_password),
-                    color = colors.error
-                )
-
-                WideButton(
-                    label = if (isImporting)
-                        "${localizedString(R.string.import_from_aegis_button_text_importing)}${dots[dotCount]}"
-                    else
-                        localizedString(R.string.import_from_aegis_button_text_import),
-                    color = colors.primary,
-                    textColor = colors.onPrimary,
-                    onClick = {
-                        if (isImporting || password.isEmpty()) {
-                            return@WideButton
-                        }
-
-                        isImporting = true
-
-                        importScope.launch {
-                            val success = withContext(Dispatchers.Default) {
-                                val vault =
-                                    AegisAuthenticator.importEncrypted(importContent, password)
-                                if (vault != null) {
-                                    vaultViewModel.restoreVaultItems(vault)
-                                }
-                                vault != null
-                            }
-
-                            if (success) {
-                                navController.popBackStack(
-                                    navController.graph.startDestinationId,
-                                    inclusive = false
-                                )
-                            } else {
-                                importError = true
-                                isImporting = false
-                            }
+                SectionGroup(
+                    modifier = Modifier.padding(vertical = 16.dp),
+                    title = "Credentials"
+                ) {
+                    SectionButton(
+                        imageVector = Icons.Default.Description,
+                        primaryText = importFilename
+                    )
+                    SectionConfidentialTextBox(
+                        title = "Password",
+                        value = password,
+                        onValueChange = { password = it },
+                        error = password.isEmpty()
+                    )
+                    if (importError) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 6.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "Incorrect password",
+                                modifier = Modifier.padding(start = 4.dp),
+                                color = colors.error,
+                                fontSize = 14.sp,
+                                fontStyle = FontStyle.Normal,
+                                fontWeight = FontWeight.W700,
+                                fontFamily = InterVariable
+                            )
                         }
                     }
-                )
+                    Spacer(Modifier.height(10.dp))
+                }
+
+                RoundedButton(
+                    label = if (isImporting)
+                        spinnerFrames[spinnerIndex]
+                    else
+                        "Import"
+                ) {
+                    if (isImporting || password.isEmpty()) {
+                        return@RoundedButton
+                    }
+
+                    isImporting = true
+
+                    importScope.launch {
+                        val success = withContext(Dispatchers.Default) {
+                            val vault =
+                                AegisAuthenticator.importEncrypted(importContent, password)
+                            if (vault != null) {
+                                vaultViewModel.restoreVaultItems(vault)
+                            }
+                            vault != null
+                        }
+
+                        if (success) {
+                            navController.popBackStack(
+                                navController.graph.startDestinationId,
+                                inclusive = false
+                            )
+                        } else {
+                            importError = true
+                            isImporting = false
+                        }
+                    }
+                }
             }
 
-            WideButton(
-                label = localizedString(R.string.common_cancel),
-                onClick = { navController.popBackStack() }
-            )
+            RoundedButton("Cancel") {
+                navController.popBackStack()
+            }
         }
     }
 }

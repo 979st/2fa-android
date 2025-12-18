@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,12 +61,14 @@ fun CardStyleSelectionScreen() {
                 Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
 
                 RoundedRadioButton(
+                    imageVector = Icons.Default.Star,
                     label = "Classic",
                     enabled = configViewModel.values.cardStyle == 0,
                     onClick = { configViewModel.updateCardStyle(0) }
                 )
 
                 RoundedRadioButton(
+                    imageVector = Icons.Default.Star,
                     label = "Minimal",
                     enabled = configViewModel.values.cardStyle == 1,
                     onClick = { configViewModel.updateCardStyle(1) }

@@ -136,12 +136,12 @@ fun BackupVaultScreen() {
                 .verticalScroll(rememberScrollState())
                 .padding(
                     start = navBottom,
-                    bottom = bottomPadding,
+                    bottom = navBottom,
                     end = navBottom,
                 ),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            Column(Modifier.padding(bottom = bottomPadding)) {
                 Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
 
                 Box(

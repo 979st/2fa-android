@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.ScreenLockPortrait
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.runtime.Composable
@@ -126,6 +127,7 @@ fun SettingsScreen() {
                     onClick = { navController.navigate(ThemeSelectionScreenRoute) }
                 )
                 SectionButton(
+                    imageVector = Icons.Default.Star,
                     primaryText = "Card style",
                     secondaryText = when (configViewModel.values.cardStyle) {
                         0 -> "Classic"
