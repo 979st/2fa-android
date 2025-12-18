@@ -3,8 +3,6 @@ package app.ninesevennine.twofactorauthenticator.features.theme
 import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -68,10 +66,6 @@ class ThemeViewModel() : ViewModel() {
 
             ThemeOption.LIGHT -> lightColorScheme() to ThemeOption.LIGHT.value
             ThemeOption.DARK -> darkColorScheme() to ThemeOption.DARK.value
-            ThemeOption.DYNAMIC -> if (isSystemDark(context))
-                dynamicDarkColorScheme(context) to ThemeOption.DYNAMIC.value
-            else
-                dynamicLightColorScheme(context) to ThemeOption.DYNAMIC.value
         }
 
         colors = colorScheme

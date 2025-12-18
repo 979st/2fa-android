@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Refresh
@@ -99,13 +98,6 @@ fun ThemeSelectionScreen() {
                     label = "Dark",
                     enabled = themeViewModel.theme == ThemeOption.DARK.value,
                     onClick = { themeViewModel.updateTheme(context, ThemeOption.DARK) }
-                )
-
-                RoundedRadioButton(
-                    imageVector = Icons.Default.Contrast,
-                    label = "Dynamic",
-                    enabled = themeViewModel.theme == ThemeOption.DYNAMIC.value,
-                    onClick = { themeViewModel.updateTheme(context, ThemeOption.DYNAMIC) }
                 )
 
                 AnimatedVisibility(

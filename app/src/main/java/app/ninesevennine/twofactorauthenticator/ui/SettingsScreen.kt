@@ -20,7 +20,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Download
@@ -106,7 +105,6 @@ fun SettingsScreen() {
                     imageVector = when (themeViewModel.theme) {
                         ThemeOption.LIGHT.value -> Icons.Default.LightMode
                         ThemeOption.DARK.value -> Icons.Default.DarkMode
-                        ThemeOption.DYNAMIC.value -> Icons.Default.Contrast
                         else -> null
                     },
                     primaryText = "Theme",
@@ -120,7 +118,6 @@ fun SettingsScreen() {
                         when (themeViewModel.theme) {
                             ThemeOption.LIGHT.value -> "Light"
                             ThemeOption.DARK.value -> "Dark"
-                            ThemeOption.DYNAMIC.value -> "Dynamic"
                             else -> null
                         }
                     },

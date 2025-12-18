@@ -2,13 +2,13 @@ package app.ninesevennine.twofactorauthenticator.ui.elements.bottomappbar
 
 import android.view.SoundEffectConstants
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.displayCutout
@@ -17,12 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -31,8 +30,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -46,6 +43,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -60,9 +58,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
-import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 
@@ -80,24 +76,26 @@ fun MainAppBar(
     val keyboardController = LocalSoftwareKeyboardController.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val colors = context.themeViewModel.colors
-    val primaryColor = colors.onPrimaryContainer
+    val themeViewModel = context.themeViewModel
+    val configViewModel = context.configViewModel
+    val colors = themeViewModel.colors
 
     var query by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
 
-    val navBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    val imeBottomPadding = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
+    val navigationBarsPadding = WindowInsets.navigationBars.asPaddingValues()
+    val imePadding = WindowInsets.ime.asPaddingValues()
+    val cutoutPadding = WindowInsets.displayCutout.asPaddingValues()
 
-    val cutoutLeftPadding =
-        WindowInsets.displayCutout.asPaddingValues().calculateLeftPadding(layoutDirection)
-    val cutoutRightPadding =
-        WindowInsets.displayCutout.asPaddingValues().calculateRightPadding(layoutDirection)
+    val navBottomPadding = navigationBarsPadding.calculateBottomPadding()
+    val imeBottomPadding = imePadding.calculateBottomPadding()
+    val cutoutLeftPadding = cutoutPadding.calculateLeftPadding(layoutDirection)
+    val cutoutRightPadding = cutoutPadding.calculateRightPadding(layoutDirection)
 
-    val isKeyboardOpen = imeBottomPadding > navBottomPadding + 4.dp + 56.dp
+    val isKeyboardOpen = imeBottomPadding > navBottomPadding + 56.dp
     val bottomPadding = if (isKeyboardOpen) imeBottomPadding else navBottomPadding
 
-    if (context.configViewModel.values.enableFocusSearch) {
+    if (configViewModel.values.enableFocusSearch) {
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
             keyboardController?.show()
@@ -109,10 +107,13 @@ fun MainAppBar(
         view.playSoundEffect(SoundEffectConstants.CLICK)
     }
 
+    val shape = remember { RoundedCornerShape(28.dp) }
+    val keyboardOpenShape = remember { RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(PaddingValues(bottom = if (!isKeyboardOpen) bottomPadding + 4.dp else 0.dp)),
+            .padding(PaddingValues(bottom = if (!isKeyboardOpen) bottomPadding else 0.dp)),
         contentAlignment = Alignment.BottomCenter
     ) {
         Row(
@@ -120,19 +121,14 @@ fun MainAppBar(
                 .widthIn(max = if (!isKeyboardOpen) 500.dp else Dp.Infinity)
                 .fillMaxWidth()
                 .padding(
-                    start = if (isKeyboardOpen) cutoutLeftPadding else bottomPadding + 4.dp,
-                    end = if (isKeyboardOpen) cutoutRightPadding else bottomPadding + 4.dp
+                    start = if (isKeyboardOpen) cutoutLeftPadding else bottomPadding,
+                    end = if (isKeyboardOpen) cutoutRightPadding else bottomPadding
                 )
                 .height(if (isKeyboardOpen) 56.dp + bottomPadding else 56.dp)
-                .shadow(elevation = 8.dp, shape = RoundedCornerShape(28.dp))
-                .clip(
-                    if (isKeyboardOpen) {
-                        RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
-                    } else {
-                        RoundedCornerShape(28.dp)
-                    }
-                )
-                .background(colors.primaryContainer),
+                .shadow(elevation = 8.dp, shape = shape)
+                .background(colors.background, shape = shape)
+                .border(width = 1.dp, color = colors.outline, shape = shape)
+                .clip(if (isKeyboardOpen) keyboardOpenShape else shape),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top
         ) {
@@ -153,21 +149,17 @@ fun MainAppBar(
                         onSearch(query)
                     },
                     focusRequester = focusRequester,
-                    primaryColor = primaryColor,
+                    primaryColor = colors.onBackground,
                     modifier = Modifier.weight(1f)
                 )
-
-                VerticalDivider(primaryColor)
 
                 SettingsButton(
                     onClick = {
                         triggerFeedback()
                         onSettings()
                     },
-                    primaryColor = primaryColor,
+                    primaryColor = colors.onBackground,
                 )
-
-                VerticalDivider(primaryColor)
 
                 AddButton(
                     onTap = {
@@ -178,7 +170,7 @@ fun MainAppBar(
                         triggerFeedback(HapticFeedbackType.LongPress)
                         onAddLongPress()
                     },
-                    primaryColor = primaryColor
+                    primaryColor = colors.onBackground
                 )
             }
         }
@@ -194,69 +186,51 @@ private fun SearchTextField(
     primaryColor: Color,
     modifier: Modifier = Modifier
 ) {
-    TextField(
+    BasicTextField(
         value = query,
         onValueChange = onQueryChange,
         modifier = modifier
-            .fillMaxWidth()
+            .height(56.dp)
             .focusRequester(focusRequester),
         singleLine = true,
         textStyle = TextStyle(
             fontFamily = InterVariable,
-            fontWeight = FontWeight.Normal,
-            fontSize = 18.sp,
+            fontWeight = FontWeight.W700,
+            fontSize = 16.sp,
             color = primaryColor
         ),
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(26.dp)
-                    .offset(x = 8.dp),
-                tint = primaryColor
-            )
-        },
-        placeholder = {
-            Text(
-                text = localizedString(R.string.main_bottom_bar_textfield_hint_text_search),
-                fontFamily = InterVariable,
-                letterSpacing = (-0.2).sp,
-                fontWeight = FontWeight.Normal,
-                fontSize = 18.sp,
-                color = primaryColor
-            )
-        },
-        colors = TextFieldDefaults.colors(
-            focusedTextColor = primaryColor,
-            unfocusedTextColor = primaryColor,
-            disabledTextColor = primaryColor.copy(alpha = 0.6f),
-            cursorColor = primaryColor,
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-            focusedLeadingIconColor = primaryColor,
-            unfocusedLeadingIconColor = primaryColor,
-            disabledLeadingIconColor = primaryColor.copy(alpha = 0.6f),
-            focusedPlaceholderColor = primaryColor.copy(alpha = 0.7f),
-            unfocusedPlaceholderColor = primaryColor.copy(alpha = 0.7f),
-            disabledPlaceholderColor = primaryColor.copy(alpha = 0.5f)
-        ),
+        cursorBrush = SolidColor(primaryColor),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = { onSearch() })
-    )
-}
-
-@Composable
-private fun VerticalDivider(color: Color) {
-    Spacer(
-        modifier = Modifier
-            .width(1.dp)
-            .height(32.dp)
-            .background(color.copy(alpha = 0.1f))
+        keyboardActions = KeyboardActions(onSearch = { onSearch() }),
+        decorationBox = { innerTextField ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = null,
+                    modifier = Modifier.padding(start = 18.dp).size(30.dp),
+                    tint = primaryColor
+                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 4.dp)
+                ) {
+                    if (query.isEmpty()) {
+                        Text(
+                            text = "Search",
+                            fontFamily = InterVariable,
+                            fontWeight = FontWeight.W500,
+                            fontSize = 16.sp,
+                            color = primaryColor.copy(alpha = 0.7f)
+                        )
+                    }
+                    innerTextField()
+                }
+            }
+        }
     )
 }
 
@@ -267,8 +241,7 @@ private fun SettingsButton(
 ) {
     Box(
         modifier = Modifier
-            .size(56.dp)
-            .clip(RoundedCornerShape(8.dp))
+            .size(48.dp)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
