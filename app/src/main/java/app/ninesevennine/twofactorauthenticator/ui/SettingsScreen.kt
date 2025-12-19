@@ -101,6 +101,7 @@ fun SettingsScreen() {
                     secondaryText = languageLabelFromLocale(localeViewModel.effectiveLocale),
                     onClick = { navController.navigate(LanguageSelectionScreenRoute) }
                 )
+
                 SectionButton(
                     imageVector = when (themeViewModel.theme) {
                         ThemeOption.LIGHT.value -> Icons.Default.LightMode
@@ -123,6 +124,7 @@ fun SettingsScreen() {
                     },
                     onClick = { navController.navigate(ThemeSelectionScreenRoute) }
                 )
+
                 SectionButton(
                     imageVector = Icons.Default.Star,
                     primaryText = "Card style",
@@ -133,7 +135,12 @@ fun SettingsScreen() {
                     },
                     onClick = { navController.navigate(CardStyleSelectionScreenRoute)}
                 )
+            }
 
+            SectionGroup(
+                modifier = Modifier.padding(all = 16.dp),
+                title = "Behavior"
+            ) {
                 val requireTapToReveal = context.configViewModel.values.requireTapToReveal
                 SectionButton(
                     imageVector = Icons.Default.TouchApp,
@@ -141,12 +148,7 @@ fun SettingsScreen() {
                     enabled = requireTapToReveal,
                     onClick = { context.configViewModel.updateTapToReveal(!requireTapToReveal) }
                 )
-            }
 
-            SectionGroup(
-                modifier = Modifier.padding(all = 16.dp),
-                title = "Behavior"
-            ) {
                 val enableFocusSearch = context.configViewModel.values.enableFocusSearch
                 SectionButton(
                     painter = painterResource(R.drawable.frame_inspect),
@@ -154,6 +156,30 @@ fun SettingsScreen() {
                     primaryText = "Focus search on launch",
                     enabled = enableFocusSearch,
                     onClick = { context.configViewModel.updateFocusSearch(!enableFocusSearch) }
+                )
+            }
+
+            SectionGroup(
+                modifier = Modifier.padding(all = 16.dp),
+                title = "Security"
+            ) {
+                val screenSecurity = context.configViewModel.values.screenSecurity
+                SectionButton(
+                    imageVector = Icons.Default.ScreenLockPortrait,
+                    primaryText = "Screen security",
+                    secondaryText = "Block screenshots and recordings",
+                    enabled = screenSecurity,
+                    onClick = { context.configViewModel.updateScreenSecurity(!screenSecurity) }
+                )
+
+                val antiPixnapping = context.configViewModel.values.antiPixnapping
+                SectionButton(
+                    imageVector = Icons.Default.BugReport,
+                    tint = Color.Red,
+                    primaryText = "Anti-Pixnapping",
+                    secondaryText = "CVE-2025-48561",
+                    enabled = antiPixnapping,
+                    onClick = { context.configViewModel.updateAntiPixnapping(!antiPixnapping) }
                 )
             }
 
@@ -198,42 +224,22 @@ fun SettingsScreen() {
 
             SectionGroup(
                 modifier = Modifier.padding(all = 16.dp),
-                title = "Security"
+                title = "About & Support"
             ) {
                 SectionButton(
-                    imageVector = Icons.Default.Description,
-                    primaryText = "Download internal app log",
-                    onClick = {
-                        Logger.i("SettingsScreen", "Downloading internal app log")
-                        internalAppLogLauncher.launch("2fa_log")
+                    painter = if (themeViewModel.theme == ThemeOption.SYSTEM_DEFAULT.value) {
+                        if (themeViewModel.isSystemDark(context)) {
+                            painterResource(R.drawable.logo_icon_dark_clipped)
+                        } else {
+                            painterResource(R.drawable.logo_icon_light_clipped)
+                        }
+                    } else {
+                    when (themeViewModel.theme) {
+                        ThemeOption.LIGHT.value -> painterResource(R.drawable.logo_icon_light_clipped)
+                        ThemeOption.DARK.value -> painterResource(R.drawable.logo_icon_dark_clipped)
+                        else -> null
                     }
-                )
-
-                val screenSecurity = context.configViewModel.values.screenSecurity
-                SectionButton(
-                    imageVector = Icons.Default.ScreenLockPortrait,
-                    primaryText = "Screen security",
-                    secondaryText = "Block screenshots and recordings",
-                    enabled = screenSecurity,
-                    onClick = { context.configViewModel.updateScreenSecurity(!screenSecurity) }
-                )
-
-                val antiPixnapping = context.configViewModel.values.antiPixnapping
-                SectionButton(
-                    imageVector = Icons.Default.BugReport,
-                    tint = Color.Red,
-                    primaryText = "Anti-Pixnapping",
-                    secondaryText = "CVE-2025-48561",
-                    enabled = antiPixnapping,
-                    onClick = { context.configViewModel.updateAntiPixnapping(!antiPixnapping) }
-                )
-            }
-
-            SectionGroup(
-                modifier = Modifier.padding(all = 16.dp),
-                title = "About"
-            ) {
-                SectionButton(
+                },
                     primaryText = "979",
                     secondaryText = "About us",
                     onClick = {
@@ -241,6 +247,7 @@ fun SettingsScreen() {
                         context.startActivity(intent)
                     }
                 )
+
                 SectionButton(
                     painter = painterResource(R.drawable.github),
                     tint = colors.onBackground,
@@ -249,6 +256,15 @@ fun SettingsScreen() {
                     onClick = {
                         val intent = Intent(Intent.ACTION_VIEW, "https://github.com/979st/2fa-android".toUri())
                         context.startActivity(intent)
+                    }
+                )
+
+                SectionButton(
+                    imageVector = Icons.Default.Description,
+                    primaryText = "Download internal app log",
+                    onClick = {
+                        Logger.i("SettingsScreen", "Downloading internal app log")
+                        internalAppLogLauncher.launch("2fa_log")
                     }
                 )
             }

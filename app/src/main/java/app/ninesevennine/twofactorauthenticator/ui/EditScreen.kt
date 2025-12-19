@@ -23,15 +23,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ImageSearch
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,8 +46,8 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
@@ -64,18 +62,18 @@ import app.ninesevennine.twofactorauthenticator.features.qrscanner.ZXingQrUri
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.features.vault.VaultItem
 import app.ninesevennine.twofactorauthenticator.themeViewModel
+import app.ninesevennine.twofactorauthenticator.ui.elements.ConfirmationDialog
 import app.ninesevennine.twofactorauthenticator.ui.elements.ItemColorOption
-import app.ninesevennine.twofactorauthenticator.ui.elements.WideTitle
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionButton
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionConfidentialTextBox
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionGroup
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionNumbersTextBox
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionTextBox
 import app.ninesevennine.twofactorauthenticator.ui.elements.bottomappbar.EditAppBar
 import app.ninesevennine.twofactorauthenticator.ui.elements.dropdown.DropDownSingleChoice
 import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.ClassicOtpCard
 import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.MinimalOtpCard
 import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.OtpCardColors
-import app.ninesevennine.twofactorauthenticator.ui.elements.textfields.NumbersOnlyTextField
-import app.ninesevennine.twofactorauthenticator.ui.elements.textfields.SingleLineTextField
-import app.ninesevennine.twofactorauthenticator.ui.elements.textfields.TextField2fa
-import app.ninesevennine.twofactorauthenticator.ui.elements.widebutton.WideButton
-import app.ninesevennine.twofactorauthenticator.ui.elements.widebutton.WideButtonError
 import app.ninesevennine.twofactorauthenticator.utils.Base32
 import app.ninesevennine.twofactorauthenticator.utils.Constants
 import app.ninesevennine.twofactorauthenticator.vaultViewModel
@@ -247,25 +245,24 @@ fun EditScreen(uuidString: String) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.TopCenter
     ) {
         Column(
             modifier = Modifier
                 .widthIn(max = 500.dp)
                 .fillMaxHeight()
-                .padding(
-                    top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
-                    bottom = bottomPadding
-                )
-                .verticalScroll(rememberScrollState()),
+                .padding(bottom = bottomPadding),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            Row(
+            Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 when (configViewModel.values.cardStyle) {
                     0 -> {
@@ -288,29 +285,6 @@ fun EditScreen(uuidString: String) {
                     }
                 }
             }
-
-            WideTitle(text = localizedString(R.string.edit_screen_basic_info_title))
-
-            SingleLineTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = item.name,
-                onValueChange = { item = item.copy(name = it) },
-                placeholder = localizedString(R.string.edit_field_name_hint)
-            )
-
-            SingleLineTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = item.issuer,
-                onValueChange = { item = item.copy(issuer = it) },
-                placeholder = localizedString(R.string.edit_field_issuer_hint)
-            )
-
-            SingleLineTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = item.note,
-                onValueChange = { item = item.copy(note = it) },
-                placeholder = localizedString(R.string.edit_field_note_hint)
-            )
 
             Row(
                 modifier = Modifier
@@ -344,94 +318,139 @@ fun EditScreen(uuidString: String) {
                 }
             }
 
-            WideButtonError(
-                modifier = Modifier.fillMaxWidth(),
-                iconContent = {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null,
-                        tint = colors.onErrorContainer
-                    )
-                },
-                label = localizedString(R.string.edit_button_delete),
-                onClick = {
-                    showDeleteDialog = true
-                }
-            )
-
-            if (showDeleteDialog) {
-                AlertDialog(
-                    onDismissRequest = { showDeleteDialog = false },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Warning,
-                            contentDescription = null,
-                            tint = colors.error,
-                            modifier = Modifier.size(48.dp)
-                        )
-                    },
-                    title = {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = localizedString(R.string.edit_delete_alert_title),
-                            fontFamily = InterVariable,
-                            color = colors.onBackground,
-                            fontWeight = FontWeight.W700,
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    text = {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = localizedString(R.string.edit_delete_alert_text),
-                            fontFamily = InterVariable,
-                            color = colors.onBackground,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    containerColor = colors.background,
-                    confirmButton = {
-                        WideButton(
-                            label = localizedString(R.string.common_yes),
-                            color = colors.primary,
-                            textColor = colors.onPrimary,
-                            onClick = {
-                                showDeleteDialog = false
-                                navController.popBackStack()
-                                vaultViewModel.removeItemByUuid(item.uuid)
-                            }
-                        )
-                    },
-                    dismissButton = {
-                        WideButton(
-                            label = localizedString(R.string.common_cancel),
-                            onClick = { showDeleteDialog = false }
-                        )
-                    }
+            SectionGroup(
+                modifier = Modifier.padding(all = 16.dp),
+                title = "Account details"
+            ) {
+                Spacer(Modifier.height(6.dp))
+                SectionTextBox(
+                    title = "Name",
+                    value = item.name,
+                    onValueChange = { item = item.copy(name = it) }
                 )
+                SectionTextBox(
+                    title = "Issuer",
+                    value = item.issuer,
+                    onValueChange = { item = item.copy(issuer = it) }
+                )
+                SectionTextBox(
+                    title = "Note",
+                    value = item.note,
+                    onValueChange = { item = item.copy(note = it) }
+                )
+                Spacer(Modifier.height(10.dp))
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-            WideTitle(text = localizedString(R.string.edit_screen_advanced_title))
+            SectionGroup(
+                modifier = Modifier.padding(all = 16.dp),
+                title = "Advanced account settings"
+            ) {
+                Spacer(Modifier.height(6.dp))
+                SectionConfidentialTextBox(
+                    title = "Secret",
+                    value = secretInput,
+                    onValueChange = {
+                        secretInput = it.trim()
+                        val trimmed = it.trim()
 
-            TextField2fa(
-                modifier = Modifier.fillMaxWidth(),
-                value = secretInput,
-                onValueChange = {
-                    secretInput = it.trim()
-                    val decoded = Base32.decode(it.trim())
-                    if (decoded != null) {
-                        secretError = false
-                        item = item.copy(secret = decoded)
-                    } else {
-                        secretError = true
-                    }
+                        if (trimmed.matches(Regex("^[A-Z2-7=]+$", RegexOption.IGNORE_CASE))) {
+                            val decoded = Base32.decode(trimmed)
+                            if (decoded != null) {
+                                secretError = false
+                                item = item.copy(secret = decoded)
+                            } else {
+                                secretError = true
+                            }
+                        } else {
+                            secretError = true
+                        }
+                    },
+                    error = secretError
+                )
+                if (item.otpType == OtpTypes.HOTP) {
+                    SectionNumbersTextBox(
+                        title = "Counter",
+                        value = counterInput,
+                        placeholder = "0+",
+                        onValueChange = {
+                            counterInput = it.trim()
+                            val trimmed = it.trim()
+
+                            if (trimmed.matches(Regex("^0$|^[1-9]\\d*$"))) {
+                                counterError = false
+                                item = item.copy(counter = trimmed.toLong())
+                            } else {
+                                counterError = true
+                            }
+                        },
+                        error = counterError
+                    )
+                } else {
+                    SectionNumbersTextBox(
+                        title = "Period",
+                        value = periodInput,
+                        placeholder = "10+",
+                        onValueChange = {
+                            periodInput = it.trim()
+                            val trimmed = it.trim()
+
+                            if (trimmed.matches(Regex("^[1-9]\\d+$"))) {
+                                periodError = false
+                                item = item.copy(period = trimmed.toInt())
+                            } else {
+                                periodError = true
+                            }
+                        },
+                        error = periodError
+                    )
+                }
+                SectionNumbersTextBox(
+                    title = "Code length",
+                    value = digitsInput,
+                    placeholder = "4-10",
+                    onValueChange = {
+                        digitsInput = it.trim()
+                        val trimmed = it.trim()
+
+                        if (trimmed.matches(Regex("^[4-9]$|^10$"))) {
+                            digitsError = false
+                            item = item.copy(digits = trimmed.toInt())
+                        } else {
+                            digitsError = true
+                        }
+                    },
+                    error = digitsError
+                )
+                Spacer(Modifier.height(10.dp))
+            }
+
+            SectionGroup(
+                modifier = Modifier.padding(all = 16.dp),
+                title = "Danger zone"
+            ) {
+                SectionButton(
+                    painter = painterResource(R.drawable.radiation),
+                    primaryText = "Launch nukes",
+                    secondaryText = "No really, we're serious"
+                ) {
+                    showDeleteDialog = true
+                }
+            }
+
+            ConfirmationDialog(
+                showDialog = showDeleteDialog,
+                onDismissRequest = { showDeleteDialog = false },
+                title = "Delete account?",
+                message = "Are you sure you want to delete this account? This action cannot be undone",
+                confirmButtonText = "Delete",
+                dismissButtonText = "Cancel",
+                onConfirm = {
+                    showDeleteDialog = false
+                    navController.popBackStack()
+                    vaultViewModel.removeItemByUuid(item.uuid)
                 },
-                placeholder = localizedString(R.string.edit_field_secret_hint),
-                isError = secretError
+                confirmButtonColor = colors.error,
+                isDestructive = true
             )
 
             Row(
@@ -457,84 +476,6 @@ fun EditScreen(uuidString: String) {
                     selectedOption = item.otpHashFunction,
                     onSelectionChange = { item = item.copy(otpHashFunction = it) },
                     getDisplayText = { it.value }
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (item.otpType == OtpTypes.HOTP) {
-                    NumbersOnlyTextField(
-                        modifier = Modifier.weight(1f),
-                        value = counterInput,
-                        onValueChange = {
-                            counterInput = it.trim()
-                            val counter = it.trim().toLongOrNull()
-                            if (counter != null) {
-                                if (counter < 0) {
-                                    counterError = true
-                                } else {
-                                    counterError = false
-                                    item = item.copy(counter = counter)
-                                }
-                            } else {
-                                counterError = true
-                            }
-                        },
-                        placeholder = "0+",
-                        trailingText = localizedString(R.string.edit_unit_counter),
-                        isError = counterError
-                    )
-                } else {
-                    NumbersOnlyTextField(
-                        modifier = Modifier.weight(1f),
-                        value = periodInput,
-                        onValueChange = {
-                            periodInput = it.trim()
-                            val period = it.trim().toIntOrNull()
-                            if (period != null) {
-                                if (period < 10) {
-                                    periodError = true
-                                } else {
-                                    periodError = false
-                                    item = item.copy(period = period)
-                                }
-                            } else {
-                                periodError = true
-                            }
-                        },
-                        placeholder = "10+",
-                        trailingText = localizedString(R.string.edit_unit_seconds),
-                        isError = periodError
-                    )
-                }
-
-                Spacer(Modifier.width(8.dp))
-
-                NumbersOnlyTextField(
-                    modifier = Modifier.weight(1f),
-                    value = digitsInput,
-                    onValueChange = {
-                        digitsInput = it.trim()
-                        val digits = it.trim().toIntOrNull()
-                        if (digits != null) {
-                            if (digits !in 4..10) {
-                                digitsError = true
-                            } else {
-                                digitsError = false
-                                item = item.copy(digits = digits)
-                            }
-                        } else {
-                            digitsError = true
-                        }
-                    },
-                    placeholder = "4-10",
-                    trailingText = localizedString(R.string.edit_unit_digits),
-                    isError = digitsError
                 )
             }
 
