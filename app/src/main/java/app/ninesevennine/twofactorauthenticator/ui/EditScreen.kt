@@ -53,7 +53,6 @@ import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
-import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.otp.OtpHashFunctions
 import app.ninesevennine.twofactorauthenticator.features.otp.OtpTypes
 import app.ninesevennine.twofactorauthenticator.features.otp.otpParser
@@ -66,11 +65,11 @@ import app.ninesevennine.twofactorauthenticator.ui.elements.ConfirmationDialog
 import app.ninesevennine.twofactorauthenticator.ui.elements.ItemColorOption
 import app.ninesevennine.twofactorauthenticator.ui.elements.SectionButton
 import app.ninesevennine.twofactorauthenticator.ui.elements.SectionConfidentialTextBox
+import app.ninesevennine.twofactorauthenticator.ui.elements.SectionDropDownSingleChoice
 import app.ninesevennine.twofactorauthenticator.ui.elements.SectionGroup
 import app.ninesevennine.twofactorauthenticator.ui.elements.SectionNumbersTextBox
 import app.ninesevennine.twofactorauthenticator.ui.elements.SectionTextBox
 import app.ninesevennine.twofactorauthenticator.ui.elements.bottomappbar.EditAppBar
-import app.ninesevennine.twofactorauthenticator.ui.elements.dropdown.DropDownSingleChoice
 import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.ClassicOtpCard
 import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.MinimalOtpCard
 import app.ninesevennine.twofactorauthenticator.ui.elements.otpcard.OtpCardColors
@@ -186,11 +185,11 @@ fun EditScreen(uuidString: String) {
                             }
                             .padding(horizontal = 24.dp), contentAlignment = Alignment.Center) {
                         Text(
-                            text = localizedString(R.string.qr_scanner_button_text_enter_manually),
+                            text = "Enter manually",
                             fontFamily = InterVariable,
                             color = Color.White,
                             fontWeight = FontWeight.W700,
-                            fontSize = 16.sp,
+                            fontSize = 15.sp,
                             maxLines = 1
                         )
                     }
@@ -367,6 +366,20 @@ fun EditScreen(uuidString: String) {
                     },
                     error = secretError
                 )
+                SectionDropDownSingleChoice(
+                    title = "Type",
+                    options = OtpTypes.entries.toTypedArray(),
+                    selectedOption = item.otpType,
+                    onSelectionChange = { item = item.copy(otpType = it) },
+                    getDisplayText = { it.value }
+                )
+                SectionDropDownSingleChoice(
+                    title = "Algorithm",
+                    options = OtpHashFunctions.entries.toTypedArray(),
+                    selectedOption = item.otpHashFunction,
+                    onSelectionChange = { item = item.copy(otpHashFunction = it) },
+                    getDisplayText = { it.value }
+                )
                 if (item.otpType == OtpTypes.HOTP) {
                     SectionNumbersTextBox(
                         title = "Counter",
@@ -452,32 +465,6 @@ fun EditScreen(uuidString: String) {
                 confirmButtonColor = colors.error,
                 isDestructive = true
             )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                DropDownSingleChoice(
-                    modifier = Modifier.weight(1f),
-                    options = OtpTypes.entries.toTypedArray(),
-                    selectedOption = item.otpType,
-                    onSelectionChange = { item = item.copy(otpType = it) },
-                    getDisplayText = { it.value }
-                )
-
-                Spacer(Modifier.width(8.dp))
-
-                DropDownSingleChoice(
-                    modifier = Modifier.weight(1f),
-                    options = OtpHashFunctions.entries.toTypedArray(),
-                    selectedOption = item.otpHashFunction,
-                    onSelectionChange = { item = item.copy(otpHashFunction = it) },
-                    getDisplayText = { it.value }
-                )
-            }
 
             Spacer(Modifier.height(96.dp))
         }

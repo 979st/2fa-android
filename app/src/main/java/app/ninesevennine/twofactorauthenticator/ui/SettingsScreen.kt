@@ -261,9 +261,9 @@ fun SettingsScreen() {
 
                 SectionButton(
                     imageVector = Icons.Default.Description,
-                    primaryText = "Download internal app log",
+                    primaryText = "Download app log",
                     onClick = {
-                        Logger.i("SettingsScreen", "Downloading internal app log")
+                        Logger.i("SettingsScreen", "Downloading app log")
                         internalAppLogLauncher.launch("2fa_log")
                     }
                 )

@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -31,10 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
-import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
-import app.ninesevennine.twofactorauthenticator.features.locale.localizedPluralStringFormatted
-import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 import app.ninesevennine.twofactorauthenticator.ui.elements.bottomappbar.MainAppBar
@@ -133,28 +128,28 @@ fun MainScreen() {
             }
         }
 
-        if (filteredItems.isNotEmpty()) {
-            item(span = { GridItemSpan(columnCount) }) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = localizedPluralStringFormatted(
-                            R.plurals.main_list_plural_text_showing_x_entries,
-                            filteredItems.size,
-                            filteredItems.size
-                        ),
-                        fontFamily = InterVariable,
-                        color = colors.onBackground,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp
-                    )
-                }
-            }
-        }
+//        if (filteredItems.isNotEmpty()) {
+//            item(span = { GridItemSpan(columnCount) }) {
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 8.dp),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    Text(
+//                        text = localizedPluralStringFormatted(
+//                            R.plurals.main_list_plural_text_showing_x_entries,
+//                            filteredItems.size,
+//                            filteredItems.size
+//                        ),
+//                        fontFamily = InterVariable,
+//                        color = colors.onBackground,
+//                        fontWeight = FontWeight.Normal,
+//                        fontSize = 16.sp
+//                    )
+//                }
+//            }
+//        }
     }
 
     if (items.isNotEmpty() && filteredItems.isEmpty()) {
@@ -166,11 +161,11 @@ fun MainScreen() {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = localizedString(R.string.main_list_text_no_entries_found),
+                text = "No matching accounts were found",
                 fontFamily = InterVariable,
                 color = colors.onBackground,
                 fontWeight = FontWeight.Normal,
-                fontSize = 16.sp
+                fontSize = 15.sp
             )
         }
     }

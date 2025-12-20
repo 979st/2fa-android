@@ -106,7 +106,7 @@ fun SettingsAppBar() {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = null,
-                    tint = colors.onPrimaryContainer,
+                    tint = colors.onBackground,
                     modifier = Modifier.size(35.dp)
                 )
             }
