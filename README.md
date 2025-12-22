@@ -5,25 +5,25 @@
 <h4 align="center">Manage one-time passwords securely, offline and without tracking</h4>
 <p align="center">
     <a href="https://github.com/979st/2fa-android/releases/tag/vc-26">
-        <img alt="Static Badge" src="https://img.shields.io/badge/latest-Beta%2017-blue">
+        <img alt="Static Badge" src="https://img.shields.io/badge/Latest-Beta%2017-blue">
     </a>
     <img alt="GitHub release downloads" src="https://img.shields.io/github/downloads/979st/2fa-android/total">
-    <a href="https://crowdin.com/project/979-2fa">
-        <img alt="Contribute to translations" src="https://badges.crowdin.net/979-2fa/localized.svg">
+    <a href="https://github.com/979st/translations">
+        <img alt="Static Badge" src="https://img.shields.io/badge/Translations%20repository-blue">
     </a>
     <a href="https://eupl.eu/1.2/en/">
-        <img alt="EUPL" src="https://img.shields.io/badge/license-EUPL-blue">
+        <img alt="EUPL" src="https://img.shields.io/badge/License-EUPL-blue">
     </a>
     <a href="https://developer.android.com/about/versions/15">
-        <img alt="Minimum SDK Version" src="https://img.shields.io/badge/api-34%2B-blue">
+        <img alt="Minimum SDK Version" src="https://img.shields.io/badge/API-34%2B-blue">
     </a>
 </p>
 <p align="center">
     <a href="https://discord.com/invite/zxgXNzhYJu">
-        <img alt="Join us on Discord" src="https://img.shields.io/badge/discord-join%20server-7289DA">
+        <img alt="Join us on Discord" src="https://img.shields.io/badge/Discord-Join%20server-7289DA">
     </a>
     <a href="https://bsky.app/profile/979.st">
-        <img alt="Follow on Bluesky" src="https://img.shields.io/badge/bluesky-follow-1DA1F2">
+        <img alt="Follow on Bluesky" src="https://img.shields.io/badge/Bluesky-Follow-1DA1F2">
     </a>
 </p>
 <p align="center">
