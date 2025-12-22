@@ -1,87 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Common -->
-    <string name="common_use_system_default">Use System Default</string>
-    <string name="common_yes">Yes</string>
-    <string name="common_cancel">Cancel</string>
-    <string name="common_password_hint">Password</string>
-
-    <!-- MainScreen.kt -->
-    <plurals name="main_list_plural_text_showing_x_entries">
-        <item quantity="one">Showing %d entry</item>
-        <item quantity="other">Showing %d entries</item>
+    <string name="backup_vault_button_create_backup">Create backup</string>
+    <string name="backup_vault_button_go_back">Cancel</string>
+    <string name="backup_vault_section_credentials_requirement_1_num">1 number</string>
+    <string name="backup_vault_section_credentials_requirement_1_special">1 special character e.g., $, !, \@, %, &amp;</string>
+    <string name="backup_vault_section_credentials_requirement_8_chars">8 characters</string>
+    <string name="backup_vault_section_credentials_requirement_trim">No leading or trailing whitespace</string>
+    <string name="backup_vault_section_credentials_requirements_met">Password requirements met!</string>
+    <string name="backup_vault_section_credentials_requirements_not_met">Try another password that contains at least:</string>
+    <string name="backup_vault_section_credentials_textbox_confirm_password">Confirm password</string>
+    <string name="backup_vault_section_credentials_textbox_password">Password</string>
+    <string name="backup_vault_section_credentials_title">Credentials</string>
+    <string name="card_style_button_go_back">Done</string>
+    <string name="card_style_option_classic">Classic</string>
+    <string name="card_style_option_minimalist">Minimalist</string>
+    <string name="edit_dialog_delete_account_button_cancel">Cancel</string>
+    <string name="edit_dialog_delete_account_button_confirm">Delete</string>
+    <string name="edit_dialog_delete_account_message">Are you sure you want to delete this account\? This action cannot be undone</string>
+    <string name="edit_dialog_delete_account_title">Delete account\?</string>
+    <string name="edit_scanner_button_enter_manually">Enter manually</string>
+    <string name="edit_section_account_details_textbox_issuer">Issuer</string>
+    <string name="edit_section_account_details_textbox_name">Name</string>
+    <string name="edit_section_account_details_textbox_note">Note</string>
+    <string name="edit_section_account_details_title">Account details</string>
+    <string name="edit_section_advanced_account_settings_dropdown_algorithm">Algorithm</string>
+    <string name="edit_section_advanced_account_settings_dropdown_type">Type</string>
+    <string name="edit_section_advanced_account_settings_textbox_code_length">Code length</string>
+    <string name="edit_section_advanced_account_settings_textbox_counter">Counter</string>
+    <string name="edit_section_advanced_account_settings_textbox_period">Period</string>
+    <string name="edit_section_advanced_account_settings_textbox_secret">Secret</string>
+    <string name="edit_section_advanced_account_settings_title">Advanced account settings</string>
+    <string name="edit_section_danger_zone_button_delete_primary">Delete</string>
+    <string name="edit_section_danger_zone_button_delete_secondary">This action cannot be undone</string>
+    <string name="edit_section_danger_zone_title">Danger zone</string>
+    <string name="element_confidential_textbox_hide">Hide</string>
+    <string name="element_confidential_textbox_show">Show</string>
+    <string name="export_google_button_go_back">Done</string>
+    <string name="export_google_notice">Only TOTP and HOTP tokens that generate 6-digit or 8-digit codes with 30 second intervals can be exported to Google Authenticator</string>
+    <string name="import_aegis_button_go_back">Cancel</string>
+    <string name="import_aegis_button_import">Import</string>
+    <string name="import_aegis_section_credentials_incorrect_password">Incorrect password</string>
+    <string name="import_aegis_section_credentials_textbox_password">Password</string>
+    <string name="import_aegis_section_credentials_title">Credentials</string>
+    <string name="language_button_go_back">Done</string>
+    <string name="language_button_system_default">System default</string>
+    <string name="main_bar_hint_search">Search</string>
+    <string name="main_list_matching_not_found">No matching accounts were found</string>
+    <string name="restore_vault_button_go_back">Cancel</string>
+    <string name="restore_vault_button_restore">Restore</string>
+    <string name="restore_vault_section_credentials_incorrect_password">Incorrect password</string>
+    <string name="restore_vault_section_credentials_textbox_password">Password</string>
+    <string name="restore_vault_section_credentials_title">Credentials</string>
+    <string name="scanner_permission_required_message">Camera permission is required to scan QR codes</string>
+    <string name="settings_section_about_and_support_button_979_secondary">About us</string>
+    <string name="settings_section_about_and_support_button_log_primary">Download app log</string>
+    <string name="settings_section_about_and_support_button_source_primary">Source code</string>
+    <string name="settings_section_about_and_support_button_source_secondary">View 2fa\'s source code</string>
+    <string name="settings_section_about_and_support_title">About &amp; Support</string>
+    <string name="settings_section_appearance_button_card_style_primary">Card style</string>
+    <string name="settings_section_appearance_button_language_primary">Language</string>
+    <string name="settings_section_appearance_button_theme_primary">Theme</string>
+    <string name="settings_section_appearance_title">Appearance</string>
+    <string name="settings_section_backup_and_restore_button_backup_accounts_primary">Backup accounts</string>
+    <string name="settings_section_backup_and_restore_button_export_google_primary">Export to Google Authenticator</string>
+    <string name="settings_section_backup_and_restore_button_export_google_secondary">QR code</string>
+    <string name="settings_section_backup_and_restore_button_import_aegis_primary">Import from Aegis</string>
+    <string name="settings_section_backup_and_restore_button_import_aegis_secondary">JSON file</string>
+    <string name="settings_section_backup_and_restore_button_import_google_primary">Import from Google Authenticator</string>
+    <string name="settings_section_backup_and_restore_button_import_google_secondary">QR code</string>
+    <string name="settings_section_backup_and_restore_button_restore_accounts_primary">Restore accounts</string>
+    <string name="settings_section_backup_and_restore_title">Backup &amp; Restore</string>
+    <string name="settings_section_behavior_button_focus_search_primary">Focus search on launch</string>
+    <string name="settings_section_behavior_button_tap_to_reveal_primary">Tap to reveal codes</string>
+    <string name="settings_section_behavior_title">Behavior</string>
+    <string name="settings_section_security_button_screen_security_primary">Screen security</string>
+    <string name="settings_section_security_button_screen_security_secondary">Block screenshots and recordings</string>
+    <string name="settings_section_security_title">Security</string>
+    <string name="theme_button_go_back">Done</string>
+    <string name="theme_button_system_default">System default</string>
+    <string name="theme_option_dark">Dark</string>
+    <string name="theme_option_light">Light</string>
+    <plurals name="main_list_number_of_accounts">
+        <item quantity="one">Showing %d account</item>
+        <item quantity="other">Showing %d accounts</item>
     </plurals>
-    <string name="main_list_text_no_entries_found">No matching entries were found</string>
-    <string name="main_bottom_bar_textfield_hint_text_search">Search</string>
-
-    <!-- EditScreen.kt -->
-    <string name="edit_screen_basic_info_title">Basic Information</string>
-    <string name="edit_field_name_hint">Name</string>
-    <string name="edit_field_issuer_hint">Issuer</string>
-    <string name="edit_field_note_hint">Note</string>
-    <string name="edit_button_delete">Delete</string>
-    <string name="edit_delete_alert_title">Delete entry</string>
-    <string name="edit_delete_alert_text">
-        Are you sure you want to delete this entry? This action is irreversible
-    </string>
-    <string name="edit_screen_advanced_title">Advanced Settings</string>
-    <string name="edit_field_secret_hint">Secret</string>
-    <string name="edit_unit_seconds">seconds</string>
-    <string name="edit_unit_digits">digits</string>
-    <string name="edit_unit_counter">counter</string>
-
-    <!-- QRScannerView.kt -->
-    <string name="qr_scanner_text_camera_permission_required">
-        Camera permission is required to scan QR codes
-    </string>
-    <string name="qr_scanner_button_text_enter_manually">Enter manually</string>
-
-    <!-- SettingsScreen.kt -->
-    <string name="settings_option_language">Language</string>
-    <string name="settings_option_appearance">Appearance</string>
-    <string name="settings_appearance_light">Light</string>
-    <string name="settings_appearance_dark">Dark</string>
-    <string name="settings_appearance_dynamic">Dynamic</string>
-    <string name="settings_option_card_style">Card style</string>
-    <string name="settings_card_style_classic">Classic</string>
-    <string name="settings_card_style_minimal">Minimal</string>
-    <string name="settings_section_manage_data">Backup &amp; Restore</string>
-    <string name="settings_button_backup_codes">Backup 2FA Codes</string>
-    <string name="settings_button_restore_codes">Restore 2FA Codes</string>
-    <string name="settings_button_text_import_google_authenticator">
-        Import from Google Authenticator
-    </string>
-    <string name="settings_button_export_google_authenticator">
-        Export to Google Authenticator
-    </string>
-    <string name="settings_button_text_import_aegis">Import from Aegis</string>
-    <string name="settings_section_other">Other settings</string>
-    <string name="settings_option_screen_security">Screen security</string>
-    <string name="settings_option_tap_to_reveal">Tap to reveal codes</string>
-    <string name="settings_option_focus_search">Focus search on launch</string>
-    <string name="settings_section_about">About</string>
-    <string name="about_button_view_source">View Source Code</string>
-    <string name="about_button_debug_log">Debug Log</string>
-
-    <!-- Backup/Restore -->
-    <string name="backup_title_credentials">Credentials</string>
-    <string name="backup_error_password_length">Must be at least 8 characters</string>
-    <string name="backup_error_password_uppercase">Include uppercase</string>
-    <string name="backup_error_password_digit">Include number</string>
-    <string name="backup_error_password_special">Include special character</string>
-    <string name="backup_field_confirm_password_hint">Confirm Password</string>
-    <string name="backup_status_backing_up">Backing up</string>
-    <string name="backup_button_action">Backup</string>
-    <string name="restore_prompt_credentials">Enter credentials for the vault</string>
-    <string name="restore_error_incorrect_password">Incorrect password</string>
-    <string name="restore_status_restoring">Restoring</string>
-    <string name="restore_button_action">Restore</string>
-
-    <!-- ImportFromAegisScreen.kt -->
-    <string name="import_from_aegis_button_text_import">Import</string>
-    <string name="import_from_aegis_button_text_importing">Importing</string>
-
-    <!-- ExportToGoogleAuthScreen.kt -->
-    <string name="export_google_authenticator_notice">
-        Only TOTP and HOTP tokens that generate 6-digit or 8-digit codes with 30-second intervals can be exported to Google Authenticator
-    </string>
 </resources>

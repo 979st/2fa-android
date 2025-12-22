@@ -23,7 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
+import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedButton
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedRadioButton
 import kotlinx.serialization.Serializable
@@ -62,21 +64,21 @@ fun CardStyleSelectionScreen() {
 
                 RoundedRadioButton(
                     imageVector = Icons.Default.Star,
-                    label = "Classic",
+                    label = localizedString(R.string.card_style_option_classic),
                     enabled = configViewModel.values.cardStyle == 0,
                     onClick = { configViewModel.updateCardStyle(0) }
                 )
 
                 RoundedRadioButton(
                     imageVector = Icons.Default.Star,
-                    label = "Minimal",
+                    label = localizedString(R.string.card_style_option_minimalist),
                     enabled = configViewModel.values.cardStyle == 1,
                     onClick = { configViewModel.updateCardStyle(1) }
                 )
             }
 
             RoundedButton(
-                label = "Done",
+                label = localizedString(R.string.card_style_button_go_back),
                 onClick = { navController.popBackStack()}
             )
         }

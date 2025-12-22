@@ -39,6 +39,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.ninesevennine.twofactorauthenticator.R
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 
@@ -87,13 +89,19 @@ fun SectionConfidentialTextBox(
                 ) {
                     Icon(
                         imageVector = if (visible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                        contentDescription = if (visible) "Hide" else "Show",
+                        contentDescription = if (visible)
+                            localizedString(R.string.element_confidential_textbox_hide)
+                        else
+                            localizedString(R.string.element_confidential_textbox_show),
                         tint = colors.onBackground,
                         modifier = Modifier.size(18.dp)
                     )
 
                     Text(
-                        text = if (visible) "Hide" else "Show",
+                        text = if (visible)
+                            localizedString(R.string.element_confidential_textbox_hide)
+                        else
+                            localizedString(R.string.element_confidential_textbox_show),
                         color = colors.onBackground,
                         fontSize = 13.sp,
                         fontStyle = FontStyle.Normal,

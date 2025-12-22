@@ -58,7 +58,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 
@@ -220,7 +222,7 @@ private fun SearchTextField(
                 ) {
                     if (query.isEmpty()) {
                         Text(
-                            text = "Search",
+                            text = localizedString(R.string.main_bar_hint_search),
                             fontFamily = InterVariable,
                             fontWeight = FontWeight.W500,
                             fontSize = 16.sp,

@@ -42,6 +42,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
+import app.ninesevennine.twofactorauthenticator.R
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedButton
@@ -158,17 +160,17 @@ fun BackupVaultScreen() {
 
                 SectionGroup(
                     modifier = Modifier.padding(vertical = 16.dp),
-                    title = "Credentials"
+                    title = localizedString(R.string.backup_vault_section_credentials_title)
                 ) {
                     Spacer(Modifier.height(6.dp))
                     SectionConfidentialTextBox(
-                        title = "Password",
+                        title = localizedString(R.string.backup_vault_section_credentials_textbox_password),
                         value = password,
                         onValueChange = { password = it },
                         error = !isPasswordStrong
                     )
                     SectionConfidentialTextBox(
-                        title = "Confirm password",
+                        title = localizedString(R.string.backup_vault_section_credentials_textbox_confirm_password),
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
                         error = !passwordsMatch
@@ -181,9 +183,9 @@ fun BackupVaultScreen() {
                     ) {
                         Text(
                             text = if (isPasswordStrong)
-                                "Password requirements met!"
+                                localizedString(R.string.backup_vault_section_credentials_requirements_met)
                             else
-                                "Try another password that contains at least:",
+                                localizedString(R.string.backup_vault_section_credentials_requirements_not_met),
                             modifier = Modifier.padding(start = 4.dp),
                             color = colors.onBackground,
                             fontSize = 14.sp,
@@ -192,7 +194,7 @@ fun BackupVaultScreen() {
                             fontFamily = InterVariable
                         )
                         Text(
-                            text = "8 characters",
+                            text = localizedString(R.string.backup_vault_section_credentials_requirement_8_chars),
                             modifier = Modifier.padding(start = 20.dp),
                             color = if (isPasswordLong) colors.onBackground else colors.error,
                             fontSize = 14.sp,
@@ -202,7 +204,7 @@ fun BackupVaultScreen() {
                             maxLines = 1
                         )
                         Text(
-                            text = "1 number",
+                            text = localizedString(R.string.backup_vault_section_credentials_requirement_1_num),
                             modifier = Modifier.padding(start = 20.dp),
                             color = if (hasPasswordDigit) colors.onBackground else colors.error,
                             fontSize = 14.sp,
@@ -212,7 +214,7 @@ fun BackupVaultScreen() {
                             maxLines = 1
                         )
                         Text(
-                            text = "1 special character e.g., $, !, @, %, &",
+                            text = localizedString(R.string.backup_vault_section_credentials_requirement_1_special),
                             modifier = Modifier.padding(start = 20.dp),
                             color = if (hasPasswordSpecial) colors.onBackground else colors.error,
                             fontSize = 14.sp,
@@ -222,7 +224,7 @@ fun BackupVaultScreen() {
                             maxLines = 1
                         )
                         Text(
-                            text = "No leading or trailing whitespace",
+                            text = localizedString(R.string.backup_vault_section_credentials_requirement_trim),
                             modifier = Modifier.padding(start = 20.dp),
                             color = if (hasNoLeadingOrTrailingWhitespace) colors.onBackground else colors.error,
                             fontSize = 14.sp,
@@ -239,7 +241,7 @@ fun BackupVaultScreen() {
                     label = if (isBackingUp)
                         spinnerFrames[spinnerIndex]
                     else
-                        "Create backup"
+                        localizedString(R.string.backup_vault_button_create_backup)
                 ) {
                     if (!isPasswordStrong || !passwordsMatch || isBackingUp) {
                         return@RoundedButton
@@ -265,7 +267,7 @@ fun BackupVaultScreen() {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            RoundedButton("Cancel") {
+            RoundedButton(localizedString(R.string.backup_vault_button_go_back)) {
                 navController.popBackStack()
             }
         }

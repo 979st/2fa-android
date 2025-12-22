@@ -43,6 +43,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
+import app.ninesevennine.twofactorauthenticator.R
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedButton
@@ -156,14 +158,14 @@ fun RestoreVaultScreen() {
 
                 SectionGroup(
                     modifier = Modifier.padding(vertical = 16.dp),
-                    title = "Credentials"
+                    title = localizedString(R.string.restore_vault_section_credentials_title)
                 ) {
                     SectionButton(
                         imageVector = Icons.Default.Description,
                         primaryText = restoreFilename
                     )
                     SectionConfidentialTextBox(
-                        title = "Password",
+                        title = localizedString(R.string.restore_vault_section_credentials_textbox_password),
                         value = password,
                         onValueChange = { password = it },
                         error = password.isEmpty()
@@ -176,7 +178,7 @@ fun RestoreVaultScreen() {
                             verticalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             Text(
-                                text = "Incorrect password",
+                                text = localizedString(R.string.restore_vault_section_credentials_incorrect_password),
                                 modifier = Modifier.padding(start = 4.dp),
                                 color = colors.error,
                                 fontSize = 14.sp,
@@ -193,7 +195,7 @@ fun RestoreVaultScreen() {
                     label = if (isRestoring)
                         spinnerFrames[spinnerIndex]
                     else
-                        "Restore"
+                        localizedString(R.string.restore_vault_button_restore)
                 ) {
                     if (isRestoring || password.isEmpty()) {
                         return@RoundedButton
@@ -219,7 +221,7 @@ fun RestoreVaultScreen() {
                 }
             }
 
-            RoundedButton("Cancel") {
+            RoundedButton(localizedString(R.string.restore_vault_button_go_back)) {
                 navController.popBackStack()
             }
         }

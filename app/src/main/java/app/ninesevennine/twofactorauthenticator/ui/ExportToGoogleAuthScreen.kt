@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedButton
@@ -153,7 +154,7 @@ fun ExportToGoogleAuthScreen() {
                 }
 
                 Text(
-                    text = "Only TOTP and HOTP tokens that generate 6-digit or 8-digit codes with 30 second intervals can be exported to Google Authenticator",
+                    text = localizedString(R.string.export_google_notice),
                     color = colors.onBackground,
                     fontSize = 14.sp,
                     fontStyle = FontStyle.Normal,
@@ -239,7 +240,7 @@ fun ExportToGoogleAuthScreen() {
                 }
             }
 
-            RoundedButton("Done") {
+            RoundedButton(localizedString(R.string.export_google_button_go_back)) {
                 navController.popBackStack()
             }
         }

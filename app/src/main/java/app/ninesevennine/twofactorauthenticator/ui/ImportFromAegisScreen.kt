@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.features.externalvault.AegisAuthenticator
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedButton
@@ -166,14 +167,14 @@ fun ImportFromAegisScreen() {
 
                 SectionGroup(
                     modifier = Modifier.padding(vertical = 16.dp),
-                    title = "Credentials"
+                    title = localizedString(R.string.import_aegis_section_credentials_title)
                 ) {
                     SectionButton(
                         imageVector = Icons.Default.Description,
                         primaryText = importFilename
                     )
                     SectionConfidentialTextBox(
-                        title = "Password",
+                        title = localizedString(R.string.import_aegis_section_credentials_textbox_password),
                         value = password,
                         onValueChange = { password = it },
                         error = password.isEmpty()
@@ -186,7 +187,7 @@ fun ImportFromAegisScreen() {
                             verticalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             Text(
-                                text = "Incorrect password",
+                                text = localizedString(R.string.import_aegis_section_credentials_incorrect_password),
                                 modifier = Modifier.padding(start = 4.dp),
                                 color = colors.error,
                                 fontSize = 14.sp,
@@ -203,7 +204,7 @@ fun ImportFromAegisScreen() {
                     label = if (isImporting)
                         spinnerFrames[spinnerIndex]
                     else
-                        "Import"
+                        localizedString(R.string.import_aegis_button_import)
                 ) {
                     if (isImporting || password.isEmpty()) {
                         return@RoundedButton
@@ -234,7 +235,7 @@ fun ImportFromAegisScreen() {
                 }
             }
 
-            RoundedButton("Cancel") {
+            RoundedButton(localizedString(R.string.import_aegis_button_go_back)) {
                 navController.popBackStack()
             }
         }

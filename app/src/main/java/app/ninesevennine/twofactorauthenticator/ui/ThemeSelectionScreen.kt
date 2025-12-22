@@ -39,7 +39,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
+import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.ThemeOption
 import app.ninesevennine.twofactorauthenticator.themeViewModel
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedButton
@@ -88,14 +90,14 @@ fun ThemeSelectionScreen() {
 
                 RoundedRadioButton(
                     imageVector = Icons.Default.LightMode,
-                    label = "Light",
+                    label = localizedString(R.string.theme_option_light),
                     enabled = themeViewModel.theme == ThemeOption.LIGHT.value,
                     onClick = { themeViewModel.updateTheme(context, ThemeOption.LIGHT) }
                 )
 
                 RoundedRadioButton(
                     imageVector = Icons.Default.DarkMode,
-                    label = "Dark",
+                    label = localizedString(R.string.theme_option_dark),
                     enabled = themeViewModel.theme == ThemeOption.DARK.value,
                     onClick = { themeViewModel.updateTheme(context, ThemeOption.DARK) }
                 )
@@ -118,14 +120,14 @@ fun ThemeSelectionScreen() {
                 ) {
                     RoundedRefreshButton(
                         imageVector = Icons.Default.Refresh,
-                        label = "Use System Default",
+                        label = localizedString(R.string.theme_button_system_default),
                         onClick = { themeViewModel.updateTheme(context, ThemeOption.SYSTEM_DEFAULT) }
                     )
                 }
             }
 
             RoundedButton(
-                label = "Done",
+                label = localizedString(R.string.theme_button_go_back),
                 onClick = { navController.popBackStack()}
             )
         }

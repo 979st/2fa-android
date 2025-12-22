@@ -40,6 +40,7 @@ import androidx.core.net.toUri
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.ThemeOption
 import app.ninesevennine.twofactorauthenticator.localeViewModel
 import app.ninesevennine.twofactorauthenticator.themeViewModel
@@ -93,11 +94,11 @@ fun SettingsScreen() {
 
             SectionGroup(
                 modifier = Modifier.padding(all = 16.dp),
-                title = "Appearance"
+                title = localizedString(R.string.settings_section_appearance_title)
             ) {
                 SectionButton(
                     imageVector = Icons.Default.Language,
-                    primaryText = "Language",
+                    primaryText = localizedString(R.string.settings_section_appearance_button_language_primary),
                     secondaryText = languageLabelFromLocale(localeViewModel.effectiveLocale),
                     onClick = { navController.navigate(LanguageSelectionScreenRoute) }
                 )
@@ -108,17 +109,17 @@ fun SettingsScreen() {
                         ThemeOption.DARK.value -> Icons.Default.DarkMode
                         else -> null
                     },
-                    primaryText = "Theme",
+                    primaryText = localizedString(R.string.settings_section_appearance_button_theme_primary),
                     secondaryText = if (themeViewModel.theme == ThemeOption.SYSTEM_DEFAULT.value) {
                         if (themeViewModel.isSystemDark(context)) {
-                            "Dark"
+                            localizedString(R.string.theme_option_dark)
                         } else {
-                            "Light"
+                            localizedString(R.string.theme_option_light)
                         }
                     } else {
                         when (themeViewModel.theme) {
-                            ThemeOption.LIGHT.value -> "Light"
-                            ThemeOption.DARK.value -> "Dark"
+                            ThemeOption.LIGHT.value -> localizedString(R.string.theme_option_light)
+                            ThemeOption.DARK.value -> localizedString(R.string.theme_option_dark)
                             else -> null
                         }
                     },
@@ -127,10 +128,10 @@ fun SettingsScreen() {
 
                 SectionButton(
                     imageVector = Icons.Default.Star,
-                    primaryText = "Card style",
+                    primaryText = localizedString(R.string.settings_section_appearance_button_card_style_primary),
                     secondaryText = when (configViewModel.values.cardStyle) {
-                        0 -> "Classic"
-                        1 -> "Minimal"
+                        0 -> localizedString(R.string.card_style_option_classic)
+                        1 -> localizedString(R.string.card_style_option_minimalist)
                         else -> "Unknown"
                     },
                     onClick = { navController.navigate(CardStyleSelectionScreenRoute)}
@@ -139,12 +140,12 @@ fun SettingsScreen() {
 
             SectionGroup(
                 modifier = Modifier.padding(all = 16.dp),
-                title = "Behavior"
+                title = localizedString(R.string.settings_section_behavior_title)
             ) {
                 val requireTapToReveal = context.configViewModel.values.requireTapToReveal
                 SectionButton(
                     imageVector = Icons.Default.TouchApp,
-                    primaryText = "Tap to reveal codes",
+                    primaryText = localizedString(R.string.settings_section_behavior_button_tap_to_reveal_primary),
                     enabled = requireTapToReveal,
                     onClick = { context.configViewModel.updateTapToReveal(!requireTapToReveal) }
                 )
@@ -153,7 +154,7 @@ fun SettingsScreen() {
                 SectionButton(
                     painter = painterResource(R.drawable.frame_inspect),
                     tint = colors.onBackground,
-                    primaryText = "Focus search on launch",
+                    primaryText = localizedString(R.string.settings_section_behavior_button_focus_search_primary),
                     enabled = enableFocusSearch,
                     onClick = { context.configViewModel.updateFocusSearch(!enableFocusSearch) }
                 )
@@ -161,13 +162,13 @@ fun SettingsScreen() {
 
             SectionGroup(
                 modifier = Modifier.padding(all = 16.dp),
-                title = "Security"
+                title = localizedString(R.string.settings_section_security_title)
             ) {
                 val screenSecurity = context.configViewModel.values.screenSecurity
                 SectionButton(
                     imageVector = Icons.Default.ScreenLockPortrait,
-                    primaryText = "Screen security",
-                    secondaryText = "Block screenshots and recordings",
+                    primaryText = localizedString(R.string.settings_section_security_button_screen_security_primary),
+                    secondaryText = localizedString(R.string.settings_section_security_button_screen_security_secondary),
                     enabled = screenSecurity,
                     onClick = { context.configViewModel.updateScreenSecurity(!screenSecurity) }
                 )
@@ -185,46 +186,46 @@ fun SettingsScreen() {
 
             SectionGroup(
                 modifier = Modifier.padding(all = 16.dp),
-                title = "Backup & Restore"
+                title = localizedString(R.string.settings_section_backup_and_restore_title)
             ) {
                 SectionButton(
                     imageVector = Icons.Default.Upload,
-                    primaryText = "Backup codes",
+                    primaryText = localizedString(R.string.settings_section_backup_and_restore_button_backup_accounts_primary),
                     onClick = { navController.navigate(BackupVaultScreenRoute) }
                 )
 
                 SectionButton(
                     imageVector = Icons.Default.Download,
-                    primaryText = "Restore codes",
+                    primaryText = localizedString(R.string.settings_section_backup_and_restore_button_restore_accounts_primary),
                     onClick = { navController.navigate(RestoreVaultScreenRoute) }
                 )
 
                 SectionButton(
                     painter = painterResource(R.drawable.icon_google_authenticator),
-                    primaryText = "Export to Google Authenticator",
-                    secondaryText = "QR code",
+                    primaryText = localizedString(R.string.settings_section_backup_and_restore_button_export_google_primary),
+                    secondaryText = localizedString(R.string.settings_section_backup_and_restore_button_export_google_secondary),
                     onClick = { navController.navigate(ExportToGoogleAuthScreenRoute) }
                 )
 
                 SectionButton(
                     painter = painterResource(R.drawable.icon_google_authenticator),
-                    primaryText = "Import from Google Authenticator",
-                    secondaryText = "QR code",
+                    primaryText = localizedString(R.string.settings_section_backup_and_restore_button_import_google_primary),
+                    secondaryText = localizedString(R.string.settings_section_backup_and_restore_button_import_google_secondary),
                     onClick = { navController.navigate(ImportFromGoogleAuthScreenRoute) }
                 )
 
                 SectionButton(
                     painter = painterResource(R.drawable.aegis),
                     tint = colors.onBackground,
-                    primaryText = "Import from Aegis",
-                    secondaryText = "JSON file",
+                    primaryText = localizedString(R.string.settings_section_backup_and_restore_button_import_aegis_primary),
+                    secondaryText = localizedString(R.string.settings_section_backup_and_restore_button_import_aegis_secondary),
                     onClick = { navController.navigate(ImportFromAegisScreenRoute) }
                 )
             }
 
             SectionGroup(
                 modifier = Modifier.padding(all = 16.dp),
-                title = "About & Support"
+                title = localizedString(R.string.settings_section_about_and_support_title)
             ) {
                 SectionButton(
                     painter = if (themeViewModel.theme == ThemeOption.SYSTEM_DEFAULT.value) {
@@ -241,7 +242,7 @@ fun SettingsScreen() {
                     }
                 },
                     primaryText = "979",
-                    secondaryText = "About us",
+                    secondaryText = localizedString(R.string.settings_section_about_and_support_button_979_secondary),
                     onClick = {
                         val intent = Intent(Intent.ACTION_VIEW, "https://979.st/en/about".toUri())
                         context.startActivity(intent)
@@ -251,8 +252,8 @@ fun SettingsScreen() {
                 SectionButton(
                     painter = painterResource(R.drawable.github),
                     tint = colors.onBackground,
-                    primaryText = "Source code",
-                    secondaryText = "View 2fa's source code",
+                    primaryText = localizedString(R.string.settings_section_about_and_support_button_source_primary),
+                    secondaryText = localizedString(R.string.settings_section_about_and_support_button_source_secondary),
                     onClick = {
                         val intent = Intent(Intent.ACTION_VIEW, "https://github.com/979st/2fa-android".toUri())
                         context.startActivity(intent)
@@ -261,7 +262,7 @@ fun SettingsScreen() {
 
                 SectionButton(
                     imageVector = Icons.Default.Description,
-                    primaryText = "Download app log",
+                    primaryText = localizedString(R.string.settings_section_about_and_support_button_log_primary),
                     onClick = {
                         Logger.i("SettingsScreen", "Downloading app log")
                         internalAppLogLauncher.launch("2fa_log")

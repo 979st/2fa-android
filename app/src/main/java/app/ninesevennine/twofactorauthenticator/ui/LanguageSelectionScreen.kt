@@ -41,6 +41,7 @@ import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
 import app.ninesevennine.twofactorauthenticator.features.locale.LocaleOption
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.localeViewModel
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedButton
 import app.ninesevennine.twofactorauthenticator.ui.elements.RoundedRadioButton
@@ -99,6 +100,12 @@ fun LanguageSelectionScreen() {
                     onClick = { localeViewModel.updateLocale(context, LocaleOption.ES_ES) }
                 )
                 RoundedRadioButton(
+                    painter = painterResource(R.drawable.flag_france),
+                    label = languageLabelFromLocale(LocaleOption.FR_FR.value),
+                    enabled = localeViewModel.effectiveLocale == LocaleOption.FR_FR.value,
+                    onClick = { localeViewModel.updateLocale(context, LocaleOption.FR_FR) }
+                )
+                RoundedRadioButton(
                     painter = painterResource(R.drawable.flag_russia),
                     label = languageLabelFromLocale(LocaleOption.RU_RU.value),
                     enabled = localeViewModel.effectiveLocale == LocaleOption.RU_RU.value,
@@ -109,12 +116,6 @@ fun LanguageSelectionScreen() {
                     label = languageLabelFromLocale(LocaleOption.DE_DE.value),
                     enabled = localeViewModel.effectiveLocale == LocaleOption.DE_DE.value,
                     onClick = { localeViewModel.updateLocale(context, LocaleOption.DE_DE) }
-                )
-                RoundedRadioButton(
-                    painter = painterResource(R.drawable.flag_france),
-                    label = languageLabelFromLocale(LocaleOption.FR_FR.value),
-                    enabled = localeViewModel.effectiveLocale == LocaleOption.FR_FR.value,
-                    onClick = { localeViewModel.updateLocale(context, LocaleOption.FR_FR) }
                 )
                 RoundedRadioButton(
                     painter = painterResource(R.drawable.flag_vietnam),
@@ -141,14 +142,14 @@ fun LanguageSelectionScreen() {
                 ) {
                     RoundedRefreshButton(
                         imageVector = Icons.Default.Refresh,
-                        label = "Use System Default",
+                        label = localizedString(R.string.language_button_system_default),
                         onClick = { localeViewModel.updateLocale(context, LocaleOption.SYSTEM_DEFAULT) }
                     )
                 }
             }
 
             RoundedButton(
-                label = "Done",
+                label = localizedString(R.string.language_button_go_back),
                 onClick = { navController.popBackStack()}
             )
         }

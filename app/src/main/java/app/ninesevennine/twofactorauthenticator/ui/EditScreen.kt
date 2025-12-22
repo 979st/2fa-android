@@ -29,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -46,13 +47,13 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.ninesevennine.twofactorauthenticator.LocalNavController
 import app.ninesevennine.twofactorauthenticator.R
 import app.ninesevennine.twofactorauthenticator.configViewModel
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.otp.OtpHashFunctions
 import app.ninesevennine.twofactorauthenticator.features.otp.OtpTypes
 import app.ninesevennine.twofactorauthenticator.features.otp.otpParser
@@ -185,7 +186,7 @@ fun EditScreen(uuidString: String) {
                             }
                             .padding(horizontal = 24.dp), contentAlignment = Alignment.Center) {
                         Text(
-                            text = "Enter manually",
+                            text = localizedString(R.string.edit_scanner_button_enter_manually),
                             fontFamily = InterVariable,
                             color = Color.White,
                             fontWeight = FontWeight.W700,
@@ -319,21 +320,21 @@ fun EditScreen(uuidString: String) {
 
             SectionGroup(
                 modifier = Modifier.padding(all = 16.dp),
-                title = "Account details"
+                title = localizedString(R.string.edit_section_account_details_title)
             ) {
                 Spacer(Modifier.height(6.dp))
                 SectionTextBox(
-                    title = "Name",
+                    title = localizedString(R.string.edit_section_account_details_textbox_name),
                     value = item.name,
                     onValueChange = { item = item.copy(name = it) }
                 )
                 SectionTextBox(
-                    title = "Issuer",
+                    title = localizedString(R.string.edit_section_account_details_textbox_issuer),
                     value = item.issuer,
                     onValueChange = { item = item.copy(issuer = it) }
                 )
                 SectionTextBox(
-                    title = "Note",
+                    title = localizedString(R.string.edit_section_account_details_textbox_note),
                     value = item.note,
                     onValueChange = { item = item.copy(note = it) }
                 )
@@ -342,11 +343,11 @@ fun EditScreen(uuidString: String) {
 
             SectionGroup(
                 modifier = Modifier.padding(all = 16.dp),
-                title = "Advanced account settings"
+                title = localizedString(R.string.edit_section_advanced_account_settings_title)
             ) {
                 Spacer(Modifier.height(6.dp))
                 SectionConfidentialTextBox(
-                    title = "Secret",
+                    title = localizedString(R.string.edit_section_advanced_account_settings_textbox_secret),
                     value = secretInput,
                     onValueChange = {
                         secretInput = it.trim()
@@ -367,14 +368,14 @@ fun EditScreen(uuidString: String) {
                     error = secretError
                 )
                 SectionDropDownSingleChoice(
-                    title = "Type",
+                    title = localizedString(R.string.edit_section_advanced_account_settings_dropdown_type),
                     options = OtpTypes.entries.toTypedArray(),
                     selectedOption = item.otpType,
                     onSelectionChange = { item = item.copy(otpType = it) },
                     getDisplayText = { it.value }
                 )
                 SectionDropDownSingleChoice(
-                    title = "Algorithm",
+                    title = localizedString(R.string.edit_section_advanced_account_settings_dropdown_algorithm),
                     options = OtpHashFunctions.entries.toTypedArray(),
                     selectedOption = item.otpHashFunction,
                     onSelectionChange = { item = item.copy(otpHashFunction = it) },
@@ -382,7 +383,7 @@ fun EditScreen(uuidString: String) {
                 )
                 if (item.otpType == OtpTypes.HOTP) {
                     SectionNumbersTextBox(
-                        title = "Counter",
+                        title = localizedString(R.string.edit_section_advanced_account_settings_textbox_counter),
                         value = counterInput,
                         placeholder = "0+",
                         onValueChange = {
@@ -400,7 +401,7 @@ fun EditScreen(uuidString: String) {
                     )
                 } else {
                     SectionNumbersTextBox(
-                        title = "Period",
+                        title = localizedString(R.string.edit_section_advanced_account_settings_textbox_period),
                         value = periodInput,
                         placeholder = "10+",
                         onValueChange = {
@@ -418,7 +419,7 @@ fun EditScreen(uuidString: String) {
                     )
                 }
                 SectionNumbersTextBox(
-                    title = "Code length",
+                    title = localizedString(R.string.edit_section_advanced_account_settings_textbox_code_length),
                     value = digitsInput,
                     placeholder = "4-10",
                     onValueChange = {
@@ -439,12 +440,13 @@ fun EditScreen(uuidString: String) {
 
             SectionGroup(
                 modifier = Modifier.padding(all = 16.dp),
-                title = "Danger zone"
+                title = localizedString(R.string.edit_section_danger_zone_title)
             ) {
                 SectionButton(
-                    painter = painterResource(R.drawable.radiation),
-                    primaryText = "Launch nukes",
-                    secondaryText = "No really, we're serious"
+                    imageVector = Icons.Default.Delete,
+                    tint = colors.error,
+                    primaryText = localizedString(R.string.edit_section_danger_zone_button_delete_primary),
+                    secondaryText = localizedString(R.string.edit_section_danger_zone_button_delete_secondary)
                 ) {
                     showDeleteDialog = true
                 }
@@ -453,10 +455,10 @@ fun EditScreen(uuidString: String) {
             ConfirmationDialog(
                 showDialog = showDeleteDialog,
                 onDismissRequest = { showDeleteDialog = false },
-                title = "Delete account?",
-                message = "Are you sure you want to delete this account? This action cannot be undone",
-                confirmButtonText = "Delete",
-                dismissButtonText = "Cancel",
+                title = localizedString(R.string.edit_dialog_delete_account_title),
+                message = localizedString(R.string.edit_dialog_delete_account_message),
+                confirmButtonText = localizedString(R.string.edit_dialog_delete_account_button_confirm),
+                dismissButtonText = localizedString(R.string.edit_dialog_delete_account_button_cancel),
                 onConfirm = {
                     showDeleteDialog = false
                     navController.popBackStack()

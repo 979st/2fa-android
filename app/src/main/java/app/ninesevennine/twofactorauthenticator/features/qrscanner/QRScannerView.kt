@@ -44,6 +44,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import app.ninesevennine.twofactorauthenticator.R
+import app.ninesevennine.twofactorauthenticator.features.locale.localizedString
 import app.ninesevennine.twofactorauthenticator.features.theme.InterVariable
 import app.ninesevennine.twofactorauthenticator.utils.Logger
 import java.util.concurrent.Executors
@@ -107,7 +109,7 @@ private fun PermissionRequiredMessage() {
             .padding(32.dp), contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Camera permission is required to scan QR codes",
+            text = localizedString(R.string.scanner_permission_required_message),
             fontFamily = InterVariable,
             textAlign = TextAlign.Center,
             color = Color.White,
