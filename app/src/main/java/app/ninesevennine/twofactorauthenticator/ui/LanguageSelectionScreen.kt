@@ -100,28 +100,10 @@ fun LanguageSelectionScreen() {
                     onClick = { localeViewModel.updateLocale(context, LocaleOption.ES_ES) }
                 )
                 RoundedRadioButton(
-                    painter = painterResource(R.drawable.flag_france),
-                    label = languageLabelFromLocale(LocaleOption.FR_FR.value),
-                    enabled = localeViewModel.effectiveLocale == LocaleOption.FR_FR.value,
-                    onClick = { localeViewModel.updateLocale(context, LocaleOption.FR_FR) }
-                )
-                RoundedRadioButton(
                     painter = painterResource(R.drawable.flag_russia),
                     label = languageLabelFromLocale(LocaleOption.RU_RU.value),
                     enabled = localeViewModel.effectiveLocale == LocaleOption.RU_RU.value,
                     onClick = { localeViewModel.updateLocale(context, LocaleOption.RU_RU) }
-                )
-                RoundedRadioButton(
-                    painter = painterResource(R.drawable.flag_germany),
-                    label = languageLabelFromLocale(LocaleOption.DE_DE.value),
-                    enabled = localeViewModel.effectiveLocale == LocaleOption.DE_DE.value,
-                    onClick = { localeViewModel.updateLocale(context, LocaleOption.DE_DE) }
-                )
-                RoundedRadioButton(
-                    painter = painterResource(R.drawable.flag_vietnam),
-                    label = languageLabelFromLocale(LocaleOption.VI_VN.value),
-                    enabled = localeViewModel.effectiveLocale == LocaleOption.VI_VN.value,
-                    onClick = { localeViewModel.updateLocale(context, LocaleOption.VI_VN) }
                 )
 
                 AnimatedVisibility(
@@ -161,9 +143,6 @@ fun languageLabelFromLocale(locale: String): String {
         LocaleOption.EN_US.value -> "English International"
         LocaleOption.ES_ES.value -> "Español"
         LocaleOption.RU_RU.value -> "Русский"
-        LocaleOption.DE_DE.value -> "Deutsch"
-        LocaleOption.FR_FR.value -> "Français"
-        LocaleOption.VI_VN.value -> "Tiếng Việt"
         else -> "Unknown"
     }
 }
