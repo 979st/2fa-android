@@ -4,8 +4,8 @@
 <h1 align="center">2fa</h1>
 <h4 align="center">Manage one-time passwords securely, offline and without tracking</h4>
 <p align="center">
-    <a href="https://github.com/979st/2fa-android/releases/tag/vc-26">
-        <img alt="Static Badge" src="https://img.shields.io/badge/Latest-Beta%2017-blue">
+    <a href="https://github.com/979st/2fa-android/releases/tag/vc-27">
+        <img alt="Static Badge" src="https://img.shields.io/badge/Latest-Beta%2018-blue">
     </a>
     <img alt="GitHub release downloads" src="https://img.shields.io/github/downloads/979st/2fa-android/total">
     <a href="https://github.com/979st/translations">
@@ -32,9 +32,9 @@
     </a>
 </p>
 <p align="center">
-    <img src="assets/light_portrait.png" alt="light_portrait" width="17%"/>
-    <img src="assets/dark_portrait.png" alt="light_portrait" width="17%"/>
-    <img src="assets/light_landscape.png" alt="light_landscape" width="60%"/>
+    <img src="assets/screenshot01.png" alt="screenshot01" width="17%"/>
+    <img src="assets/screenshot02.png" alt="screenshot02" width="17%"/>
+    <img src="assets/screenshot03.png" alt="screenshot03" width="60%"/>
 </p>
 
 ## Features
