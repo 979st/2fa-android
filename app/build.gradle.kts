@@ -161,9 +161,24 @@ dependencies {
     implementation(libs.bouncycastle)
 }
 
-tasks.configureEach {
-    // Some issue with Java 25 LTS
-    if (name.contains("ComposeMapping")) {
-        onlyIf { false }
+afterEvaluate {
+    tasks.configureEach {
+        if (name.contains("ComposeMapping")) {
+            onlyIf { false }
+        }
+        if (name.contains("packagePlayReleaseBundle") ||
+            name.contains("packageAccrescentReleaseBundle") ||
+            name.contains("packageStandardReleaseBundle")) {
+            doFirst {
+                val flavor = when {
+                    name.contains("Play") -> "playRelease"
+                    name.contains("Accrescent") -> "accrescentRelease"
+                    else -> "standardRelease"
+                }
+                val mappingFile = file("build/outputs/mapping/$flavor/mapping.txt")
+                mappingFile.parentFile.mkdirs()
+                mappingFile.writeText("# Dummy mapping file\n")
+            }
+        }
     }
 }
