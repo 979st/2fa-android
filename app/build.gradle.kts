@@ -160,3 +160,10 @@ dependencies {
     implementation(libs.zxing)
     implementation(libs.bouncycastle)
 }
+
+tasks.configureEach {
+    // Some issue with Java 25 LTS
+    if (name.contains("ComposeMapping")) {
+        onlyIf { false }
+    }
+}
