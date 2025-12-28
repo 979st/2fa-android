@@ -100,6 +100,12 @@ fun LanguageSelectionScreen() {
                     onClick = { localeViewModel.updateLocale(context, LocaleOption.ES_ES) }
                 )
                 RoundedRadioButton(
+                    painter = painterResource(R.drawable.flag_france),
+                    label = languageLabelFromLocale(LocaleOption.FR_FR.value),
+                    enabled = localeViewModel.effectiveLocale == LocaleOption.FR_FR.value,
+                    onClick = { localeViewModel.updateLocale(context, LocaleOption.FR_FR) }
+                )
+                RoundedRadioButton(
                     painter = painterResource(R.drawable.flag_russia),
                     label = languageLabelFromLocale(LocaleOption.RU_RU.value),
                     enabled = localeViewModel.effectiveLocale == LocaleOption.RU_RU.value,
@@ -142,6 +148,7 @@ fun languageLabelFromLocale(locale: String): String {
     return when (locale) {
         LocaleOption.EN_US.value -> "English International"
         LocaleOption.ES_ES.value -> "Español"
+        LocaleOption.FR_FR.value -> "Français"
         LocaleOption.RU_RU.value -> "Русский"
         else -> "Unknown"
     }

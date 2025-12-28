@@ -4,6 +4,7 @@ enum class LocaleOption(val value: String) {
     SYSTEM_DEFAULT("default"),
     EN_US("en-US"),
     ES_ES("es-ES"),
+    FR_FR("fr-FR"),
     RU_RU("ru-RU");
 
     companion object {
