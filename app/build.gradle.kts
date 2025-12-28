@@ -32,8 +32,8 @@ android {
     defaultConfig {
         minSdk = 34
         targetSdk = 36
-        versionCode = 27
-        versionName = "Beta 18"
+        versionCode = 28
+        versionName = "Beta 19"
 
         ndk {
             abiFilters.addAll(listOf("arm64-v8a"))
