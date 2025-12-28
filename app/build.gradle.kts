@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.api.ApkVariantOutputImpl
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -5,31 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-}
-
-kotlin {
-    compilerOptions {
-        // https://www.oracle.com/java/technologies/java-se-support-roadmap.html
-        // Use latest LTS release
-        jvmTarget.set(JvmTarget.JVM_21)
-
-        freeCompilerArgs.addAll(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-Xbackend-threads=4",
-            "-Xjvm-default=all"
-        )
-
-        if (project.hasProperty("release")) {
-            freeCompilerArgs.addAll(
-                "-Xno-param-assertions",
-                "-Xno-call-assertions",
-                "-Xno-receiver-assertions",
-                "-Xir-aggressive"
-            )
-        }
-
-        progressiveMode.set(true)
-    }
 }
 
 android {
@@ -58,6 +35,10 @@ android {
         versionCode = 27
         versionName = "Beta 18"
 
+        ndk {
+            abiFilters.addAll(listOf("arm64-v8a"))
+        }
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -71,66 +52,85 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             signingConfig = signingConfigs.getByName("release")
 
             isMinifyEnabled = true
             isShrinkResources = true
             isDebuggable = false
-            isProfileable = false
-            isJniDebuggable = false
-            isPseudoLocalesEnabled = false
-
-            //noinspection ChromeOsAbiSupport
-            ndk { abiFilters += "arm64-v8a" }
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-                "proguard-speed.pro"
+                "proguard-rules.pro"
             )
 
             packaging {
                 resources {
-                    excludes += "/META-INF/{AL2.0,LGPL2.1}"
-                    excludes += "DebugProbesKt.bin"
-                    excludes += "kotlin-tooling-metadata.json"
-
-                    pickFirsts += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
-                }
-                jniLibs {
-                    useLegacyPackaging = false
+                    excludes += listOf(
+                        "META-INF/*.kotlin_module",
+                        "META-INF/DEPENDENCIES",
+                        "META-INF/LICENSE",
+                        "META-INF/LICENSE.txt",
+                        "META-INF/NOTICE",
+                        "META-INF/NOTICE.txt",
+                        "META-INF/*.version",
+                        "META-INF/INDEX.LIST",
+                        "META-INF/io.netty.versions.properties"
+                    )
                 }
             }
+
+            ndk {
+                debugSymbolLevel = "SYMBOL_TABLE"
+            }
+        }
+
+        debug {
+            isDebuggable = true
         }
     }
 
     applicationVariants.all {
-        val variant = this
-        if (variant.buildType.name == "release") {
-            variant.outputs.all {
-                val output = this as com.android.build.gradle.internal.api.ApkVariantOutputImpl
-                val flavorName = variant.productFlavors.firstOrNull()?.name ?: ""
-                output.outputFileName = "twofactorauthenticator-${flavorName}-vc-${variant.versionCode}.apk"
+        outputs.forEach { output ->
+            if (output is BaseVariantOutputImpl) {
+                val variantOutput = output as ApkVariantOutputImpl
+                if (buildType.name == "release") {
+                    val flavorName = productFlavors.firstOrNull()?.name ?: "standard"
+                    variantOutput.outputFileName =
+                        "twofactorauthenticator-${flavorName}-vc-${versionCode}.apk"
+                }
             }
         }
     }
 
-    // https://www.oracle.com/java/technologies/java-se-support-roadmap.html
-    // Use latest LTS release
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
 
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn"
+            )
+        }
+    }
+
+    // https://slack-chats.kotlinlang.org/t/32897179/when-compiling-release-builds-with-kotlin-2-3-0-i-get-execut
+    composeCompiler {
+        includeComposeMappingFile.set(false)
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
+        viewBinding = true
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -159,26 +159,4 @@ dependencies {
     implementation(libs.androidx.camerax.view)
     implementation(libs.zxing)
     implementation(libs.bouncycastle)
-}
-
-afterEvaluate {
-    tasks.configureEach {
-        if (name.contains("ComposeMapping")) {
-            onlyIf { false }
-        }
-        if (name.contains("packagePlayReleaseBundle") ||
-            name.contains("packageAccrescentReleaseBundle") ||
-            name.contains("packageStandardReleaseBundle")) {
-            doFirst {
-                val flavor = when {
-                    name.contains("Play") -> "playRelease"
-                    name.contains("Accrescent") -> "accrescentRelease"
-                    else -> "standardRelease"
-                }
-                val mappingFile = file("build/outputs/mapping/$flavor/mapping.txt")
-                mappingFile.parentFile.mkdirs()
-                mappingFile.writeText("# Dummy mapping file\n")
-            }
-        }
-    }
 }

@@ -1,21 +1,79 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+-optimizationpasses 5
+-allowaccessmodification
+-dontpreverify
+-repackageclasses ''
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes *Annotation*
+-keep class kotlin.Metadata { *; }
+-keepclassmembers class **$WhenMappings {
+    <fields>;
+}
+-keep class kotlin.reflect.** { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.AnnotationsKt
+
+-keepclassmembers class kotlinx.serialization.json.** {
+    *** Companion;
+}
+-keepclasseswithmembers class kotlinx.serialization.json.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+-keep,includedescriptorclasses class app.ninesevennine.twofactorauthenticator.**$$serializer { *; }
+-keepclassmembers class app.ninesevennine.twofactorauthenticator.** {
+    *** Companion;
+}
+-keepclasseswithmembers class app.ninesevennine.twofactorauthenticator.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+-keep class org.bouncycastle.** { *; }
+-keepclassmembers class org.bouncycastle.** { *; }
+-dontwarn org.bouncycastle.**
+
+-keep class com.google.zxing.** { *; }
+-dontwarn com.google.zxing.**
+
+-keep class androidx.compose.runtime.** { *; }
+-keep class androidx.compose.ui.** { *; }
+-keepclassmembers class androidx.compose.** {
+    *;
+}
+
+-keep @androidx.compose.runtime.Composable class * { *; }
+-keep @androidx.compose.runtime.Composable interface * { *; }
+
+-keepclassmembers class * {
+    @androidx.navigation.** *;
+}
+
+-keep class androidx.camera.** { *; }
+-dontwarn androidx.camera.**
+
+-keepclassmembers class app.ninesevennine.twofactorauthenticator.** {
+    <init>(...);
+}
+
+-keepclassmembers class * {
+    @androidx.room.** *;
+}
+
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+    public static *** w(...);
+    public static *** e(...);
+}
+
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*,!code/allocation/variable
+
+-keep public class * extends java.lang.Exception
+
+-dontwarn javax.annotation.**
+-dontwarn org.conscrypt.**
+-dontwarn org.openjsse.**
